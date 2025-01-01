@@ -11,7 +11,6 @@ import os
 
 app = Flask(__name__)
 
-
 # Definindo a chave secreta para uso de sessões
 app.secret_key = os.urandom(24)
 
@@ -28,5 +27,7 @@ app.register_blueprint(login_bp)
 def inicio():
     return redirect(url_for('login.login'))  # Redireciona para a página de login
 
+
+# A função abaixo não será usada no Render, pois o Gunicorn será responsável pela execução
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
