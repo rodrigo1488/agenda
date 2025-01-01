@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<style>
+    /* Estilos para a caixa de rolagem */
+    .tabela-scroll {
+        max-height: 400px;  /* Define a altura máxima */
+        overflow-y: auto;   /* Adiciona a rolagem vertical */
+    }
+
+    /* Estilos para fixar o cabeçalho da tabela */
+    .tabela-scroll thead {
+        position: sticky;
+        top: 0;
+        background-color: #343a40; /* Cor de fundo para o cabeçalho */
+        z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
+    }
+</style>
+
+<body>
+    <div class="d-flex">
+        <!-- Menu Lateral -->
+        <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
+            <ul class="nav flex-column mt-4">
+                <img src="/static/logo.png" id="logo" alt="">
+                <li class="nav-item mb-3">
+                    <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/clientes" class="nav-link text-white"><i class="bi bi-people"></i> Clientes</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatorios</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/login" class="nav-link text-white" style="margin-top: 8%;"><i
+                            class="bi bi-arrow-90deg-up"></i> sair</a>
+                </li>
+            </ul>
+        </nav>
+        <!-- Conteúdo Principal -->
+        <div class="container mt-4">
+            <!-- Botão para exibir o formulário -->
+            <button id="btnCriarCliente" class="btn btn-primary mb-4" onclick="exibirFormulario()">CRIAR CLIENTE</button>
+
+            <!-- Formulário para cadastrar clientes -->
+            <div id="formularioCadastro" style="display: none;">
+                <h3>Cadastro de Clientes</h3>
+                <form method="POST" action="/add_cliente">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do cliente" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Digite o e-mail do cliente" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="Digite o telefone do cliente" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Cadastrar</button>
+                    <button type="button" onclick="cancelarCadastro()" class="btn btn-success" style="background-color: red;">cancelar</button>
+                </form>
+                <hr>
+            </div>
+
+            <!-- Pesquisa de Clientes -->
+            <form method="GET" action="/clientes" class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="query" placeholder="Pesquisar cliente" value="{{ query }}" aria-label="Pesquisar cliente">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="bi bi-search"></i> Pesquisar
+                    </button>
+                </div>
+            </form>
+
+            <!-- Tabela para exibir clientes -->
+           
+            <p>
+                {% if query %}
+                Resultados para: <strong>{{ query }}</strong>
+                {% endif %}
+            </p>
+
+            <!-- Caixa de rolagem para clientes -->
+            <div class="tabela-scroll">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Codigo do cliente</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Telefone</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente.id }}</td>
+                            <td>{{ cliente.nome_cliente }}</td>
+                            <td>{{ cliente.email }}</td>
+                            <td>{{ cliente.telefone }}</td>
+                            <td>
+                                <!-- Botão para abrir o modal de edição -->
+                                <button class="btn btn-warning btn-sm" onclick="abrirModalEditar({{ cliente['id'] }}, '{{ cliente['nome_cliente'] }}', '{{ cliente['email'] }}', '{{ cliente['telefone'] }}')">
+                                    Editar
+                                </button>
+                                <a href="/excluir_cliente/{{ cliente.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Deseja realmente excluir este cliente?');">
+                                    <i class="bi bi-trash"></i> Excluir
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div> <!-- Fim da caixa de rolagem -->
+        </div>
+    </div>
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-labelledby="modalEditarClienteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarClienteLabel">Editar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarCliente">
+                        <input type="hidden" id="editarClienteId" name="id">
+                        <div class="mb-3">
+                            <label for="editarNome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="editarNome" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editarEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editarEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editarTelefone" class="form-label">Telefone</label>
+                            <input type="tel" class="form-control" id="editarTelefone" name="telefone" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Função para abrir o modal de edição com os dados do cliente
+        function abrirModalEditar(id, nome, email, telefone) {
+            $('#editarClienteId').val(id);
+            $('#editarNome').val(nome);
+            $('#editarEmail').val(email);
+            $('#editarTelefone').val(telefone);
+
+            // Exibe o modal
+            const modalEditarCliente = new bootstrap.Modal(document.getElementById('modalEditarCliente'));
+            modalEditarCliente.show();
+        }
+
+        // Função para enviar os dados do cliente via AJAX com validação
+        $('#formEditarCliente').on('submit', function (event) {
+            event.preventDefault(); // Evita o reload da página
+
+            const id = $('#editarClienteId').val();
+            const nome = $('#editarNome').val();
+            const email = $('#editarEmail').val();
+            const telefone = $('#editarTelefone').val();
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const telefoneRegex = /^[0-9]{10,11}$/;
+
+            if (!emailRegex.test(email)) {
+                alert('Por favor, insira um e-mail válido.');
+                return;
+            }
+
+            if (!telefoneRegex.test(telefone)) {
+                alert('Por favor, insira um telefone válido (10 ou 11 dígitos).');
+                return;
+            }
+
+            $.ajax({
+                url: `/editar_cliente/${id}`,
+                method: 'POST',
+                data: { nome, email, telefone },
+                success: function () {
+                    alert('Cliente atualizado com sucesso!');
+                    location.reload();
+                },
+                error: function () {
+                    alert('Erro ao atualizar cliente.');
+                }
+            });
+        });
+
+        // Função para exibir o formulário de cadastro
+        function exibirFormulario() {
+            document.getElementById('formularioCadastro').style.display = 'block';
+            document.getElementById('btnCriarCliente').style.display = 'none';
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

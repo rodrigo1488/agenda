@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- Menu Lateral -->
+        <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
+            <ul class="nav flex-column mt-4">
+                <img src="/static/logo.png" id="logo" alt="">
+                <li class="nav-item mb-3">
+                    <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/clientes" class="nav-link text-white"><i class="bi bi-people"></i> Clientes</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatórios</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/login" class="nav-link text-white"><i class="bi bi-arrow-90deg-up"></i> Sair</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <div class="container mt-4">
+            <div class="container mt-5">
+                <form method="GET" action="/relatorios" id="filros" style="display: none;">
+                    <div class="form-group">
+                        <label for="data_inicio">Data Início</label>
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio">
+                    </div>
+                    <div class="form-group">
+                        <label for="data_fim">Data Fim</label>
+                        <input type="date" class="form-control" id="data_fim" name="data_fim">
+                    </div>
+                    <div class="form-group">
+                        <label for="usuario_id">ID do Usuário</label>
+                        <input type="text" class="form-control" id="usuario_id" name="usuario_id">
+                    </div>
+                    <div class="form-group">
+                        <label for="meio_pagamento">Meio de Pagamento</label>
+                        <select name="meio_pagamento" id="meio_pagamento" class="form-control">
+                            <option value="" disabled selected>Selecione a forma de pagamento</option>
+                            <option value="Pix">Pix</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </form>
+
+                <style>
+                
+                   .col-md-6{
+                   height: 300px;  
+                   margin-top: 5%;
+                   border-top:1px solid grey;
+                   border-left:1px solid grey;
+
+
+
+                   }
+
+             
+
+                   
+                </style>
+
+                <!-- Botões de filtro automático -->
+                <div class="mt-3">
+                    <button class="btn btn-secondary" onclick="filtroAutomatico(7)">Últimos 7 dias</button>
+                    <button class="btn btn-secondary" onclick="filtroAutomatico(30)">Últimos 30 dias</button>
+                    <button class="btn btn-primary" onclick="limpa_filtros()">Limpar filtros</button>
+
+
+                </div>
+
+                <!-- Select para alternar entre os gráficos -->
+                <div class="mb-4">
+                    <label for="graficoSelect" class="form-label">Selecione o Gráfico:</label>
+                    <select id="graficoSelect" class="form-select" onchange="toggleGrafico()">
+                        <option value="financeiro">Financeiro</option>
+                        <option value="atendimentos">Atendimentos</option>
+                        <option value="comparativo">Comparativo</option>
+                        <option value="financeiro por usuario">financeiro por usuario</option>
+                    </select>
+                </div>
+
+                <div class="box">
+                    <!-- Relatório de Financeiro por Usuário e Comparativo -->
+                    <div class="row mt-4">
+                        <!-- Relatório de Financeiro por Usuário -->
+                        <div class="col-md-6" id="financeiroUsuarioContainer"
+                            >
+                            <h3>Financeiro por Usuário</h3>
+                            <canvas id="financeiroBarChart" width="100" height="50"></canvas>
+                        </div>
+
+                        <!-- Relatório Comparativo -->
+                        <div class="col-md-6" id="comparativoContainer" >
+                            <h3>Comparativo</h3>
+                            <canvas id="comparativoChart" width="100" height="50"></canvas>
+                        </div>
+                        <!-- Relatório de Atendimentos por Usuário -->
+                        <div class="col-md-6" id="atendimentosContainer"
+                           >
+                            <h3>Atendimentos por Usuário</h3>
+                            <canvas id="atendimentosChart"></canvas>
+                            <ul id="atendimentosLegend" style="list-style-type: none; padding: 0; margin-top: 10px;">
+                            </ul>
+                        </div>
+
+                        <!-- Relatório de Financeiro por Forma de Pagamento -->
+                        <div class="col-md-6" id="financeiroContainer"
+                            >
+                            <h3>Financeiro por Forma de Pagamento</h3>
+                            <canvas id="financeiroChart" width="auto" height="auto"></canvas>
+                            <ul id="financeiroLegend" style="list-style-type: none; padding: 0; margin-top: 10px;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const financeiroData = {{ financeiro | tojson | safe }};
+        const atendimentosData = {{ atendimentos | tojson | safe }};
+
+        function filtroAutomatico(dias) {
+            const hoje = new Date();
+            const inicio = new Date();
+            inicio.setDate(hoje.getDate() - dias);
+
+            // Preenche os campos de data no formulário
+            document.getElementById('data_inicio').value = inicio.toISOString().split('T')[0];
+            document.getElementById('data_fim').value = hoje.toISOString().split('T')[0];
+
+            // Envia o formulário
+            document.getElementById('filros').submit();
+        }
+
+        function limpa_filtros() {
+            document.getElementById('filros').submit();
+        }
+
+
+        function generateLegend(legendId, labels, values, type) {
+            const legendElement = document.getElementById(legendId);
+            legendElement.innerHTML = "";
+            labels.forEach((label, index) => {
+                const listItem = document.createElement('li');
+                let valueText;
+
+                if (type === 'financeiro') {
+                    valueText = `R$ ${values[index].toFixed(2)}`;
+                } else if (type === 'atendimentos') {
+                    valueText = values[index];
+                } else {
+                    valueText = values[index].toString();
+                }
+
+                listItem.innerHTML = `<strong>${label}:</strong>  ${valueText}`;
+                legendElement.appendChild(listItem);
+            });
+        }
+
+
+        function toggleGrafico() {
+            const selectedGrafico = document.getElementById('graficoSelect').value;
+            document.getElementById('atendimentosContainer').style.display = 'none';
+            document.getElementById('financeiroContainer').style.display = 'none';
+            document.getElementById('comparativoContainer').style.display = 'none';
+            document.getElementById('financeiroUsuarioContainer').style.display = 'none';
+
+            if (selectedGrafico === '') { document.getElementById('').style.display = 'block' }
+            else if (selectedGrafico === 'financeiro') {
+                document.getElementById('financeiroContainer').style.display = 'block';
+            } else if (selectedGrafico === 'atendimentos') {
+                document.getElementById('atendimentosContainer').style.display = 'block';
+            } else if (selectedGrafico === 'comparativo') {
+                document.getElementById('comparativoContainer').style.display = 'block';
+            } else if (selectedGrafico === 'financeiro por usuario') {
+                document.getElementById('financeiroUsuarioContainer').style.display = 'block';
+            }
+        }
+
+        const atendimentosLabels = Object.keys(atendimentosData);
+        const atendimentosValues = Object.values(atendimentosData);
+
+        const atendimentosCtx = document.getElementById('atendimentosChart').getContext('2d');
+
+
+        // Gerar cores para cada barra
+        const cores = atendimentosValues.map(() => gerarCorAleatoria());
+
+        const atendimentosChart = new Chart(atendimentosCtx, {
+            type: 'pie',
+            data: {
+                labels: atendimentosLabels,
+                datasets: [{
+                    label: 'Atendimentos',
+                    data: atendimentosValues,
+                    backgroundColor: cores, // Atribui cores aleatórias para cada barra
+                    borderColor: 'rgba(0, 0, 0, 1)', // Cor das bordas das barras
+                    borderWidth: 2,
+                    hoverBackgroundColor: 'rgba(255, 159, 64, 0.8)',
+                    hoverBorderColor: 'rgba(255, 159, 64, 1)',
+                    hoverBorderWidth: 3,
+                    barPercentage: 0.5,
+                    categoryPercentage: 0.7,
+                    borderRadius: 8,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Manter o gráfico proporcional ao tamanho da tela
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuad',
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#333',
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#333',
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // generateLegend('atendimentosLegend', atendimentosLabels, atendimentosValues, 'atendimentos');
+
+
+        const financeiroLabels = Object.keys(financeiroData);
+        const financeiroValues = Object.values(financeiroData);
+
+        const financeiroCtx = document.getElementById('financeiroChart').getContext('2d');
+
+        // Gerar um array de cores aleatórias para cada barra
+        function gerarCorAleatoria() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgba(${r}, ${g}, ${b}, 0.7)`;
+        }
+
+        // Gerar cores para cada barra
+
+
+        new Chart(financeiroCtx, {
+            type: 'bar',
+            data: {
+                labels: financeiroLabels,
+                datasets: [{
+                    label: '(R$)',
+                    data: financeiroValues,
+                    backgroundColor: cores, // Atribui cores aleatórias para cada barra
+                    borderColor: 'rgba(0, 0, 0, 1)', // Cor das bordas das barras
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(54, 162, 235, 0.8)', // Efeito hover mais forte
+                    hoverBorderColor: 'rgba(54, 162, 235, 1)',
+                    hoverBorderWidth: 3,
+                    borderRadius: 8,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Manter o gráfico proporcional ao tamanho da tela
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 14,
+                                weight: 'bold',
+                                color: '#333'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleFont: {
+                            family: 'Arial, sans-serif',
+                            size: 14,
+                            weight: 'bold',
+                            color: '#fff'
+                        },
+                        bodyFont: {
+                            family: 'Arial, sans-serif',
+                            size: 12,
+                            color: '#fff'
+                        },
+                        padding: 10,
+                        cornerRadius: 5
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 12,
+                                color: '#333'
+                            },
+                            padding: 10
+                        },
+                        grid: {
+                            borderColor: 'rgba(0, 0, 0, 0.1)',
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            lineWidth: 1
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 12,
+                                color: '#333'
+                            },
+                            padding: 10
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutBounce'
+                }
+            }
+        });
+
+
+        // generateLegend('financeiroLegend', financeiroLabels, financeiroValues,'financeiro');
+
+
+        const comparativoLabels = ['Financeiro', 'Atendimentos'];
+        const comparativoValues = [
+            financeiroValues.reduce((a, b) => a + b, 0), // Soma total de valores financeiros
+            atendimentosValues.reduce((a, b) => a + b, 0) // Soma total de atendimentos
+        ];
+        const comparativoCtx = document.getElementById('comparativoChart').getContext('2d');
+
+        
+        // Gerar cores aleatórias para o gráfico de pizza
+       
+        new Chart(comparativoCtx, {
+            type: 'pie',
+            data: {
+                labels: comparativoLabels,
+                datasets: [{
+                    label: 'Comparativo',
+                    data: comparativoValues,
+                    backgroundColor: cores, // Atribui cores aleatórias
+                    borderColor: cores.map(color => color.replace('0.7', '1')), // Bordas sólidas com mesmas cores
+                    borderWidth: 2,
+                    hoverBackgroundColor: cores.map(color => color.replace('0.7', '0.9')), // Mais opaco no hover
+                    hoverBorderColor: 'rgba(0, 0, 0, 1)',
+                    hoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Permite ajustar o tamanho do gráfico
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 14,
+                                family: 'Arial, sans-serif',
+                                weight: 'bold'
+                            },
+                            color: '#333'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleFont: {
+                            size: 14,
+                            family: 'Arial, sans-serif',
+                            weight: 'bold',
+                            color: '#fff'
+                        },
+                        bodyFont: {
+                            size: 12,
+                            family: 'Arial, sans-serif',
+                            color: '#fff'
+                        },
+                        padding: 10,
+                        cornerRadius: 5
+                    }
+                },
+                animation: {
+                    duration: 1200,
+                    easing: 'easeOutElastic'
+                }
+            }
+        });
+
+        // Ajustando o tamanho do gráfico diretamente no HTML
+        document.getElementById('comparativoChart').style.width = '400px'; // Largura ajustada
+        document.getElementById('comparativoChart').style.height = '300px'; // Altura ajustada
+
+        const financeiroUsuarioData = JSON.parse('{{ financeiro_usuario | tojson }}');
+        // usuariox financeiro
+        // Extrai labels e valores
+        const financeiroUsuarioLabels = Object.keys(financeiroUsuarioData);
+        const financeiroUsuarioValues = Object.values(financeiroUsuarioData);
+
+        // Gráfico de barras
+        const financeiroUsuarioCtx = document.getElementById('financeiroBarChart').getContext('2d');
+
+
+
+        // Gerar cores para cada barra
+
+
+        const financeiroUsuarioChart = new Chart(financeiroUsuarioCtx, {
+            type: 'bar',
+            data: {
+                labels: financeiroUsuarioLabels,
+                datasets: [{
+                    label: 'Financeiro por Usuário (R$)',
+                    data: financeiroUsuarioValues,
+                    backgroundColor: cores, // Atribui cores aleatórias para cada barra
+                    borderColor: 'rgba(54, 162, 235, 1)', // Cor das bordas das barras
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(54, 162, 235, 0.8)', // Efeito hover mais forte
+                    hoverBorderColor: 'rgba(54, 162, 235, 1)',
+                    hoverBorderWidth: 3,
+                    borderRadius: 8,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Manter o gráfico proporcional ao tamanho da tela
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 14,
+                                weight: 'bold',
+                                color: '#333'
+                            },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleFont: {
+                            family: 'Arial, sans-serif',
+                            size: 14,
+                            weight: 'bold',
+                            color: '#fff'
+                        },
+                        bodyFont: {
+                            family: 'Arial, sans-serif',
+                            size: 12,
+                            color: '#fff'
+                        },
+                        padding: 10,
+                        cornerRadius: 5
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 12,
+                                color: '#333'
+                            },
+                            padding: 10
+                        },
+                        grid: {
+                            borderColor: 'rgba(0, 0, 0, 0.1)',
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            lineWidth: 1
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 12,
+                                color: '#333'
+                            },
+                            padding: 10
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutBounce'
+                }
+            }
+        });
+
+        // Ajustando o tamanho do gráfico diretamente no HTML
+        document.getElementById('financeiroBarChart').style.width = '200px'; // Largura ajustada
+        document.getElementById('financeiroBarChart').style.height = '100px'; // Altura ajustada
+
+        // generateLegend('financeiroLegend', FinanceiroUsuarioLabels, financeiroUsuarioValues, 'financeiro');
+
+    </script>
+
+</body>
+
+</html>

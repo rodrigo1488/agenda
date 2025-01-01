@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENDA</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body class="d-flex">
+
+
+    <div class="d-flex" style="flex: 1; width: 100%;">
+
+
+        <!-- Menu Lateral -->
+        <div id="menu-container"></div>
+        <nav id="menu-lateral" class="text-white p-3" style="width: 250px;">
+            <ul class="nav flex-column mt-4">
+                <img src="/static/logo.png" id="logo" alt="">
+                <li class="nav-item mb-3">
+                    <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/clientes" class="nav-link text-white"><i class="bi bi-people"></i> Clientes</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatórios</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/login" class="nav-link text-white" style="margin-top: 5%;"><i
+                            class="bi bi-arrow-90deg-up"></i> sair</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <div class="container mt-4 flex-grow-1">
+            <!-- Botão para exibir o formulário -->
+            <div class="men-bot">
+                <button type="button" id="btn-agendar" class="btn btn-primary mb-4" data-bs-toggle="modal"
+                    data-bs-target="#agendamentoModal">
+                    Agendar um Horário
+                </button>
+                <!-- Botão de alternância do menu lateral -->
+                <button id="toggle-menu" class="d-block d-md-none"
+                    style="background-color: transparent; border: none; font-size: 2rem; color: black;">
+                    ☰
+                </button>
+            </div>
+            <!-- Modal para exibir detalhes do agendamento -->
+            <div class="modal fade" id="agendamentoDetalhesModal" tabindex="-1"
+                aria-labelledby="agendamentoDetalhesModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modal-title">Detalhes do Agendamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modal-body">
+                            <!-- Detalhes do agendamento serão exibidos aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="loading-screen" style="display: none;">
+                <div class="spinner"></div>
+                <p>Carregando...</p>
+            </div>
+
+            <!-- Modal de Agendamento -->
+            <div class="modal fade" id="agendamentoModal" tabindex="-1" aria-labelledby="agendamentoModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="agendamentoModalLabel">Novo Agendamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form-agendamento" class="mb-4">
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="cliente-agendamento" class="form-label">Cliente</label>
+                                        <select id="cliente-agendamento" class="form-select" required>
+                                            <option value="">Selecione um cliente</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="usuario-agendamento" class="form-label">Profissional</label>
+                                        <select id="usuario-agendamento" class="form-select" required>
+                                            <option value="">Selecione um profissional</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="servico-agendamento" class="form-label">Comprmisso</label>
+                                        <select id="servico-agendamento" class="form-select" required>
+                                            <option value="">Selecione um compromisso</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="descricao" class="form-label">Descrição</label>
+                                        <textarea id="descricao-agendamento" name="descricao" class="form-control" rows="3"
+                                            placeholder="Adicione detalhes sobre o compromisso"></textarea>
+                                    </div>
+
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="data-agendamento" class="form-label">Data</label>
+                                        <input type="date" id="data-agendamento" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="hora-agendamento" class="form-label">Horário</label>
+                                        <input type="time" id="hora-agendamento" class="form-control" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success">Agendar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="pagamentoModal" tabindex="-1" aria-labelledby="pagamentoModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="pagamentoModalLabel">Informações de Pagamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modal-pagamento-body">
+                            <!-- Conteúdo gerado dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <!-- Área do Calendário -->
+            <main class="calendar-container">
+                <div id="calendar"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS e Dependências -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <!-- Biblioteca FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <!-- JS Personalizado -->
+    <script src="static/agenda.js"></script>
+
+    <script>
+        const toggleMenu = document.getElementById('toggle-menu');
+        const menuLateral = document.getElementById('menu-lateral');
+
+        toggleMenu.addEventListener('click', () => {
+            menuLateral.classList.toggle('open');
+        });
+    </script>
+</body>
+
+</html>

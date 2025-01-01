@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Usuários</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<style>
+    /* Estilos para a caixa de rolagem */
+    .tabela-scroll {
+        max-height: 400px;  /* Define a altura máxima */
+        overflow-y: auto;   /* Adiciona a rolagem vertical */
+    }
+
+    /* Estilos para fixar o cabeçalho da tabela */
+    .tabela-scroll thead {
+        position: sticky;
+        top: 0;
+        background-color: #343a40; /* Cor de fundo para o cabeçalho */
+        z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
+    }
+</style>
+
+<body>
+    <div class="d-flex">
+        <!-- Menu Lateral -->
+        <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
+            <ul class="nav flex-column mt-4">
+                <img src="/static/logo.png" id="logo" alt="">
+                <li class="nav-item mb-3">
+                    <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/clientes" class="nav-link text-white"><i class="bi bi-people"></i> Clientes</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatórios</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/login" class="nav-link text-white" style="margin-top: 8%;"><i
+                            class="bi bi-arrow-90deg-up"></i> sair</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <div class="container mt-4">
+            <div class="cadastro mb-4" style="display: none;">
+                <h3>Cadastro de Usuários</h3>
+                <form method="POST" action="/usuarios">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do usuário" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Digite o email do usuário" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Digite o telefone do usuário" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="senha" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite uma senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+
+            <button id="btnCriarUsuario" onclick="exibeCadastro()" class="btn btn-primary">CRIAR USUÁRIO</button>
+
+            <hr>
+            <form method="GET" action="/usuarios" class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search_query" placeholder="Digite o nome do usuário">
+                    <button type="submit" class="btn btn-outline-secondary">Pesquisar</button>
+                </div>
+            </form>
+
+            <!-- Listagem de Usuários -->
+            
+            <div class="tabela">
+            {% if usuarios %}
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.nome_usuario }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>{{ usuario.telefone }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" onclick="preencherEdicao('{{ usuario.id }}', '{{ usuario.nome_usuario }}', '{{ usuario.email }}', '{{ usuario.telefone }}')">
+                                Editar
+                            </button>
+                            <a href="/usuarios/excluir/{{ usuario.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Deseja realmente excluir este usuário?');">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+            {% else %}
+            <p class="text-muted">Nenhum usuário cadastrado.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/usuarios/editar">
+                    <div class="modal-body">
+                        <input type="hidden" id="id_usuario" name="id">
+                        <div class="mb-3">
+                            <label for="edit_nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="edit_nome" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_telefone" class="form-label">Telefone</label>
+                            <input type="text" class="form-control" id="edit_telefone" name="telefone" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function exibeCadastro() {
+            const cadastro = document.querySelector('.cadastro');
+            const btnCriarUsuario = document.getElementById('btnCriarUsuario');
+
+            if (cadastro.style.display === 'none' || cadastro.style.display === '') {
+                cadastro.style.display = 'block';
+                btnCriarUsuario.style.display = 'none';
+            } else {
+                cadastro.style.display = 'none';
+                btnCriarUsuario.style.display = 'block';
+            }
+        }
+
+        function preencherEdicao(id, nome, email, telefone) {
+            document.getElementById('id_usuario').value = id;
+            document.getElementById('edit_nome').value = nome;
+            document.getElementById('edit_email').value = email;
+            document.getElementById('edit_telefone').value = telefone;
+        }
+    </script>
+</body>
+
+</html>

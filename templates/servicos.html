@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Estilos para a caixa de rolagem */
+        .tab_serv-scroll {
+            max-height: 300px;  /* Define a altura máxima */
+            overflow-y: auto;   /* Adiciona a rolagem vertical */
+        }
+
+        /* Estilos para fixar o cabeçalho da tabela */
+        .tab_serv-scroll thead {
+            position: sticky;
+            top: 0;
+            background-color: #343a40; /* Cor de fundo para o cabeçalho */
+            z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- Menu Lateral -->
+        <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
+            <ul class="nav flex-column mt-4">
+                <img src="/static/logo.png" id="logo" alt="">
+                <li class="nav-item mb-3">
+                    <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/clientes" class="nav-link text-white"><i class="bi bi-people"></i> Clientes</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatorios</a>
+                </li>
+                <li class="nav-item mb-3">
+                    <a href="/login" class="nav-link text-white" ><i
+                            class="bi bi-arrow-90deg-up"></i> sair</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <div class="container mt-4">
+            <!-- Botão para exibir o formulário -->
+            <button id="btnCriarServico" class="btn btn-primary mb-4" onclick="exibirFormulario()">CRIAR SERVIÇO</button>
+
+            <!-- Formulário de Cadastro de Serviços -->
+            <div id="formularioCadastro" style="display: none;">
+                <h3>Cadastro de Serviços</h3>
+                <form method="POST" action="/add_service">
+                    <div class="mb-3">
+                        <label for="nome_servico" class="form-label">Nome do Serviço</label>
+                        <input type="text" class="form-control" id="nome_servico" name="nome_servico" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="preco" class="form-label">Preço (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="preco" name="preco" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tempo" class="form-label">Tempo Estimado (minutos)</label>
+                        <input type="number" class="form-control" id="tempo" name="tempo" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Cadastrar</button>
+                </form>
+                <hr>
+            </div>
+
+            <!-- Formulário de Pesquisa -->
+            <form method="POST" action="/servicos" class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search_query" placeholder="Digite o nome do serviço">
+                    <button type="submit" class="btn btn-outline-secondary">Pesquisar</button>
+                </div>
+            </form>
+
+            <!-- Listagem de Serviços -->
+          
+            {% if services %}
+            <div class="tab_serv-scroll">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Preço (R$)</th>
+                            <th>Tempo Estimado (min)</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr>
+                            <td>{{ service.nome_servico }}</td>
+                            <td>R$ {{ service.preco | round(2) }}</td>
+                            <td>{{ service.tempo  }}min</td>
+                            <td>
+                                <a href="/excluir_servico/{{ service.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Deseja realmente excluir este serviço?');">
+                                    <i class="bi bi-trash"></i> Excluir
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">Nenhum serviço cadastrado.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Função para exibir o formulário de cadastro
+        function exibirFormulario() {
+            document.getElementById('formularioCadastro').style.display = 'block';
+            document.getElementById('btnCriarServico').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
