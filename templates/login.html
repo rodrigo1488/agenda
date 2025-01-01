@@ -35,15 +35,18 @@
             <form method="POST" action="{{ url_for('login.login') }}">
                 <div class="mb-3">
                     <label for="empresa" class="form-label" style="color: white;">Nome da Empresa</label>
-                    <input type="text" id="empresa" name="empresa" class="form-control" required placeholder="Digite o nome da empresa">
+                    <input type="text" id="empresa" name="empresa" class="form-control" required
+                        placeholder="Digite o nome da empresa">
                 </div>
                 <div class="mb-3">
-                    <label for="usuario" class="form-label" style="color: white;" >Usuário</label>
-                    <input type="emai" id="usuario" name="usuario" class="form-control" required placeholder="Digite o nome do usuário">
+                    <label for="usuario" class="form-label" style="color: white;">Usuário</label>
+                    <input type="emai" id="usuario" name="usuario" class="form-control" required
+                        placeholder="Digite o nome do usuário">
                 </div>
                 <div class="mb-3">
                     <label for="senha" class="form-label" style="color: white;">Senha</label>
-                    <input type="password" id="senha" name="senha" class="form-control" required placeholder="Digite a senha">
+                    <input type="password" id="senha" name="senha" class="form-control" required
+                        placeholder="Digite a senha">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Entrar</button>
             </form>
@@ -51,7 +54,7 @@
 
         <!-- Botões -->
         <div id="buttons">
-            <button class="btn btn-secondary" onclick="showLoginForm()">Sou Cliente</button>
+            <a href="/agendamento" class="btn btn-secondary"> Sou Cliente</a>
             <button class="btn btn-outline-light" onclick="showLoginForm()">Quero acessar minha agenda</button>
         </div>
 
@@ -64,10 +67,10 @@
         function showLoginForm() {
             // Esconde os botões
             document.getElementById('buttons').style.display = 'none';
-            
+
             // Exibe o formulário de login
             document.getElementById('loginForm').style.display = 'block';
-            
+
             // Exibe o botão de voltar
             document.getElementById('backButton').style.display = 'block';
         }

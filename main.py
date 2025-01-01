@@ -6,6 +6,7 @@ from clientes import clientes_bp
 from relatorios import relatorios_bp
 from agenda import agenda_bp
 from login import login_bp
+from agendamento import agendamento_bp
 
 import os
 
@@ -21,6 +22,7 @@ app.register_blueprint(clientes_bp)
 app.register_blueprint(relatorios_bp)
 app.register_blueprint(agenda_bp)
 app.register_blueprint(login_bp)
+app.register_blueprint(agendamento_bp)
 
 
 @app.route("/")
