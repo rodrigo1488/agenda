@@ -1,4 +1,3 @@
-rootDirectory: backend  # Define o diretório onde o Render deve procurar o código
 
 services:
   - type: web
