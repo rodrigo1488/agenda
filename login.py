@@ -15,8 +15,8 @@ login_bp = Blueprint('login', __name__)
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        empresa = request.form.get('empresa').strip()
-        usuario = request.form.get('usuario').strip()
+        empresa = request.form.get('empresa').strip().upper()  # Converte para maiúsculas
+        usuario = request.form.get('usuario').strip().upper()  # Converte para maiúsculas
         senha = request.form.get('senha').strip()
 
         try:

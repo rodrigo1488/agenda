@@ -28,7 +28,7 @@ def gerenciar_usuarios():
 
     if request.method == 'POST':
         # Cadastro de novo usuário
-        nome_usuario = request.form.get('nome')
+        nome_usuario = request.form.get('nome').strip().upper()  # Converte para maiúsculas
         email = request.form.get('email')
         telefone = request.form.get('telefone')
         senha = request.form.get('senha')
@@ -83,7 +83,7 @@ def editar_usuario():
 
     try:
         id_usuario = request.form.get('id')
-        nome_usuario = request.form.get('nome')
+        nome_usuario = request.form.get('nome').strip().upper()  
         email = request.form.get('email')
         telefone = request.form.get('telefone')
 

@@ -1,0 +1,13 @@
+    /* Estilos para a caixa de rolagem */
+    .tabela-scroll {
+        max-height: 400px;  /* Define a altura máxima */
+        overflow-y: auto;   /* Adiciona a rolagem vertical */
+    }
+
+    /* Estilos para fixar o cabeçalho da tabela */
+    .tabela-scroll thead {
+        position: sticky;
+        top: 0;
+        background-color: #343a40; /* Cor de fundo para o cabeçalho */
+        z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
+    }

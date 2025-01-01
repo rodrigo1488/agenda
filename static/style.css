@@ -155,7 +155,7 @@ h3 {
     left: -250px; /* Escondido por padrão */
     width: 250px;
     height: 100%;
-    background-color: rgb(71, 106, 92);
+    background-color:#030213;
     box-shadow: 2px 2px 8px 0px gray;
     transition: left 0.3s ease; /* Animação suave ao abrir/fechar */
     z-index: 1000;
@@ -173,7 +173,7 @@ h3 {
     top: 20px;
     left: 20px;
     z-index: 1100;
-    background-color: rgb(71, 106, 92);
+    background-color: #030213;
     color: #fff;
     border: none;
     padding: 10px 15px;

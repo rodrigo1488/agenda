@@ -1,0 +1,30 @@
+body {
+    background-color: #030213;
+    color: white;
+}
+
+.card {
+    background-color: transparent;
+    border:solid 1px #fff;
+    box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.1), -6px -6px 10px rgba(211, 211, 211, 0.4);
+}
+
+.card-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+#loginForm {
+    display: none;
+}
+
+#buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#backButton {
+    display: none;
+    margin-top: 20px;
+}

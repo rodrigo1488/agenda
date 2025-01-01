@@ -16,6 +16,7 @@
 <body>
     <div class="d-flex">
         <!-- Menu Lateral -->
+        <div id="menu-container"></div>
         <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
             <ul class="nav flex-column mt-4">
                 <img src="/static/logo.png" id="logo" alt="">
@@ -39,7 +40,10 @@
                 </li>
             </ul>
         </nav>
-
+        <button id="toggle-menu" class="d-block d-md-none"
+            style="background-color: transparent; border: none; font-size: 2rem; color: black;">
+            ☰
+        </button>
         <!-- Conteúdo Principal -->
         <div class="container mt-4">
             <div class="container mt-5">
@@ -70,20 +74,15 @@
                 </form>
 
                 <style>
-                
-                   .col-md-6{
-                   height: 300px;  
-                   margin-top: 5%;
-                   border-top:1px solid grey;
-                   border-left:1px solid grey;
+                    .col-md-6 {
+                        height: 300px;
+                        margin-top: 5%;
+                        border-top: 1px solid grey;
+                        border-left: 1px solid grey;
 
 
 
-                   }
-
-             
-
-                   
+                    }
                 </style>
 
                 <!-- Botões de filtro automático -->
@@ -110,20 +109,18 @@
                     <!-- Relatório de Financeiro por Usuário e Comparativo -->
                     <div class="row mt-4">
                         <!-- Relatório de Financeiro por Usuário -->
-                        <div class="col-md-6" id="financeiroUsuarioContainer"
-                            >
+                        <div class="col-md-6" id="financeiroUsuarioContainer">
                             <h3>Financeiro por Usuário</h3>
                             <canvas id="financeiroBarChart" width="100" height="50"></canvas>
                         </div>
 
                         <!-- Relatório Comparativo -->
-                        <div class="col-md-6" id="comparativoContainer" >
+                        <div class="col-md-6" id="comparativoContainer">
                             <h3>Comparativo</h3>
                             <canvas id="comparativoChart" width="100" height="50"></canvas>
                         </div>
                         <!-- Relatório de Atendimentos por Usuário -->
-                        <div class="col-md-6" id="atendimentosContainer"
-                           >
+                        <div class="col-md-6" id="atendimentosContainer">
                             <h3>Atendimentos por Usuário</h3>
                             <canvas id="atendimentosChart"></canvas>
                             <ul id="atendimentosLegend" style="list-style-type: none; padding: 0; margin-top: 10px;">
@@ -131,8 +128,7 @@
                         </div>
 
                         <!-- Relatório de Financeiro por Forma de Pagamento -->
-                        <div class="col-md-6" id="financeiroContainer"
-                            >
+                        <div class="col-md-6" id="financeiroContainer">
                             <h3>Financeiro por Forma de Pagamento</h3>
                             <canvas id="financeiroChart" width="auto" height="auto"></canvas>
                             <ul id="financeiroLegend" style="list-style-type: none; padding: 0; margin-top: 10px;"></ul>
@@ -403,9 +399,9 @@
         ];
         const comparativoCtx = document.getElementById('comparativoChart').getContext('2d');
 
-        
+
         // Gerar cores aleatórias para o gráfico de pizza
-       
+
         new Chart(comparativoCtx, {
             type: 'pie',
             data: {
