@@ -103,3 +103,16 @@ button:hover {
 .btn-agendar:hover {
     background-color: #0056b3;
 }
+
+
+.logo{
+    width: 100px;
+    height: 100px;
+}
+
+.tiulo{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
