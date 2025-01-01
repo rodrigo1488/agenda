@@ -8,4 +8,4 @@ services:
     envVars:  # Configuração de variáveis de ambiente
       - key: FLASK_ENV
         value: production  # Define o ambiente como produção
-    runtime: python3.9  # Versão do Python especificada corretamente
+    runtime: 3.13.1  # Versão do Python especificada corretamente
