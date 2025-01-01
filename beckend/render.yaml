@@ -1,11 +1,13 @@
+rootDirectory: backend  # Define o diretório onde o Render deve procurar o código
+
 services:
-  - type: web  # Define que é um serviço web
-    name: agenda-flask  # Nome do serviço
-    env: python  # Ambiente de execução
-    buildCommand: ""  # Não há comando de build necessário para Flask
-    startCommand: gunicorn -b 0.0.0.0:$PORT main:app  # Comando para iniciar a aplicação
-    autoDeploy: true  # Permite que o serviço seja atualizado automaticamente após novos commits
-    envVars:  # Configuração de variáveis de ambiente
+  - type: web
+    name: agenda-flask
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn -b 0.0.0.0:$PORT main:app  # A aplicação 'app' é no arquivo 'main.py' dentro de 'backend'
+    autoDeploy: true
+    envVars:
       - key: FLASK_ENV
-        value: production  # Define o ambiente como produção
-    runtime: 3.13.1  # Versão do Python especificada corretamente
+        value: production
+    runtime: python3.9
