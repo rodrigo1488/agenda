@@ -65,10 +65,11 @@ def agendar_cliente():
 
 @agendamento_bp.route('/api/empresas', methods=['GET'])
 def listar_empresas():
-    # Retorna a lista de empresas disponíveis
-    response = supabase.table("empresa").select("id, nome_empresa").execute()
+    # Retorna a lista de empresas disponíveis, incluindo o campo "logo"
+    response = supabase.table("empresa").select("id, nome_empresa, logo,descricao").execute()
     
     return jsonify(response.data), 200
+
 
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
 def listar_usuarios(empresa_id):

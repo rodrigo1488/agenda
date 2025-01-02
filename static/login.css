@@ -28,3 +28,11 @@ body {
     display: none;
     margin-top: 20px;
 }
+
+@media screen and (max-width: 768px) {
+    .logo{
+     width: 200px;
+     height: 100px;}
+    
+    
+}

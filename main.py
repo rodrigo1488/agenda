@@ -32,4 +32,4 @@ def inicio():
 
 # A função abaixo não será usada no Render, pois o Gunicorn será responsável pela execução
 if __name__ == '__main__':
-     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Remover ou comentar
+     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)),debug=True)  # Remover ou comentar

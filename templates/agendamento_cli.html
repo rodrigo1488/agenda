@@ -12,6 +12,7 @@
 </head>
 <body>
     <div class="titulo">
+        
 
     <h4>Selecione uma empresa para agendar um serviço</h4>
 </div>
@@ -61,8 +62,12 @@
                 // Acesse o nome correto da empresa: empresa.nome_empresa
                 item.innerHTML = `
                     <div class="card-body">
+                        <img src="${empresa.logo}" alt="Logo" class="logo">
+                        <div class="card-text">
                         <h3 class="card-title">${empresa.nome_empresa}</h3>
+                        <p class="card-text">${empresa.descricao}</p>
                         <button class="btn-agendar" onclick="abrirModalAgendamento(${empresa.id})">Agendar</button>
+                        </div>
                     </div>
                 `;
     

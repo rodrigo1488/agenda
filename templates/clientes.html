@@ -11,26 +11,12 @@
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/users.css">
 </head>
-<!-- <style>
-    /* Estilos para a caixa de rolagem */
-    .tabela-scroll {
-        max-height: 400px;  /* Define a altura máxima */
-        overflow-y: auto;   /* Adiciona a rolagem vertical */
-    }
 
-    /* Estilos para fixar o cabeçalho da tabela */
-    .tabela-scroll thead {
-        position: sticky;
-        top: 0;
-        background-color: #343a40; /* Cor de fundo para o cabeçalho */
-        z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
-    }
-</style> -->
 
 <body>
     <div class="d-flex">
         <!-- Menu Lateral -->
-         
+      
         <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
             <ul class="nav flex-column mt-4">
                 <img src="/static/logo.png" id="logo" alt="">
@@ -56,6 +42,7 @@
             </ul>
         </nav>
         <!-- Conteúdo Principal -->
+        <a href="/agenda" class="bi bi-arrow-left-square-fill" id="btnVoltar" style="display: none;" ></a>
         <div class="container mt-4">
             <!-- Botão para exibir o formulário -->
             <button id="btnCriarCliente" class="btn btn-primary mb-4" onclick="exibirFormulario()">CRIAR CLIENTE</button>
