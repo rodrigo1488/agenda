@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <option value="Outro">sem custo</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success">finaliar</button>
+                <button type="submit" class="btn btn-success">finalizar</button>
             </form>
         `;
 
