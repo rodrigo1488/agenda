@@ -11,3 +11,19 @@
         background-color: #343a40; /* Cor de fundo para o cabeçalho */
         z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
     }
+
+
+    /* Estilo para dispositivos móveis */
+@media (max-width: 768px) {
+    #btnVoltar {
+        margin-left: 2%;
+        display: block;
+    }
+}
+
+/* Estilo para dispositivos maiores (desktop) */
+@media (min-width: 769px) {
+    #btnVoltar {
+        display: none;
+    }
+}

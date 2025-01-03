@@ -67,9 +67,9 @@ def agendar_cliente():
 def listar_empresas():
     # Retorna a lista de empresas disponíveis, incluindo o campo "logo"
     response = supabase.table("empresa").select("id, nome_empresa, logo,descricao").execute()
-    
-    return jsonify(response.data), 200
 
+   
+    return jsonify(response.data), 200
 
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
 def listar_usuarios(empresa_id):
@@ -85,17 +85,64 @@ def listar_servicos(empresa_id):
     
     return jsonify(response.data), 200
 
-@agendamento_bp.route('/api/checagem-horario/<int:usuario_id>/<string:data>/<string:horario>', methods=['GET'])
-def checar_horario(usuario_id, data, horario):
-    # Verifica se um horário específico já está agendado para um usuário
-    response = supabase.table("agenda").select("*").eq("usuario_id", usuario_id).eq("data", data).eq("horario", horario).execute()
-    
-    if response.data:
-        return jsonify({"exists": True}), 200
-    else:
-        return jsonify({"exists": False}), 200
 
 @agendamento_bp.route('/agendamento', methods=['GET'])
 def pagina_agendamento():
     # Renderiza a página HTML para o agendamento
     return render_template('agendamento_cli.html')
+
+
+
+@agendamento_bp.route('/api/agenda/data', methods=['GET'])
+def listar_horarios_disponiveis():
+    usuario_id = request.args.get('usuario_id')
+    data = request.args.get('data')
+
+    if not usuario_id or not data:
+        return jsonify({"error": "Os parâmetros 'usuario_id' e 'data' são obrigatórios."}), 400
+
+    # Definindo horários de funcionamento
+    horarios_funcionamento = [
+        f"{hora:02}:{minuto:02}" for hora in range(8, 18) for minuto in (0, 30)
+    ]
+
+    # Buscar agendamentos já ocupados
+    response_agenda = supabase.table("agenda").select(
+        "horario, servico_id"
+    ).eq("usuario_id", usuario_id).eq("data", data).neq("status", "finalizado").execute()
+
+    if not response_agenda.data:
+        response_agenda.data = []
+
+    # Buscar tempos de duração dos serviços
+    response_servicos = supabase.table("servicos").select("id, tempo").execute()
+    servicos = {item["id"]: int(item["tempo"]) for item in response_servicos.data}
+
+    # Processar horários ocupados
+    horarios_ocupados = set()
+    for agendamento in response_agenda.data:
+        horario_inicio = agendamento["horario"]
+        servico_id = agendamento["servico_id"]
+        duracao_minutos = servicos.get(servico_id, 60)
+
+        # Ajustar para aceitar formatos HH:mm e HH:mm:ss
+        try:
+            hora, minuto = map(int, horario_inicio.split(":")[:2])  # Ignora os segundos, se existirem
+        except ValueError:
+            print(f"Erro ao processar horário: {horario_inicio}")
+            continue
+
+        minutos_totais = hora * 60 + minuto
+        for i in range(0, duracao_minutos, 30):
+            minutos_ocupados = minutos_totais + i
+            hora_ocupada = minutos_ocupados // 60
+            minuto_ocupado = minutos_ocupados % 60
+            horarios_ocupados.add(f"{hora_ocupada:02}:{minuto_ocupado:02}")
+
+    # Calcular horários disponíveis
+    horarios_disponiveis = [
+        horario for horario in horarios_funcionamento if horario not in horarios_ocupados
+    ]
+
+    print("Horários Disponíveis:", horarios_disponiveis)
+    return jsonify({"horarios_disponiveis": horarios_disponiveis}), 200

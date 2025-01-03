@@ -117,6 +117,22 @@ button:hover {
     height: 100px;
 }
 
+
+.fechar-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 30px;
+    color: #000;
+    cursor: pointer;
+}
+
+.fechar-modal-btn i {
+    pointer-events: none;
+}
+
 @media screen and (max-width: 768px) {
     #empresas-lista {
         align-items: center;

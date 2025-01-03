@@ -104,9 +104,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <option value="Cartão de Débito">Cartão de Débito</option>
                         <option value="Dinheiro">Dinheiro</option>
                         <option value="Pix">Pix</option>
+                        <option value="Outro">sem custo</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success">Confirmar Pagamento</button>
+                <button type="submit" class="btn btn-success">finaliar</button>
             </form>
         `;
 
