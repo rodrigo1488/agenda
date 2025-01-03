@@ -17,6 +17,8 @@ h1 {
 
 
 #modal-agendamento {
+    border: solid 1px grey;
+
     position: fixed;
     top: 50%;
     left: 50%;
@@ -24,7 +26,7 @@ h1 {
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 10px #fff(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
     width: 90%;
     max-width: 400px;
 }

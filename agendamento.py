@@ -62,13 +62,24 @@ def agendar_cliente():
         return jsonify({"message": "Agendamento realizado com sucesso!"}), 201
     else:
         return jsonify({"error": "Erro ao criar agendamento"}), 500
+    
 
+#lista as empresas ativas
 @agendamento_bp.route('/api/empresas', methods=['GET'])
 def listar_empresas():
-    # Retorna a lista de empresas disponíveis, incluindo o campo "logo"
-    response = supabase.table("empresa").select("id, nome_empresa, logo,descricao").execute()
+    # Recebe o nome da empresa como parâmetro de consulta
+    nome_empresa = request.args.get('nome_empresa', None)
 
-   
+    # Consulta a tabela "empresa" filtrando para retornar apenas empresas com status = true
+    query = supabase.table("empresa").select("id, nome_empresa, logo, descricao").eq("status", True)
+
+    if nome_empresa:
+        # Filtro por nome da empresa, verificando se o nome contém o valor solicitado
+        query = query.ilike("nome_empresa", f"%{nome_empresa}%")
+    
+    # Executa a consulta filtrada
+    response = query.execute()
+
     return jsonify(response.data), 200
 
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
