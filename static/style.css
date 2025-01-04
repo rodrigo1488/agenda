@@ -187,16 +187,7 @@ h3 {
     display: block; /* Exibe o botão apenas em telas menores */
   }
 
-  /* Conteúdo principal após a alternância do menu */
-  #main-content {
-    margin-left: 0;
-    transition: margin-left 0.3s ease;
-  }
-
-  /* Ajuste na área do calendário */
-  .calendar-container {
-    margin-top: 20px; /* Evita que o conteúdo fique colado no topo */
-  }
+  /* Conteúdo principal após a alternância do menu *
 
   /* Ajuste no modal de agendamento */
   .modal-dialog {
