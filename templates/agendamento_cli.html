@@ -31,7 +31,7 @@
             </select>
             <input id="data-input" type="date" name="data" required />
             <div id="horarios-disponiveis" class="horarios-container">
-            
+
             </div>
             <div id="horario-selecionado"></div>
             <textarea name="descricao" placeholder="Descrição (opcional)"></textarea>
@@ -131,7 +131,8 @@
                 servicos.forEach(servico => {
                     const option = document.createElement('option');
                     option.value = servico.id;
-                    option.textContent = servico.nome_servico;
+                    // Concatenando nome e preço
+                    option.textContent = `${servico.nome_servico} - R$ ${servico.preco.toFixed(2)}`;
                     selectServicos.appendChild(option);
                 });
             } catch (error) {

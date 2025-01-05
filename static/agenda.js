@@ -24,6 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
+
+        buttonText: {
+            today: 'Hoje',
+            month: 'Mês',
+            week: 'Semana',
+            day: 'Dia'
+        },
         events: async function (fetchInfo, successCallback, failureCallback) {
             try {
                 const data = await fetchData('/agenda/data');
@@ -85,47 +92,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 const today = now.toISOString().split('T')[0];
                 filteredAppointments = data.filter(event => event.data === today);
             } else if (view === 'week') {
-                const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
-                const weekEnd = new Date(now.setDate(now.getDate() + 6));
+                const weekStart = new Date(now);
+                weekStart.setDate(now.getDate() - now.getDay());
+                weekStart.setHours(0, 0, 0, 0);
+
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekStart.getDate() + 6);
+
                 filteredAppointments = data.filter(event => {
-                    const eventDate = new Date(event.data);
+                    const eventDate = new Date(event.data + 'T00:00:00');
                     return eventDate >= weekStart && eventDate <= weekEnd;
                 });
             } else if (view === 'month') {
                 const month = now.getMonth();
                 filteredAppointments = data.filter(event => {
-                    const eventDate = new Date(event.data);
+                    const eventDate = new Date(event.data + 'T00:00:00');
                     return eventDate.getMonth() === month && eventDate.getFullYear() === now.getFullYear();
                 });
             }
-            appointmentList.innerHTML = filteredAppointments.map(event => `
-                <li class="appointment-item">
-                    <div class="appointment-details">
-                        <strong>${event.cliente_nome}</strong> - ${event.servico_nome} <br>
-                        <span>${new Date(event.data).toLocaleDateString()} às ${event.horario}</span>
-                        <div class="bot">
-                        <button class="btn btn-danger btn-cancelar" data-id="${event.id}">Cancelar</button>
-                        <button class="btn btn-success btn-finalizar" data-id="${event.id}">Finalizar</button>
-                        </div>
-                    </div>
-                </li>
-            `).join('');
-            
-            // Adiciona os eventos de clique para cada botão após a renderização
+            // Atualiza o HTML da lista de agendamentos com os eventos filtrados.
+            appointmentList.innerHTML = filteredAppointments.map(event => {
+                const eventDate = new Date(event.data + 'T00:00:00');
+                const isPast = eventDate < now; // Verifica se a data do evento é anterior à data atual.
+                return `
+        <li class="appointment-item" style="background-color: ${isPast ? 'red' : 'transparent'}; color: ${isPast ? 'white' : 'black'};">
+            <div class="appointment-details">
+                <strong>${event.cliente_nome}</strong> - ${event.servico_nome} <br>
+                <span>${eventDate.toLocaleDateString()} às ${event.horario}</span>
+                <div class="bot">
+                    <button class="btn btn-danger btn-cancelar" data-id="${event.id}">Cancelar</button>
+                    <button class="btn btn-success btn-finalizar" data-id="${event.id}">Finalizar</button>
+                </div>
+            </div>
+        </li>
+    `;
+            }).join('');
+
+
             document.querySelectorAll('.btn-cancelar').forEach(button => {
                 button.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     cancelarAgendamento(id);
                 });
             });
-            
+
             document.querySelectorAll('.btn-finalizar').forEach(button => {
                 button.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     mostrarModalPagamento(id);
                 });
             });
-            
+
         } catch (error) {
             console.error('Erro ao renderizar os agendamentos:', error);
         }
@@ -135,10 +152,10 @@ document.addEventListener('DOMContentLoaded', function () {
         renderAppointments(filter.value);
     });
 
-    // Inicializa com a visão de dia
     renderAppointments('day');
     calendar.render();
 });
+
 
 
 function mostrarDetalhesAgendamento(event) {
