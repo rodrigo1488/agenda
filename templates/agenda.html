@@ -21,7 +21,7 @@
 
         <!-- Menu Lateral -->
         <div id="menu-container"></div>
-        <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
+        <!-- <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
             <ul class="nav flex-column mt-4">
                 <img src="/static/logo.png" id="logo" alt="">
                 <li class="nav-item mb-3">
@@ -44,7 +44,7 @@
                             class="bi bi-arrow-90deg-up"></i> sair</a>
                 </li>
             </ul>
-        </nav>
+        </nav> -->
 
         <!-- Conteúdo Principal -->
         <div class="container mt-4 flex-grow-1">
@@ -172,6 +172,11 @@
     <!-- Biblioteca FullCalendar -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <!-- JS Personalizado -->
+    <script src="static/menu.js"></script>
+    <script>
+        renderMenu('menu-container');
+    </script>
+    
     <script src="static/agenda.js"></script>
 
     <script>
