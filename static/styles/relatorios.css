@@ -1,14 +1,13 @@
-/* General Reset */
+/* Mantém o scroll desativado em telas grandes */
 body, html {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', Arial, sans-serif;
-    background-color: #f4f5f7;  /* Manter a cor do fundo como a original */
+    background-color: #f4f5f7;
     color: #333;
-    height: 100%;  /* Garantir que o body ocupe toda a altura da tela */
-    overflow: hidden;  /* Impede o scroll na página inteira */
+    height: 100%;
+    overflow: hidden;  /* Desativa o scroll em resoluções maiores */
 }
-
 /* Container principal para o conteúdo interno */
 .main-content {
     height: 100%;  /* Ocupa toda a altura */
@@ -109,10 +108,19 @@ table td {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 768px){
+
+    body, html {
+        overflow: auto;  /* Ativa o scroll para resoluções menores */
+    }
     .title {
         font-size: 2.5rem;
     }
+    .main-content {
+        height: auto;  /* Permite que o conteúdo interno se ajuste */
+        overflow-y: auto;  /* Mantém o scroll no conteúdo */
+    }
+
 
     .subtitle {
         font-size: 1.2rem;
