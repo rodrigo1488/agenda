@@ -9,7 +9,7 @@ function renderMenu(containerId) {
     container.innerHTML = `
         <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
             <ul class="nav flex-column mt-4">
-                <img src="/static/logo.png" id="logo" alt="">
+                <img src="/static/img/logo.png" id="logo" alt="">
                 <li class="nav-item mb-3">
                     <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
                 </li>
