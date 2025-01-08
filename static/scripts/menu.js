@@ -1,16 +1,19 @@
 function renderMenu(containerId) {
+    const loading = document.getElementById('loading');
+    loading.style.display = 'flex'; // Exibe a tela de carregamento
+
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Container com o ID "${containerId}" não encontrado.`);
+        loading.style.display = 'none'; // Remove a tela de carregamento em caso de erro
         return;
     }
 
-    // Supondo que as informações da empresa estejam armazenadas na sessão, recuperadas via uma requisição:
     fetch('/api/empresa/logada')
         .then(response => response.json())
         .then(data => {
-            const logo = data.logo || '/static/img/logo.png'; // Logo padrão caso a logo não seja encontrada
-            const corEmpresa = data.cor_emp || '#343a40'; // Cor padrão caso a cor não seja encontrada
+            const logo = data.logo || '/static/img/logo.png';
+            const corEmpresa = data.cor_emp || '#343a40';
 
             container.innerHTML = `
                 <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh; background-color: ${corEmpresa};">
@@ -47,8 +50,10 @@ function renderMenu(containerId) {
                 console.error('Toggle button ou menu lateral não encontrado.');
             }
         })
-
         .catch(error => {
             console.error('Erro ao carregar dados da empresa:', error);
+        })
+        .finally(() => {
+            loading.style.display = 'none'; // Oculta a tela de carregamento após o carregamento
         });
 }
