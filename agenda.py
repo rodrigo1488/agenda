@@ -26,6 +26,26 @@ def verificar_login():
 def obter_id_empresa():
     return session.get('empresa_id')
 
+@agenda_bp.route('/api/empresa/logada', methods=['GET'])
+def obter_dados_empresa_logada():
+    verificar_login()  # Verifica se o usuário está logado
+    empresa_id = obter_id_empresa()  # Obtém o ID da empresa logada
+    
+    if not empresa_id:
+        return jsonify({"erro": "Empresa não encontrada na sessão"}), 401
+
+    # Consulta a tabela para obter os dados da empresa logada
+    response = supabase.table("empresa").select("logo, cor_emp").eq("id", empresa_id).execute()
+
+    if response.data:
+        empresa = response.data[0]
+        return jsonify({
+            "logo": empresa.get("logo", "/static/img/logo.png"),
+            "cor_emp": empresa.get("cor_emp", "#343a40")
+        }), 200
+    else:
+        return jsonify({"erro": "Dados da empresa não encontrados"}), 404
+
 # Função para enviar e-mails
 def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
     try:
