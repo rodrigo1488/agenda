@@ -37,7 +37,17 @@ function renderMenu(containerId) {
                     </ul>
                 </nav>
             `;
+            const toggleMenu = document.getElementById('toggle-menu');
+            const menuLateral = document.getElementById('menu-lateral');
+            if (toggleMenu && menuLateral) {
+                toggleMenu.addEventListener('click', () => {
+                    menuLateral.classList.toggle('open');
+                });
+            } else {
+                console.error('Toggle button ou menu lateral não encontrado.');
+            }
         })
+
         .catch(error => {
             console.error('Erro ao carregar dados da empresa:', error);
         });
