@@ -17,38 +17,17 @@
 <body>
     <div class="d-flex">
         <!-- Menu Lateral -->
-        <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh;">
-            <ul class="nav flex-column mt-4">
-                <img src="/static/logo.png" id="logo" alt="">
-                <li class="nav-item mb-3">
-                    <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="/clientes" class="nav-link text-white"><i class="bi bi-people"></i> Clientes</a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatorios</a>
-                </li>
-                <li class="nav-item mb-3">
-                    <a href="/login" class="nav-link text-white" ><i
-                            class="bi bi-arrow-90deg-up"></i> sair</a>
-                </li>
-            </ul>
-        </nav>
-
+        <div id="menu-container"></div>
         <!-- Conteúdo Principal -->
         <div class="container mt-4">
          </div>
             
     </div>
 
-   
+    <script src="static/menu.js"></script>
+    <script>
+        renderMenu('menu-container');
+    </script>
 </body>
 
 </html>

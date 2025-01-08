@@ -9,18 +9,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/static/agendamentos.css">
-
 </head>
 
 <body>
     <div class="titulo">
         <h4>Selecione uma empresa para agendar um serviço</h4>
     </div>
+
+    <!-- Campo de busca -->
+    <div class="mb-3">
+        <input id="search-bar" type="text" class="form-control" placeholder="Buscar empresa por nome">
+    </div>
+
     <div id="empresas-lista"></div>
+
     <!-- Modal de Agendamento -->
     <div id="modal-agendamento" style="display: none;">
         <button id="fechar-modal" class="fechar-modal-btn">
-            <i class="bi bi-x-circle"></i> <!-- Ícone de "X" do Bootstrap -->
+            <i class="bi bi-x-circle"></i>
         </button>
         <h2>Agendar um horario</h2>
         <form id="form-agendamento">
@@ -31,7 +37,6 @@
             </select>
             <input id="data-input" type="date" name="data" required />
             <div id="horarios-disponiveis" class="horarios-container">
-
             </div>
             <div id="horario-selecionado"></div>
             <textarea name="descricao" placeholder="Descrição (opcional)"></textarea>
@@ -44,12 +49,7 @@
     </div>
     <a href="/login" class="btn btn-secondary" style="margin-top: 5%;">voltar</a>
 
-
-
-
-
     <script>
-
         document.getElementById('fechar-modal').addEventListener('click', function () {
             document.getElementById('modal-agendamento').style.display = 'none';
         });
@@ -70,14 +70,15 @@
                 empresas.forEach(empresa => {
                     const item = document.createElement('div');
                     item.classList.add('card');
+                    item.dataset.nomeEmpresa = empresa.nome_empresa.toLowerCase();
 
                     item.innerHTML = `
                         <div class="card-body">
                             <img src="${empresa.logo}" alt="Logo" class="logo">
                             <div class="card-text">
-                            <h3 class="card-title">${empresa.nome_empresa}</h3>
-                            <p class="card-text">${empresa.descricao}</p>
-                            <button class="btn-agendar" onclick="abrirModalAgendamento(${empresa.id})">Agendar</button>
+                                <h3 class="card-title">${empresa.nome_empresa}</h3>
+                                <p class="card-text">${empresa.descricao}</p>
+                                <button class="btn-agendar" onclick="abrirModalAgendamento(${empresa.id})">Agendar</button>
                             </div>
                         </div>
                     `;
@@ -89,6 +90,22 @@
                 alert('Erro ao carregar empresas. Tente novamente mais tarde.');
             }
         }
+
+        document.getElementById('search-bar').addEventListener('input', function () {
+            const termoBusca = this.value.toLowerCase();
+            const empresas = document.querySelectorAll('#empresas-lista .card');
+
+            empresas.forEach(empresa => {
+                const nomeEmpresa = empresa.dataset.nomeEmpresa;
+                if (nomeEmpresa.includes(termoBusca)) {
+                    empresa.style.display = 'block';
+                } else {
+                    empresa.style.display = 'none';
+                }
+            });
+        });
+
+        carregarEmpresas();
 
         async function carregarFuncionarios(empresaId) {
             try {
@@ -131,7 +148,6 @@
                 servicos.forEach(servico => {
                     const option = document.createElement('option');
                     option.value = servico.id;
-                    // Concatenando nome e preço
                     option.textContent = `${servico.nome_servico} - R$ ${servico.preco.toFixed(2)}`;
                     selectServicos.appendChild(option);
                 });
@@ -181,7 +197,6 @@
             const horarioSelecionado = document.getElementById('horario-selecionado');
             horarioSelecionado.textContent = `Horário selecionado: ${horario}`;
 
-            // Oculta os outros botões de horários
             const containerHorarios = document.getElementById('horarios-disponiveis');
             const botoes = containerHorarios.querySelectorAll('button');
             botoes.forEach(botao => {
@@ -190,7 +205,6 @@
                 }
             });
 
-            // Apenas atualiza o valor do horário no formulário (não envia o agendamento)
             const form = document.getElementById('form-agendamento');
             let inputHorario = form.querySelector('input[name="horario"]');
 
@@ -209,7 +223,6 @@
             carregarServicos(empresaId);
             document.getElementById('modal-agendamento').style.display = 'block';
         }
-
 
         document.getElementById('form-agendamento').onsubmit = async function (e) {
             e.preventDefault();
@@ -230,10 +243,7 @@
 
         document.getElementById('data-input').addEventListener('change', carregarHorariosDisponiveis);
         document.getElementById('profissional-select').addEventListener('change', carregarHorariosDisponiveis);
-
-        carregarEmpresas();
     </script>
-
 </body>
 
 </html>
