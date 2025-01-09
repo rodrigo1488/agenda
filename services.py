@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash
 from supabase import create_client
 import os
 
@@ -15,7 +15,7 @@ services_bp = Blueprint('services', __name__)
 
 # Função de verificação de login
 def verificar_login():
-    if 'user_id' not in session or 'empresa_id' not in session:
+    if 'user_id' not in request.cookies or 'empresa_id' not in request.cookies:
         flash('Você precisa estar logado para acessar essa página.', 'danger')
         return redirect(url_for('login.login'))  # Redireciona para a página de login
     return None
@@ -34,7 +34,7 @@ def index():
 # Função para buscar serviços
 def get_services(search_query=None):
     try:
-        empresa_id = session['empresa_id']  # Pega a empresa logada da sessão
+        empresa_id = request.cookies.get('empresa_id')  # Pega a empresa logada do cookie
         if search_query:
             response = (supabase.table('servicos')
                         .select('*')
@@ -63,12 +63,13 @@ def add_service():
         preco = float(request.form['preco'])
         tempo = int(request.form['tempo'])
 
-        # Adiciona o id_empresa associado à sessão
+        # Adiciona o id_empresa do cookie
+        empresa_id = request.cookies.get('empresa_id')
         supabase.table('servicos').insert([{
             'nome_servico': nome_servico,
             'preco': preco,
             'tempo': tempo,
-            'id_empresa': session['empresa_id']  # Associa o serviço à empresa logada
+            'id_empresa': empresa_id  # Associa o serviço à empresa logada
         }]).execute()
     except Exception as e:
         print(f"Erro ao adicionar serviço: {e}")
@@ -84,7 +85,8 @@ def excluir_servico(service_id):
 
     try:
         # Exclui apenas se o serviço pertence à empresa logada
-        supabase.table('servicos').delete().eq('id', service_id).eq('id_empresa', session['empresa_id']).execute()
+        empresa_id = request.cookies.get('empresa_id')
+        supabase.table('servicos').delete().eq('id', service_id).eq('id_empresa', empresa_id).execute()
     except Exception as e:
         print(f"Erro ao excluir serviço: {e}")
         flash('Erro ao excluir serviço. Tente novamente.', 'danger')

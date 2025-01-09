@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from supabase import create_client, Client
 import os
 
@@ -15,7 +15,7 @@ users_bp = Blueprint('users', __name__)
 
 # Função para verificar se o usuário está logado
 def verificar_login():
-    if 'user_id' not in session or 'empresa_id' not in session:
+    if 'user_id' not in request.cookies or 'empresa_id' not in request.cookies:
         flash('Você precisa estar logado para acessar essa página.', 'danger')
         return redirect(url_for('login.login'))  # Redireciona para a página de login
     return None
@@ -37,13 +37,13 @@ def gerenciar_usuarios():
             return render_template('usuarios.html', error="Todos os campos são obrigatórios.")
 
         try:
-            # Cadastra usuário com a id_empresa associada à sessão
+            # Cadastra usuário com a id_empresa associada ao cookie
             supabase.table('usuarios').insert({
                 'nome_usuario': nome_usuario,
                 'email': email,
                 'telefone': telefone,
                 'senha': senha,
-                'id_empresa': session['empresa_id']  # Associa o usuário à empresa logada
+                'id_empresa': request.cookies.get('empresa_id')  # Associa o usuário à empresa logada
             }).execute()
 
             return redirect(url_for('users.gerenciar_usuarios'))
@@ -59,14 +59,14 @@ def gerenciar_usuarios():
             # Filtra usuários pelo nome e pela empresa logada
             response = (supabase.table('usuarios')
                         .select('*')
-                        .eq('id_empresa', session['empresa_id'])
+                        .eq('id_empresa', request.cookies.get('empresa_id'))
                         .ilike('nome_usuario', f'%{search_query}%')
                         .execute())
         else:
             # Lista todos os usuários da empresa logada
             response = (supabase.table('usuarios')
                         .select('*')
-                        .eq('id_empresa', session['empresa_id'])
+                        .eq('id_empresa', request.cookies.get('empresa_id'))
                         .execute())
 
         usuarios = response.data
@@ -95,7 +95,7 @@ def editar_usuario():
             'nome_usuario': nome_usuario,
             'email': email,
             'telefone': telefone
-        }).eq('id', id_usuario).eq('id_empresa', session['empresa_id']).execute()
+        }).eq('id', id_usuario).eq('id_empresa', request.cookies.get('empresa_id')).execute()
 
         return redirect(url_for('users.gerenciar_usuarios'))
     except Exception as e:
@@ -110,7 +110,7 @@ def excluir_usuario(id_usuario):
 
     try:
         # Exclui apenas se o usuário pertence à empresa logada
-        supabase.table('usuarios').delete().eq('id', id_usuario).eq('id_empresa', session['empresa_id']).execute()
+        supabase.table('usuarios').delete().eq('id', id_usuario).eq('id_empresa', request.cookies.get('empresa_id')).execute()
 
         return redirect(url_for('users.gerenciar_usuarios'))
     except Exception as e:

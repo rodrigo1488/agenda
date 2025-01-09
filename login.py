@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from datetime import timedelta
+from flask import Blueprint, render_template, request, redirect, url_for, flash, make_response
 from supabase import create_client
 import os
 
@@ -15,8 +16,8 @@ login_bp = Blueprint('login', __name__)
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        empresa = request.form.get('empresa').strip().upper()  # Converte para maiúsculas
-        usuario = request.form.get('usuario').strip().upper()  # Converte para maiúsculas
+        empresa = request.form.get('empresa').strip().upper()
+        usuario = request.form.get('usuario').strip().upper()
         senha = request.form.get('senha').strip()
 
         try:
@@ -35,13 +36,14 @@ def login():
                 flash('Usuário ou senha inválidos.', 'danger')
                 return redirect(url_for('login.login'))
 
-            # Armazena os dados do usuário na sessão
-            session['user_id'] = usuario_data.data['id']
-            session['user_name'] = usuario_data.data['nome_usuario']
-            session['empresa_id'] = id_empresa
+            # Armazena os dados no cookie, validando para expirar em um certo tempo (ex: 30 dias)
+            resp = make_response(redirect(url_for('agenda_bp.renderizar_agenda')))
+            resp.set_cookie('user_id', str(usuario_data.data['id']), max_age=timedelta(days=30))
+            resp.set_cookie('user_name', usuario_data.data['nome_usuario'], max_age=timedelta(days=30))
+            resp.set_cookie('empresa_id', str(id_empresa), max_age=timedelta(days=30))
 
-            # Login bem-sucedido, redireciona para a página da agenda
-            return redirect(url_for('agenda_bp.renderizar_agenda'))  # Corrigido para usar o blueprint correto
+            # Login bem-sucedido
+            return resp
 
         except Exception as e:
             flash(f'Erro ao realizar login: {str(e)}', 'danger')
@@ -49,9 +51,25 @@ def login():
 
     return render_template('login.html')
 
-# Adicione uma rota de logout
 @login_bp.route('/logout')
 def logout():
-    session.clear()  # Limpa os dados da sessão
+    resp = make_response(redirect(url_for('login.login')))
+    resp.delete_cookie('user_id')  # Remove o cookie user_id
+    resp.delete_cookie('user_name')  # Remove o cookie user_name
+    resp.delete_cookie('empresa_id')  # Remove o cookie empresa_id
     flash('Você foi desconectado com sucesso!', 'success')
-    return redirect(url_for('login.login'))
+    return resp
+
+
+@login_bp.route('/verificar-cookies')
+def verificar_cookies():
+    # Verifica se os cookies estão sendo enviados corretamente
+    user_id = request.cookies.get('user_id')
+    user_name = request.cookies.get('user_name')
+    empresa_id = request.cookies.get('empresa_id')
+
+    # Retorna uma mensagem com os valores dos cookies
+    if user_id and user_name and empresa_id:
+        return f'Cookies armazenados com sucesso: user_id={user_id}, user_name={user_name}, empresa_id={empresa_id}'
+    else:
+        return 'Cookies não encontrados.'

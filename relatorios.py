@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, flash
 from supabase import create_client
 import os
 
@@ -14,10 +14,11 @@ relatorios_bp = Blueprint('relatorios', __name__)
 def verificar_login():
     """
     Verifica se o usuário está logado.
-    Redireciona para a página de login caso os dados de sessão estejam ausentes.
+    Redireciona para a página de login caso os cookies estejam ausentes.
     """
-    if 'user_id' not in session or 'empresa_id' not in session:
-        return redirect(url_for('login.login'))  # Redireciona para o login se não estiver autenticado
+    if not request.cookies.get('user_id') or not request.cookies.get('empresa_id'):
+        flash('Você precisa estar logado para acessar esta página.', 'danger')
+        return redirect(url_for('login.login'))
     return None
 
 @relatorios_bp.route('/relatorios', methods=['GET'])
@@ -26,9 +27,9 @@ def relatorios():
     if redirecionar:
         return redirecionar
 
-    empresa_id = session.get('empresa_id')
+    empresa_id = request.cookies.get('empresa_id')
     if not empresa_id:
-        return jsonify({"erro": "Empresa não identificada na sessão."}), 403
+        return jsonify({"erro": "Empresa não identificada nos cookies."}), 403
 
     data_inicio = request.args.get('data_inicio')
     data_fim = request.args.get('data_fim')
@@ -44,8 +45,8 @@ def relatorios():
 
         agenda_response = query_agenda.execute()
         if not agenda_response.data:
-            return 
-        
+            return jsonify({"erro": "Nenhum dado encontrado na tabela 'agenda'."}), 404
+
         agenda = agenda_response.data
 
         query_finalizados = supabase.table('finalizados').select("*").eq('id_empresa', empresa_id)
@@ -103,7 +104,7 @@ def relatorios():
             'relatorios.html',
             financeiro=financeiro,
             atendimentos=atendimentos_por_usuario,
-            financeiro_usuario=financeiro_usuario,  # Inclui dados de financeiro por usuário
+            financeiro_usuario=financeiro_usuario,
             filtros={
                 'data_inicio': data_inicio,
                 'data_fim': data_fim,
@@ -121,9 +122,9 @@ def listar_usuarios():
     if redirecionar:
         return redirecionar
 
-    empresa_id = session.get('empresa_id')
+    empresa_id = request.cookies.get('empresa_id')
     if not empresa_id:
-        return jsonify({"erro": "Empresa não identificada na sessão."}), 403
+        return jsonify({"erro": "Empresa não identificada nos cookies."}), 403
 
     try:
         response = supabase.table("usuarios").select("id, nome_usuario").eq("id_empresa", empresa_id).execute()

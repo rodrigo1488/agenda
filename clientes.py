@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from supabase import create_client
 import os
 
@@ -15,7 +15,7 @@ clientes_bp = Blueprint('clientes_bp', __name__)
 
 # Função de Verificação de Login
 def verificar_login():
-    if 'user_id' not in session or 'empresa_id' not in session:
+    if 'user_id' not in request.cookies or 'empresa_id' not in request.cookies:
         return redirect(url_for('login.login'))  # Redireciona para o login se não estiver autenticado
     return None
 
@@ -31,17 +31,19 @@ def clientes():
     error = request.args.get('error', '')  # Obtém mensagem de erro, se existir
     
     try:
-        # Filtra os clientes pela empresa associada na sessão
+        # Filtra os clientes pela empresa associada no cookie
+        empresa_id = request.cookies.get('empresa_id')
+
         if query:
             response = (supabase.table('clientes')
                         .select('*')
-                        .eq('id_empresa', session['empresa_id'])
+                        .eq('id_empresa', empresa_id)
                         .ilike('nome_cliente', f'%{query}%')
                         .execute())
         else:
             response = (supabase.table('clientes')
                         .select('*')
-                        .eq('id_empresa', session['empresa_id'])
+                        .eq('id_empresa', empresa_id)
                         .execute())
 
         clientes = response.data if response.data else []
@@ -63,12 +65,13 @@ def cadastrar_cliente():
     email = request.form['email']
 
     try:
-        # Insere o cliente com o id_empresa da sessão
+        # Insere o cliente com o id_empresa do cookie
+        empresa_id = request.cookies.get('empresa_id')
         supabase.table('clientes').insert([{
             'nome_cliente': nome_cliente,
             'telefone': telefone,
             'email': email,
-            'id_empresa': session['empresa_id']
+            'id_empresa': empresa_id
         }]).execute()
 
         return redirect(url_for('clientes_bp.clientes'))
@@ -87,10 +90,11 @@ def editar_cliente(id):
     if request.method == 'GET':
         try:
             # Busca o cliente pelo ID e filtra pela empresa
+            empresa_id = request.cookies.get('empresa_id')
             response = (supabase.table('clientes')
                         .select('*')
                         .eq('id', id)
-                        .eq('id_empresa', session['empresa_id'])
+                        .eq('id_empresa', empresa_id)
                         .execute())
             cliente = response.data[0] if response.data else None
 
@@ -109,11 +113,12 @@ def editar_cliente(id):
 
         try:
             # Atualiza o cliente apenas se pertence à empresa
+            empresa_id = request.cookies.get('empresa_id')
             supabase.table('clientes').update({
                 'nome_cliente': nome_cliente,
                 'telefone': telefone,
                 'email': email
-            }).eq('id', id).eq('id_empresa', session['empresa_id']).execute()
+            }).eq('id', id).eq('id_empresa', empresa_id).execute()
 
             return redirect(url_for('clientes_bp.clientes'))
         except Exception as e:
@@ -130,7 +135,8 @@ def excluir_cliente(id):
 
     try:
         # Remove o cliente apenas se pertence à empresa
-        supabase.table('clientes').delete().eq('id', id).eq('id_empresa', session['empresa_id']).execute()
+        empresa_id = request.cookies.get('empresa_id')
+        supabase.table('clientes').delete().eq('id', id).eq('id_empresa', empresa_id).execute()
 
         return redirect(url_for('clientes_bp.clientes'))
     except Exception as e:

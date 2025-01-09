@@ -16,23 +16,26 @@ supabase = create_client(supabase_url, supabase_key)
 # Criação do Blueprint
 agenda_bp = Blueprint('agenda_bp', __name__)
 
-# Validação de Login
 def verificar_login():
-    if 'user_id' not in session or 'empresa_id' not in session:
+    if not request.cookies.get('user_id') or not request.cookies.get('empresa_id'):
         return redirect(url_for('login.login'))  # Redireciona para a página de login se não estiver autenticado
     return None
+    
+# Validação de Login
+def obter_id_usuario():
+    return request.cookies.get('user_id')
 
-# Função para obter o ID da empresa da sessão
 def obter_id_empresa():
-    return session.get('empresa_id')
+    return request.cookies.get('empresa_id')
+
 
 @agenda_bp.route('/api/empresa/logada', methods=['GET'])
 def obter_dados_empresa_logada():
-    verificar_login()  # Verifica se o usuário está logado
-    empresa_id = obter_id_empresa()  # Obtém o ID da empresa logada
+    # Verifica se os cookies estão presentes
+    empresa_id = request.cookies.get('empresa_id')
     
     if not empresa_id:
-        return jsonify({"erro": "Empresa não encontrada na sessão"}), 401
+        return jsonify({"erro": "Empresa não encontrada nos cookies"}), 401
 
     # Consulta a tabela para obter os dados da empresa logada
     response = supabase.table("empresa").select("logo, cor_emp").eq("id", empresa_id).execute()
@@ -45,6 +48,7 @@ def obter_dados_empresa_logada():
         }), 200
     else:
         return jsonify({"erro": "Dados da empresa não encontrados"}), 404
+
 
 # Função para enviar e-mails
 def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
@@ -149,13 +153,13 @@ def agendar():
         return jsonify({"error": "Erro ao criar agendamento"}), 400
 
 
-# Função para obter o ID da empresa logada
+# Função para obter o ID do usuário a partir do cookie
 def obter_id_usuario():
-    return session.get('user_id')
+    return request.cookies.get('user_id')
 
-# Função para obter o ID da empresa logada
+# Função para obter o ID da empresa logada a partir do cookie
 def obter_id_empresa():
-    return session.get('empresa_id')
+    return request.cookies.get('empresa_id')
 
 # Rota para retornar JSON com agendamentos
 @agenda_bp.route('/agenda/data', methods=['GET'])
@@ -190,6 +194,8 @@ def listar_agendamentos():
     ]
 
     return jsonify(agendamentos), 200
+
+
 # Rota para retornar os clientes
 @agenda_bp.route('/api/clientes', methods=['GET'])
 def listar_clientes():
@@ -211,6 +217,7 @@ def listar_usuarios():
 
     response = supabase.table("usuarios").select("id, nome_usuario").eq("id_empresa", empresa_id).execute()
     return jsonify(response.data), 200
+
 
 # Rota para retornar os serviços
 @agenda_bp.route('/api/servicos', methods=['GET'])
@@ -238,20 +245,31 @@ def checar_horario(usuario_id, data, horario):
     else:
         return jsonify({"exists": False}), 200
 
+
+
 # Rota para renderizar a página HTML
 @agenda_bp.route('/agenda', methods=['GET'])
 def renderizar_agenda():
     if verificar_login():
         return verificar_login()
 
+    # Obter o ID da empresa e do usuário diretamente dos cookies
+    empresa_id = obter_id_empresa()
+    usuario_id = obter_id_usuario()
+
+    if not empresa_id or not usuario_id:
+        return redirect(url_for('login.login'))
+
     return render_template('agenda.html')
+
 
 @agenda_bp.route('/api/agendamento/<int:id>', methods=['DELETE'])
 def cancelar_agendamento(id):
     if verificar_login():
         return verificar_login()
 
-    empresa_id = session.get('empresa_id')  # Obter empresa logada
+    # Obter ID da empresa e usuário a partir dos cookies
+    empresa_id = obter_id_empresa()
 
     if not empresa_id:
         return jsonify({"error": "Empresa não encontrada na sessão."}), 401
