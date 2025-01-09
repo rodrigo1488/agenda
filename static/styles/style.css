@@ -186,7 +186,7 @@ h3 {
 
   /* Botão de alternância do menu */
   #toggle-menu {
-    position: fixed;
+  
     top: 20px;
     left: 20px;
     z-index: 1100;

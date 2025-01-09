@@ -15,13 +15,18 @@
 
 
 <body>
+    <button id="toggle-menu" class="d-block d-md-none"
+    style="background-color: transparent; border: none; font-size: 2rem; color: black; ;">
+    ☰
+</button>
     <div class="d-flex">
+       
         <!-- Menu Lateral -->
         <div id="menu-container"></div>
         <!-- Conteúdo Principal -->
         <div class="container mt-4">
             <div id="loading">Carregando...</div>
-            <a href="/agenda" class="bi bi-arrow-left-square-fill" id="btnVoltar"  style="background-color: transparent; border: none; font-size: 2rem; color: black;" ></a>
+          
             <div class="cadastro mb-4" style="display: none;">
                 <h3>Cadastro de Usuários</h3>
                 <form method="POST" action="/usuarios">

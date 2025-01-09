@@ -183,6 +183,10 @@ button:hover {
         display: none;
     }
 
+    #toggle-menu {
+        position: fixed;
+    }
+
     #list-container {
         display: block;
     }
