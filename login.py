@@ -46,7 +46,7 @@ def login():
             return resp
 
         except Exception as e:
-            flash(f'Erro ao realizar login: {str(e)}', 'danger')
+            flash(f'Usuário ou senha incorretos.', 'danger')
             return redirect(url_for('login.login'))
 
     return render_template('login.html')
