@@ -1,6 +1,10 @@
+
 from flask import Blueprint, jsonify, request, render_template
 from supabase import create_client
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # Configuração do Supabase
 supabase_url = 'https://gccxbkoejigwkqwyvcav.supabase.co'
@@ -12,6 +16,31 @@ supabase = create_client(supabase_url, supabase_key)
 
 # Criação do Blueprint
 agendamento_bp = Blueprint('agendamento_bp', __name__)
+
+# Função para enviar emails
+def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
+    try:
+        servidor_smtp = 'smtp.gmail.com'
+        porta_smtp = 587
+
+        # Configuração da mensagem
+        msg = MIMEMultipart()
+        msg['From'] = email_remetente
+        msg['To'] = destinatario
+        msg['Subject'] = assunto
+        msg.attach(MIMEText(mensagem, 'plain'))
+
+        # Envio do e-mail
+        with smtplib.SMTP(servidor_smtp, porta_smtp) as servidor:
+            servidor.starttls()
+            servidor.login(email_remetente, senha_remetente)
+            servidor.send_message(msg)
+
+        print("E-mail enviado com sucesso!")
+    except smtplib.SMTPAuthenticationError:
+        print("Erro de autenticação: verifique o e-mail e a senha fornecidos.")
+    except smtplib.SMTPException as e:
+        print(f"Erro ao enviar e-mail: {e}")
 
 @agendamento_bp.route('/api/agendar-cliente', methods=['POST'])
 def agendar_cliente():
@@ -59,10 +88,59 @@ def agendar_cliente():
     }).execute()
 
     if response.data:
-        return jsonify({"message": "Agendamento realizado com sucesso!"}), 201
+        empresa = supabase.table('empresa').select("email, senha_app").eq('id', id_empresa).execute().data[0]
+        cliente = supabase.table("clientes").select("email, nome_cliente").eq("id", cliente_id).execute().data[0]
+        usuario = supabase.table("usuarios").select("email, nome_usuario").eq("id", dados["usuario_id"]).execute().data[0]
+        servico = supabase.table("servicos").select("nome_servico").eq("id", dados["servico_id"]).execute().data[0]
+
+        nome_servico = servico["nome_servico"]
+        descricao = dados.get("descricao", "Sem descrição")  # Obtem a descrição ou usa um valor padrão
+
+        # Mensagem para o cliente
+        assunto_cliente = f"Confirmação de Agendamento - {cliente['nome_cliente']}"
+        mensagem_cliente = f"""
+        Olá {cliente['nome_cliente']},
+
+        Seu agendamento foi confirmado! Aqui estão os detalhes:
+
+        - **Serviço**: {nome_servico}
+        - **Data**: {dados['data']}
+        - **Horário**: {dados['horario']}
+        - **Profissional Responsável**: {usuario['nome_usuario']}
+        - **Descrição**: {descricao}
+
+        Em caso de dúvidas ou alterações no agendamento, entre em contato conosco.
+
+        Atenciosamente,
+        Equipe de Agendamento.
+        """
+
+        # Mensagem para o usuário
+        assunto_usuario = f"Novo Agendamento - {usuario['nome_usuario']}"
+        mensagem_usuario = f"""
+        Olá {usuario['nome_usuario']},
+
+        Você recebeu um novo agendamento! Confira os detalhes abaixo:
+
+        - **Serviço**: {nome_servico}
+        - **Data**: {dados['data']}
+        - **Horário**: {dados['horario']}
+        - **Cliente**: {cliente['nome_cliente']}
+        - **Descrição**: {descricao}
+
+        Lembre-se de verificar sua agenda regularmente para acompanhar todos os compromissos.
+
+        Atenciosamente,
+        Equipe de Agendamento.
+        """
+
+        # Enviar os e-mails
+        enviar_email(cliente['email'], assunto_cliente, mensagem_cliente, empresa['email'], empresa['senha_app'])
+        enviar_email(usuario['email'], assunto_usuario, mensagem_usuario, empresa['email'], empresa['senha_app'])
+
+        return jsonify({"message": "Agendamento realizado com sucesso"}), 201
     else:
-        return jsonify({"error": "Erro ao criar agendamento"}), 500
-    
+        return jsonify({"error": "Erro ao criar agendamento"}), 400
 
 #lista as empresas ativas
 @agendamento_bp.route('/api/empresas', methods=['GET'])
@@ -155,5 +233,28 @@ def listar_horarios_disponiveis():
         horario for horario in horarios_funcionamento if horario not in horarios_ocupados
     ]
 
-    print("Horários Disponíveis:", horarios_disponiveis)
     return jsonify({"horarios_disponiveis": horarios_disponiveis}), 200
+
+
+
+# Função para enviar e-mails
+def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
+    try:
+        servidor_smtp = 'smtp.gmail.com'
+        porta_smtp = 587
+
+        msg = MIMEMultipart()
+        msg['From'] = email_remetente
+        msg['To'] = destinatario
+        msg['Subject'] = assunto
+        msg.attach(MIMEText(mensagem, 'plain'))
+
+        servidor = smtplib.SMTP(servidor_smtp, porta_smtp)
+        servidor.starttls()
+        servidor.login(email_remetente, senha_remetente)
+        servidor.sendmail(email_remetente, destinatario, msg.as_string())
+        servidor.quit()
+
+        print("E-mail enviado com sucesso!")
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
