@@ -27,7 +27,8 @@ app.register_blueprint(agendamento_bp)
 
 @app.route("/")
 def inicio():
-    return redirect(url_for('login.login'))  # Redireciona para a página de login
+    return redirect(url_for('agenda_bp.renderizar_agenda'))
+
 
 
 # A função abaixo não será usada no Render, pois o Gunicorn será responsável pela execução
