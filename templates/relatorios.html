@@ -16,13 +16,14 @@
 </head>
 
 
-<body class="d-flex">
-    <div class="container mt-4">
-        <button id="toggle-menu" class="d-block d-md-none"
-        style="background-color: transparent; border: none; font-size: 2rem; color: black; ;">
-        ☰
-    </button>
+<body >
 
+    <div>
+        <button id="toggle-menu" class="d-block d-md-none"
+            style="background-color: transparent; border: none; font-size: 2rem; color: black; ;">
+            ☰
+        </button>
+    </div>
     <div class="d-flex" style="flex: 1; width: 100%;">
 
 
@@ -31,14 +32,14 @@
         
         <!-- Conteúdo Principal -->
         <div class="container mt-4">
-            <div id="loading">Carregando...</div>
-            
-           
-            <div class="text-center mb-4">
-                <h1 class="display-5">Dashboard de Relatórios</h1>
-                <p class="text-muted">Visualize informações importantes sobre sua operação.</p>
-            </div>
-
+            <div class="container mt-4">
+                
+                
+                <div class="text-center mb-4">
+                    <h1 class="display-5">Dashboard de Relatórios</h1>
+                    <p class="text-muted">Visualize informações importantes sobre sua operação.</p>
+                </div>
+                
                 <!-- Sub-Abas -->
                 <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -55,7 +56,7 @@
                         <a class="nav-link" id="graficos-tab" data-bs-toggle="tab" href="#graficos" role="tab">Gráficos</a>
                     </li>
                 </ul>
-
+                
                 <!-- Conteúdo das Sub-Abas -->
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="financeiro" role="tabpanel">
@@ -84,12 +85,13 @@
             </div>
         </div>
     </div>
+    <div id="loading">Carregando...</div>
     <script src="static/scripts/menu.js"></script>
     <script>
         renderMenu('menu-container');
-    </script>
+        </script>
     
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Variáveis para armazenar os dados passados pelo Flask
