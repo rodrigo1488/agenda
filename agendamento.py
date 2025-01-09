@@ -145,20 +145,29 @@ def agendar_cliente():
 #lista as empresas ativas
 @agendamento_bp.route('/api/empresas', methods=['GET'])
 def listar_empresas():
-    # Recebe o nome da empresa como parâmetro de consulta
-    nome_empresa = request.args.get('nome_empresa', None)
+    try:
+        nome_empresa = request.args.get('nome_empresa', '').strip()  # Captura o termo de busca, se presente
 
-    # Consulta a tabela "empresa" filtrando para retornar apenas empresas com status = true
-    query = supabase.table("empresa").select("id, nome_empresa, logo, descricao").eq("status", True)
+        # Cria a consulta para empresas ativas
+        query = supabase.table("empresa").select("id, nome_empresa, logo, descricao").eq("status", True)
 
-    if nome_empresa:
-        # Filtro por nome da empresa, verificando se o nome contém o valor solicitado
-        query = query.ilike("nome_empresa", f"%{nome_empresa}%")
-    
-    # Executa a consulta filtrada
-    response = query.execute()
+        if nome_empresa:
+            # Aplica o filtro se o termo de busca estiver presente
+            query = query.ilike("nome_empresa", f"%{nome_empresa}%")
 
-    return jsonify(response.data), 200
+        # Executa a consulta
+        response = query.execute()
+
+        # Verifica se a consulta retornou dados
+        if not response.data:
+            return jsonify([]), 200  # Retorna um array vazio se nenhuma empresa for encontrada
+
+        return jsonify(response.data), 200  # Retorna os dados das empresas encontradas
+
+    except Exception as e:
+        print(f"Erro ao buscar empresas: {e}")
+        return jsonify([]), 500  # Retorna erro em caso de exceção
+
 
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
 def listar_usuarios(empresa_id):

@@ -6,13 +6,39 @@ document.addEventListener('DOMContentLoaded', function () {
     esconderCarregamento(); // Garante que a tela de carregamento estará oculta ao carregar a página
 });
 
-async function carregarEmpresas() {
+document.getElementById('search-bar').addEventListener('input', function(event) {
+    const nomeEmpresa = event.target.value.trim();  // Captura o valor digitado no campo de busca
+
+    // Modifica a URL para refletir o termo de busca sem recarregar a página
+    const urlParams = new URLSearchParams(window.location.search);
+    if (nomeEmpresa) {
+        urlParams.set('nome_empresa', nomeEmpresa);  // Adiciona o parâmetro nome_empresa à URL
+    } else {
+        urlParams.delete('nome_empresa');  // Se o campo de busca estiver vazio, remove o parâmetro
+    }
+
+    // Atualiza a URL da barra de endereços sem recarregar a página
+    window.history.pushState({}, '', `${window.location.pathname}?${urlParams}`);
+
+    // Chama a função para carregar as empresas com o novo parâmetro
+    carregarEmpresas(nomeEmpresa);
+});
+
+async function carregarEmpresas(nomeEmpresa = '') {
     try {
-        const response = await axios.get('/api/empresas');
+        // Captura o parâmetro "nome_empresa" da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const nomeEmpresaURL = urlParams.get('nome_empresa') || nomeEmpresa;
+
+        // Faz a requisição à API, incluindo o filtro (se houver)
+        const response = await axios.get('/api/empresas', {
+            params: { nome_empresa: nomeEmpresaURL }
+        });
+
         const empresas = response.data;
         const lista = document.getElementById('empresas-lista');
 
-        lista.innerHTML = '';
+        lista.innerHTML = '';  // Limpa a lista antes de adicionar novos itens
 
         if (!empresas || empresas.length === 0) {
             lista.innerHTML = '<p>Nenhuma empresa encontrada.</p>';
@@ -43,21 +69,11 @@ async function carregarEmpresas() {
     }
 }
 
-document.getElementById('search-bar').addEventListener('input', function () {
-    const termoBusca = this.value.toLowerCase();
-    const empresas = document.querySelectorAll('#empresas-lista .card');
+// Chama a função para carregar as empresas ao carregar a página (isso vai considerar a URL também)
+window.onload = function() {
+    carregarEmpresas();
+};
 
-    empresas.forEach(empresa => {
-        const nomeEmpresa = empresa.dataset.nomeEmpresa;
-        if (nomeEmpresa.includes(termoBusca)) {
-            empresa.style.display = 'block';
-        } else {
-            empresa.style.display = 'none';
-        }
-    });
-});
-
-carregarEmpresas();
 
 async function carregarFuncionarios(empresaId) {
     try {
