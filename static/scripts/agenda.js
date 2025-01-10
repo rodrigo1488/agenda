@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const eventDate = new Date(event.data + 'T00:00:00');
                 const isPast = eventDate < now; // Verifica se a data do evento é anterior à data atual.
                 return `
-        <li class="appointment-item" style="background-color: ${isPast ? 'red' : 'transparent'}; color: ${isPast ? 'white' : 'black'};">
+        <li class="appointment-item" style="background-color: ${isPast ? 'red' : 'transparent'}; color: ${isPast ? 'white' : 'black'};margin-top: 20px;">
             <div class="appointment-details">
                 <strong>${event.cliente_nome}</strong> - ${event.servico_nome} <br>
                 <span>${eventDate.toLocaleDateString()} às ${event.horario}</span>

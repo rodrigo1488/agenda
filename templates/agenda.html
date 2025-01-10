@@ -13,10 +13,9 @@
     <link rel="stylesheet" href="/static/styles/agenda.css">
 </head>
 
-<body class="d-flex">
+<body >
 
-
-
+    <div id="loading">Carregando...</div>
 
 
     <div class="d-flex" style="flex: 1; width: 100%;">
@@ -60,19 +59,21 @@
 
         <!-- Conteúdo Principal -->
         <div class="container mt-4 flex-grow-1">
-            <div id="loading">Carregando...</div>
+        
             <!-- Botão para exibir o formulário -->
-            <div class="men-bot">
+            <button id="toggle-menu" class="d-block d-md-none"
+                    style="background-color: transparent; border: none; font-size: 2rem; color: black; ;">
+                    ☰
+                </button>
+
+
                 <button type="button" id="btn-agendar" class="btn btn-primary mb-4" data-bs-toggle="modal"
                     data-bs-target="#agendamentoModal">
                     Agendar um Horário
                 </button>
                 <!-- Botão de alternância do menu lateral -->
-                <button id="toggle-menu" class="d-block d-md-none"
-                    style="background-color: transparent; border: none; font-size: 2rem; color: black; ;">
-                    ☰
-                </button>
-            </div>
+             
+ 
             <!-- Modal para exibir detalhes do agendamento -->
             <div class="modal fade" id="agendamentoDetalhesModal" tabindex="-1"
                 aria-labelledby="agendamentoDetalhesModalLabel" aria-hidden="true">
@@ -169,7 +170,7 @@
             <div id="list-container">
                 <div>
                     <select id="filter">
-                        <option value="day">Dia</option>
+                        <option value="day">Hoje</option>
                         <option value="week">Semana</option>
                         <option value="month">Mês</option>
                     </select>
