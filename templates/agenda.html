@@ -16,12 +16,48 @@
 <body class="d-flex">
 
 
+
+
+
     <div class="d-flex" style="flex: 1; width: 100%;">
 
+        <!-- Modal de Notificações -->
+        <div class="modal fade" id="notificacaoModal" tabindex="-1" aria-labelledby="notificacaoModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="notificacaoModalLabel">Notificações</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Você tem <strong id="total-nao-vistos"></strong> novos agendamentos.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="POST" action="{{ url_for('agenda_bp.verificar_notificacoes') }}" >
+                            <button type="submit" class="btn btn-primary">OK</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pop-up de Notificação Simples -->
+        <div id="popup" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+            aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Nenhum novo agendamento.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
 
         <!-- Menu Lateral -->
         <div id="menu-container"></div>
-     
+
+
         <!-- Conteúdo Principal -->
         <div class="container mt-4 flex-grow-1">
             <div id="loading">Carregando...</div>
@@ -89,8 +125,8 @@
                                     </div>
                                     <div class="col-md-12">
                                         <label for="descricao" class="form-label">Descrição</label>
-                                        <textarea id="descricao-agendamento" name="descricao" class="form-control" rows="3"
-                                            placeholder="Adicione detalhes sobre o compromisso"></textarea>
+                                        <textarea id="descricao-agendamento" name="descricao" class="form-control"
+                                            rows="3" placeholder="Adicione detalhes sobre o compromisso"></textarea>
                                     </div>
 
                                 </div>
@@ -110,7 +146,8 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="pagamentoModal" tabindex="-1" aria-labelledby="pagamentoModalLabel" aria-hidden="true">
+            <div class="modal fade" id="pagamentoModal" tabindex="-1" aria-labelledby="pagamentoModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -123,13 +160,13 @@
                     </div>
                 </div>
             </div>
-            
+
 
             <div id="calendar-container">
                 <div id="calendar"></div>
             </div>
-            
-            <div id="list-container" >
+
+            <div id="list-container">
                 <div>
                     <select id="filter">
                         <option value="day">Dia</option>
@@ -139,9 +176,29 @@
                 </div>
                 <ul id="appointment-list"></ul>
             </div>
-            
+
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const totalNaoVistos = {{ total_nao_vistos }}; // Passa a variável do Flask para JS
+      
+          if (totalNaoVistos > 0) {
+            // Exibe o modal com notificações
+            document.getElementById("total-nao-vistos").textContent = totalNaoVistos;
+            const notificacaoModal = new bootstrap.Modal(document.getElementById("notificacaoModal"));
+            notificacaoModal.show();
+          } else {
+            // Exibe o pop-up por 3 segundos
+            const popup = document.getElementById("popup");
+            popup.style.display = "block";
+            setTimeout(() => {
+              popup.style.display = "none";
+            }, 3000);
+          }
+        });
+      </script>
+      
 
     <!-- Bootstrap JS e Dependências -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
@@ -153,7 +210,7 @@
     <script>
         renderMenu('menu-container');
     </script>
-    
+
     <script src="static/scripts/agenda.js"></script>
 
 

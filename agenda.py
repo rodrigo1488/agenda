@@ -94,7 +94,8 @@ def agendar():
         "horario": dados["horario"],
         "descricao": dados.get("descricao"),
         "id_empresa": empresa_id,  # Associa o agendamento à empresa logada
-        "status": "ativo"  # Definindo o status como "ativo"
+        "status": "ativo",  # Definindo o status como "ativo"
+        "visto": "True"
     }).execute()
 
     if response.data:
@@ -189,6 +190,8 @@ def listar_agendamentos():
             "descricao": item.get("descricao", "Sem descrição"),  # Inclui a descrição com valor padrão
             "cliente_nome": item["clientes"]["nome_cliente"],
             "servico_nome": item["servicos"]["nome_servico"]
+         
+            
         }
         for item in response.data
     ]
@@ -253,14 +256,18 @@ def renderizar_agenda():
     if verificar_login():
         return verificar_login()
 
-    # Obter o ID da empresa e do usuário diretamente dos cookies
     empresa_id = obter_id_empresa()
     usuario_id = obter_id_usuario()
 
     if not empresa_id or not usuario_id:
-        return redirect(url_for('login.login'))
+        return redirect(url_for('login_bp.login'))
 
-    return render_template('agenda.html')
+    # Verifica notificações
+    resposta = supabase.table('agenda').select('id').eq('usuario_id', usuario_id).eq('visto', False).execute()
+    total_nao_vistos = len(resposta.data) if resposta.data else 0
+
+    return render_template('agenda.html', total_nao_vistos=total_nao_vistos)
+
 
 
 @agenda_bp.route('/api/agendamento/<int:id>', methods=['DELETE'])
@@ -363,3 +370,45 @@ def finalizar_agendamento(id):
     except Exception as e:
         print(f"Erro ao finalizar agendamento: {e}")
         return jsonify({"error": "Erro ao finalizar agendamento."}), 500
+
+
+
+@agenda_bp.route('/notificacoes', methods=['GET', 'POST'])
+def verificar_notificacoes():
+    # Verifica se o usuário está autenticado pelos cookies
+    usuario_id = obter_id_usuario()
+    print(f"[DEBUG] ID do usuário obtido dos cookies: {usuario_id}")
+
+    if not usuario_id:
+        print("[ERROR] Cookie 'user_id' não encontrado. Redirecionando para login.")
+        return redirect(url_for('login.login'))
+
+    # Consulta os agendamentos não vistos para o usuário logado
+    try:
+        response = supabase.table('agenda').select('id').eq('usuario_id', usuario_id).eq('visto', False).execute()
+        agendamentos_nao_vistos = response.data or []
+        print(f"[DEBUG] Agendamentos não vistos encontrados: {agendamentos_nao_vistos}")
+    except Exception as e:
+        print(f"[ERROR] Erro ao consultar agendamentos no Supabase: {str(e)}")
+        return jsonify({"erro": "Erro ao acessar agendamentos"}), 500
+
+    if request.method == 'POST':
+        # Atualiza todos os agendamentos para 'visto = True'
+        ids_para_atualizar = [agendamento['id'] for agendamento in agendamentos_nao_vistos]
+        print(f"[DEBUG] IDs dos agendamentos para marcar como vistos: {ids_para_atualizar}")
+
+        if ids_para_atualizar:
+            try:
+                supabase.table('agenda').update({'visto': True}).in_('id', ids_para_atualizar).execute()
+                print("[DEBUG] Atualização de agendamentos concluída com sucesso.")
+            except Exception as e:
+                print(f"[ERROR] Erro ao atualizar agendamentos no Supabase: {str(e)}")
+                return jsonify({"erro": "Erro ao atualizar agendamentos"}), 500
+
+        # Redireciona para a página desejada após a atualização
+        return redirect(url_for('agenda_bp.renderizar_agenda'))  # Altere para a página correta
+
+    # Retorna o número de agendamentos não vistos
+    total_nao_vistos = len(agendamentos_nao_vistos)
+    print(f"[DEBUG] Total de agendamentos não vistos: {total_nao_vistos}")
+    return render_template('agenda.html', total_nao_vistos=total_nao_vistos)
