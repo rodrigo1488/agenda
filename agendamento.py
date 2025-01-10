@@ -267,3 +267,28 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
         print("E-mail enviado com sucesso!")
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
+
+
+
+# Função para buscar agendamentos por e-mail
+@agendamento_bp.route('/agendamentos/<email>', methods=['GET'])
+def get_agendamentos_por_email(email):
+    try:
+        # Buscar o cliente pelo e-mail fornecido
+        cliente_result = supabase.table('clientes').select('id').eq('email', email).single().execute()
+        if not cliente_result.data:
+            return render_template('agenda_cliente.html', agendamentos=[], mensagem="Cliente não encontrado.")
+        
+        cliente_id = cliente_result.data['id']
+
+        # Buscar os agendamentos do cliente usando o ID recuperado
+        agendamentos_result = supabase.table('agenda').select('*').eq('cliente_id', cliente_id).execute()
+        
+        if not agendamentos_result.data:
+            return render_template('agenda_cliente.html', agendamentos=[], mensagem="Nenhum agendamento encontrado para este cliente.")
+
+        # Renderizar a página com os agendamentos encontrados
+        return render_template('agenda_cliente.html', agendamentos=agendamentos_result.data, mensagem="Agendamentos encontrados.")
+
+    except Exception as e:
+        return render_template('agenda_cliente.html', agendamentos=[], mensagem=f"Erro: {str(e)}")
