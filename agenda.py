@@ -387,22 +387,22 @@ def verificar_notificacoes():
     try:
         response = supabase.table('agenda').select('id').eq('usuario_id', usuario_id).eq('visto', False).execute()
         agendamentos_nao_vistos = response.data or []
-        print(f"[DEBUG] Agendamentos não vistos encontrados: {agendamentos_nao_vistos}")
+       
     except Exception as e:
-        print(f"[ERROR] Erro ao consultar agendamentos no Supabase: {str(e)}")
+       
         return jsonify({"erro": "Erro ao acessar agendamentos"}), 500
 
     if request.method == 'POST':
         # Atualiza todos os agendamentos para 'visto = True'
         ids_para_atualizar = [agendamento['id'] for agendamento in agendamentos_nao_vistos]
-        print(f"[DEBUG] IDs dos agendamentos para marcar como vistos: {ids_para_atualizar}")
+       
 
         if ids_para_atualizar:
             try:
                 supabase.table('agenda').update({'visto': True}).in_('id', ids_para_atualizar).execute()
-                print("[DEBUG] Atualização de agendamentos concluída com sucesso.")
+             
             except Exception as e:
-                print(f"[ERROR] Erro ao atualizar agendamentos no Supabase: {str(e)}")
+                
                 return jsonify({"erro": "Erro ao atualizar agendamentos"}), 500
 
         # Redireciona para a página desejada após a atualização
@@ -410,5 +410,5 @@ def verificar_notificacoes():
 
     # Retorna o número de agendamentos não vistos
     total_nao_vistos = len(agendamentos_nao_vistos)
-    print(f"[DEBUG] Total de agendamentos não vistos: {total_nao_vistos}")
+   
     return render_template('agenda.html', total_nao_vistos=total_nao_vistos)

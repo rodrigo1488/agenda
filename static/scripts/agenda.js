@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 });
 
-
+// Exemplo usando localStorage (onde o nome do usuário foi salvo após o login)
 
 function mostrarDetalhesAgendamento(event) {
     const modalBody = document.getElementById('modal-body');

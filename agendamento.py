@@ -172,7 +172,7 @@ def listar_empresas():
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
 def listar_usuarios(empresa_id):
     # Lista usuários vinculados a uma empresa específica
-    response = supabase.table("usuarios").select("id, nome_usuario").eq("id_empresa", empresa_id).execute()
+    response = supabase.table("usuarios").select("id, nome_usuario,ft_perfil").eq("id_empresa", empresa_id).execute()
    
     return jsonify(response.data), 200
 
