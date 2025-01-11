@@ -213,4 +213,20 @@ footer .footer-btn:hover {
     h4 {
         font-size: 16px;
     }
+    .header img {
+        height: 50px;
+        width: auto;
+        border-radius: 8px;
+    }
+    
+    .header .header-link {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    
 }
