@@ -6,7 +6,17 @@ body {
     padding: 0;
 }
 
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1e1e1e;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
 .container {
+ 
     max-width: 800px;
     margin: 40px auto;
     padding: 20px;
@@ -14,6 +24,8 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
+
 
 h1 {
     text-align: center;
@@ -51,6 +63,7 @@ button:hover {
 }
 
 #resultado {
+    margin-bottom: 5%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
@@ -74,7 +87,7 @@ button:hover {
 
 .card-logo {
     width: 50px;
-    height: 50px;
+    height:5 50px;
     border-radius: 50%;
     margin-right: 15px;
     object-fit: cover;
@@ -113,6 +126,55 @@ button:hover {
     background-color: #1da955;
 }
 
+/* Estilo do Footer */
+.footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 15px;
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.footer-btn {
+    color: #f5f5f5;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #007bff;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.footer-btn:hover {
+    background-color: #0056b3;
+}
+.header img {
+    height: 80px;
+    width: auto;
+    border-radius: 8px;
+}
+
+.header .header-link {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.header .header-link:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
 
 /* Responsividade para dispositivos menores */
 @media (max-width: 768px) {
@@ -143,6 +205,47 @@ button:hover {
         font-size: 14px;
         padding: 8px 12px;
     }
+
+    .footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 10px;
+        background-color: #1e1e1e;
+        color: #f5f5f5;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    .footer-btn {
+        width: 90%;
+        text-align: center;
+        padding: 12px 0;
+    }
+    .header img {
+    height: 50px;
+    width: auto;
+    border-radius: 8px;
+}
+
+.header .header-link {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.header .header-link:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
 }
 
 @media (max-width: 480px) {

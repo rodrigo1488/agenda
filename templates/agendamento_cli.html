@@ -9,15 +9,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/static/styles/agendamentos.css">
-</head>
 
+</head>
+<header class="header">
+    <img src="/static/img/agendamento.png" alt="sua agenda" class="logo-header">
+    <a href="#" class="header-link">Quero a minha agenda</a>
+</header>
 <body>
-    
-    
-    
-    <div class="titulo">
-        <h4>Selecione uma empresa para agendar um serviço</h4>
-    </div>
+  
+<div class="corpo">
+  
 
     <!-- Campo de busca -->
     <div class="mb-3">
@@ -54,15 +55,14 @@
         <div class="spinner" style="width: 50px; height: 50px; border: 5px solid #ccc; border-top: 5px solid #000; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         <p style="color: #fff; margin-top: 10px;">  Agendando...</p>
     </div>
-    
-    
-    <a href="/login" class="btn btn-secondary" style="margin-top: 5%;">voltar</a>
-    <a href="/agenda_cliente">ver meus agendamentos</a>
 
-    <script src="/static/scripts/agendamento.js">
-        
-        
-    </script>
+    <script src="/static/scripts/agendamento.js">  </script>
 </body>
+</div>
+<footer class="footer">
+    <a href="/login" class="footer-btn">Voltar</a>
+    <a href="/agenda_cliente" class="footer-btn">Ver meus agendamentos</a>
+</footer>
+
 
 </html>
