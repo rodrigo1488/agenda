@@ -44,26 +44,17 @@ def relatorios():
             query_agenda = query_agenda.lte('data', data_fim)
 
         agenda_response = query_agenda.execute()
-        if not agenda_response.data:
-            return jsonify({"erro": "Nenhum dado encontrado na tabela 'agenda'."}), 404
-
-        agenda = agenda_response.data
+        agenda = agenda_response.data if agenda_response.data else []  # Define como lista vazia se não houver dados
 
         query_finalizados = supabase.table('finalizados').select("*").eq('id_empresa', empresa_id)
         if meio_pagamento_filtro:
             query_finalizados = query_finalizados.eq('meio_pagamento', meio_pagamento_filtro)
 
         finalizados_response = query_finalizados.execute()
-        if not finalizados_response.data:
-            return jsonify({"erro": "Nenhum dado encontrado na tabela 'finalizados'."}), 404
-
-        finalizados = finalizados_response.data
+        finalizados = finalizados_response.data if finalizados_response.data else []  # Define como lista vazia se não houver dados
 
         usuarios_response = supabase.table('usuarios').select("id, nome_usuario").eq('id_empresa', empresa_id).execute()
-        if not usuarios_response.data:
-            return jsonify({"erro": "Nenhum usuário encontrado na tabela 'usuarios'."}), 404
-
-        usuarios = {u['id']: u['nome_usuario'] for u in usuarios_response.data}
+        usuarios = {u['id']: u['nome_usuario'] for u in usuarios_response.data} if usuarios_response.data else {}  # Define como dicionário vazio se não houver dados
 
         financeiro = {}
         atendimentos_por_usuario = {}
@@ -115,6 +106,7 @@ def relatorios():
     except Exception as e:
         print("Erro no processamento:", str(e))
         return jsonify({"erro": str(e)}), 500
+
 
 @relatorios_bp.route('/listar_usuarios', methods=['GET'])
 def listar_usuarios():

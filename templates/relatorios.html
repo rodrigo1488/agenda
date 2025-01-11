@@ -93,105 +93,105 @@
     
     
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Variáveis para armazenar os dados passados pelo Flask
-            const financeiroData = {{ financeiro | tojson }}; 
-            const atendimentosData = {{ atendimentos | tojson }}; 
-            const financeiroUsuarioData = {{ financeiro_usuario | tojson }};
-            
-            if (typeof financeiroData === 'undefined' || typeof atendimentosData === 'undefined' || typeof financeiroUsuarioData === 'undefined') {
-                console.error('Erro: Dados financeiros ou de atendimentos não estão definidos.');
-                return;
-            }
+      document.addEventListener('DOMContentLoaded', () => {
+    // Variáveis para armazenar os dados passados pelo Flask
+    const financeiroData = {{ financeiro | tojson }}; 
+    const atendimentosData = {{ atendimentos | tojson }}; 
+    const financeiroUsuarioData = {{ financeiro_usuario | tojson }};
+
+    if (typeof financeiroData === 'undefined' || typeof atendimentosData === 'undefined' || typeof financeiroUsuarioData === 'undefined') {
+        console.error('Erro: Dados financeiros ou de atendimentos não estão definidos.');
+        return;
+    }
+
+    // Variáveis para os elementos das abas
+    const tabLinks = document.querySelectorAll('#myTab .nav-link');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    function alternarAbas(event) {
+        event.preventDefault();
+
+        tabLinks.forEach(link => link.classList.remove('active'));
+        tabPanes.forEach(pane => pane.classList.remove('show', 'active'));
+
+        const targetTab = event.target;
+        targetTab.classList.add('active');
+        const targetPane = document.querySelector(targetTab.getAttribute('href'));
+        targetPane.classList.add('show', 'active');
+    }
+
+    tabLinks.forEach(link => {
+        link.addEventListener('click', alternarAbas);
+    });
+
+    // Carregar os dados nos cards
+    carregarDadosNosCards(financeiroData, atendimentosData, financeiroUsuarioData);
+    inicializarGraficos(financeiroUsuarioData, atendimentosData);
+});
+
+function criarCard(titulo, valor, containerId, cor) {
+    const container = document.getElementById(containerId);
+    const card = document.createElement('div');
+    card.className = `card col-md-4 mb-4 ${cor}`;
+    card.innerHTML = `
+        <div class="card-body">
+            <h5 class="card-title">${titulo}</h5>
+            <p class="card-text">${valor}</p>
+        </div>`;
+    container.appendChild(card);
+}
+
+function carregarDadosNosCards(financeiroData, atendimentosData, financeiroUsuarioData) {
+    const financeiroTotal = Object.values(financeiroData).reduce((acc, val) => acc + val, 0);
+    const atendimentosTotal = Object.values(atendimentosData).reduce((acc, val) => acc + val, 0);
+
+    // Cards Financeiro
+    criarCard('Faturamento Total', `R$ ${financeiroTotal.toFixed(2)}`, 'cardsContainerFinanceiro', 'card-financeiro');
     
-            // Variáveis para os elementos das abas
-            const tabLinks = document.querySelectorAll('#myTab .nav-link');
-            const tabPanes = document.querySelectorAll('.tab-pane');
+    // Cards Atendimentos
+    criarCard('Atendimentos Totais', atendimentosTotal, 'cardsContainerAtendimentos', 'card-atendimento');
     
-            function alternarAbas(event) {
-                event.preventDefault();
+    // Cards de Usuários
+    for (const [usuario, valor] of Object.entries(financeiroUsuarioData)) {
+        criarCard(` ${usuario}`, `R$ ${valor.toFixed(2)}`, 'cardsContainerUsuarios', 'card-usuario');
+    }
+}
+
+function inicializarGraficos(financeiroUsuarioData, atendimentosData) {
+    const ctxFaturamento = document.getElementById('graficoFaturamento').getContext('2d');
+    const ctxAtendimentos = document.getElementById('graficoAtendimentos').getContext('2d');
     
-                tabLinks.forEach(link => link.classList.remove('active'));
-                tabPanes.forEach(pane => pane.classList.remove('show', 'active'));
-    
-                const targetTab = event.target;
-                targetTab.classList.add('active');
-                const targetPane = document.querySelector(targetTab.getAttribute('href'));
-                targetPane.classList.add('show', 'active');
-            }
-    
-            tabLinks.forEach(link => {
-                link.addEventListener('click', alternarAbas);
-            });
-    
-            // Carregar os dados nos cards
-            carregarDadosNosCards(financeiroData, atendimentosData, financeiroUsuarioData);
-            inicializarGraficos(financeiroUsuarioData, atendimentosData);
-        });
-    
-        function criarCard(titulo, valor, containerId, cor) {
-            const container = document.getElementById(containerId);
-            const card = document.createElement('div');
-            card.className = `card col-md-4 mb-4 ${cor}`;
-            card.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">${titulo}</h5>
-                    <p class="card-text">${valor}</p>
-                </div>`;
-            container.appendChild(card);
+    // Gráfico de Faturamento por Usuário
+    new Chart(ctxFaturamento, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(financeiroUsuarioData),
+            datasets: [{
+                label: 'Faturamento por Usuário',
+                data: Object.values(financeiroUsuarioData),
+                backgroundColor: '#6f42c1',
+                borderColor: '#6f42c1',
+                borderWidth: 1
+            }]
         }
-    
-        function carregarDadosNosCards(financeiroData, atendimentosData, financeiroUsuarioData) {
-            const financeiroTotal = Object.values(financeiroData).reduce((acc, val) => acc + val, 0);
-            const atendimentosTotal = Object.values(atendimentosData).reduce((acc, val) => acc + val, 0);
-    
-            // Cards Financeiro
-            criarCard('Faturamento Total', `R$ ${financeiroTotal.toFixed(2)}`, 'cardsContainerFinanceiro', 'card-financeiro');
-            
-            // Cards Atendimentos
-            criarCard('Atendimentos Totais', atendimentosTotal, 'cardsContainerAtendimentos', 'card-atendimento');
-            
-            // Cards de Usuários
-            for (const [usuario, valor] of Object.entries(financeiroUsuarioData)) {
-                criarCard(` ${usuario}`, `R$ ${valor.toFixed(2)}`, 'cardsContainerUsuarios', 'card-usuario');
-            }
+    });
+
+    // Gráfico de Evolução de Atendimentos
+    new Chart(ctxAtendimentos, {
+        type: 'line',
+        data: {
+            labels: Object.keys(atendimentosData),
+            datasets: [{
+                label: 'Atendimentos',
+                data: Object.values(atendimentosData),
+                fill: false,
+                borderColor: '#28a745',
+                tension: 0.1
+            }]
         }
-    
-        function inicializarGraficos(financeiroUsuarioData, atendimentosData) {
-            const ctxFaturamento = document.getElementById('graficoFaturamento').getContext('2d');
-            const ctxAtendimentos = document.getElementById('graficoAtendimentos').getContext('2d');
-            
-            // Gráfico de Faturamento por Usuário
-            new Chart(ctxFaturamento, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(financeiroUsuarioData),
-                    datasets: [{
-                        label: 'Faturamento por Usuário',
-                        data: Object.values(financeiroUsuarioData),
-                        backgroundColor: '#6f42c1',
-                        borderColor: '#6f42c1',
-                        borderWidth: 1
-                    }]
-                }
-            });
-    
-            // Gráfico de Evolução de Atendimentos
-            new Chart(ctxAtendimentos, {
-                type: 'line',
-                data: {
-                    labels: Object.keys(atendimentosData),
-                    datasets: [{
-                        label: 'Atendimentos',
-                        data: Object.values(atendimentosData),
-                        fill: false,
-                        borderColor: '#28a745',
-                        tension: 0.1
-                    }]
-                }
-            });
-        }
-    </script>
+    });
+}
+</script>
 </body>
 
 </html>
