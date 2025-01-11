@@ -234,3 +234,28 @@ function esconderCarregamento() {
         console.error('Elemento de carregamento não encontrado!');
     }
 }
+
+
+const form = document.getElementById('form-agendamento');
+    const telefoneInput = document.getElementById('telefone-input');
+
+    // Remove caracteres inválidos do telefone
+    telefoneInput.addEventListener('input', (event) => {
+        const apenasNumeros = telefoneInput.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+        telefoneInput.value = apenasNumeros; // Atualiza o valor no campo
+    });
+
+    // Validação ao enviar o formulário
+    form.addEventListener('submit', (event) => {
+        const telefone = telefoneInput.value;
+
+        // Verifica se o telefone tem um tamanho válido (ex: 10 ou 11 dígitos para o Brasil)
+        if (telefone.length < 10 || telefone.length > 11) {
+            alert('Por favor, insira um número de telefone válido com 10 ou 11 dígitos.');
+            event.preventDefault(); // Impede o envio do formulário
+            return;
+        }
+
+        // (Opcional) Aqui, o campo de telefone já está limpo e validado antes de ser enviado ao banco
+        console.log('Telefone validado e pronto para envio:', telefone);
+    });
