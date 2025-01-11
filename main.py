@@ -8,7 +8,7 @@ from agenda import agenda_bp
 from login import login_bp
 from agendamento import agendamento_bp
 from agenda_cliente import agenda_cliente_bp
-
+from lembrete_email import lembrete_email_bp
 import os
 
 app = Flask(__name__)
@@ -25,6 +25,7 @@ app.register_blueprint(agenda_bp)
 app.register_blueprint(login_bp)
 app.register_blueprint(agendamento_bp)
 app.register_blueprint(agenda_cliente_bp)
+app.register_blueprint(lembrete_email_bp)
 
 
 @app.route("/")
