@@ -52,13 +52,16 @@
             </div>
             <div class="mb-3">
                 <label for="usuario" class="form-label">Usuário</label>
-                <input type="email" id="usuario" name="usuario" class="form-control" required placeholder="Digite o nome do usuário">
+                <input type="text" id="usuario" name="usuario" class="form-control" required placeholder="Digite o nome do usuário">
             </div>
             <div class="mb-3">
                 <label for="senha" class="form-label">Senha</label>
                 <input type="password" id="senha" name="senha" class="form-control" required placeholder="Digite a senha">
             </div>
+            <div class="mb-4">
+            <a href="#">Esqueci minha senha</a><a href="https://wa.me/34997227288?text=${encodeURIComponent('Gostaria de ter minha agenda')}">cadastre-se</a>
             <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </div>
         </form>
       </div>
     </div>
@@ -72,7 +75,7 @@
 
     <!-- Botões -->
     <div id="buttons" class="text-center">
-        <a href="/agendamento" class="btn btn-secondary w-100 mb-2">Sou Cliente</a>
+        <a href="/agendamento" class="btn btn-secondary w-100 mb-2">Quero fazer um agendamento</a>
         <button class="btn btn-outline-light w-100" data-bs-toggle="modal" data-bs-target="#loginModal">Quero acessar minha agenda</button>
     </div>
 </div>

@@ -154,8 +154,20 @@ footer .footer-btn:hover {
     background-color: #0056b3;
 }
 
+.mb-4{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20%;
+}
+
 /* Responsividade para dispositivos menores */
 @media (max-width: 768px) {
+
+    .mb-4{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20%;
+    }
     .card-container {
         margin: 20px;
         padding: 15px;
