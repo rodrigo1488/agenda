@@ -95,7 +95,7 @@ select#filter {
 }
 
 .appointment-details {
-    max-width: 70%;
+    max-width: 100%;
     font-size: 14px;
     line-height: 1.5;
     color: #333;
@@ -176,6 +176,12 @@ button:hover {
     margin-top: 15px; /* Espaço acima do grupo de botões */
 }
 
+.button-group-2 {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Espaço acima do grupo de botões */
+}
 
 .whatsapp-button-container {
     position: relative; /* Certifica-se de que o botão esteja dentro do contexto do modal */

@@ -35,15 +35,23 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const data = await fetchData('/agenda/data');
                 if (Array.isArray(data)) {
-                    const eventos = data.map(agendamento => ({
-                        id: agendamento.id,
-                        title: `${agendamento.cliente_nome} -  ${agendamento.servico_nome}`,
-                        start: `${agendamento.data}T${agendamento.horario}`,
-                        allDay: false,
-                        descricao: agendamento.descricao,
-                        telefone: agendamento.telefone,
-                        empresa: agendamento.nome_empresa,
-                        finalizado: agendamento.finalizado || false
+                    const eventos = await Promise.all(data.map(async (agendamento) => {
+                        const usuarioResponse = await fetch('/api/usuario/logado'); // Aqui você busca os dados do usuário logado
+                        const usuarioData = await usuarioResponse.json();
+                        const nomeUsuario = usuarioData.nome_usuario; // Pegue o nome do usuário logado
+                        const nomeEmpresa = agendamento.nome_empresa; // A empresa já está sendo retornada no agendamento
+
+                        return {
+                            id: agendamento.id,
+                            title: `${agendamento.cliente_nome} -  ${agendamento.servico_nome}`,
+                            start: `${agendamento.data}T${agendamento.horario}`,
+                            allDay: false,
+                            descricao: agendamento.descricao,
+                            telefone: agendamento.telefone,
+                            empresa: nomeEmpresa,
+                            nome_usuario: nomeUsuario,  // Adiciona o nome do usuário ao evento
+                            finalizado: agendamento.finalizado || false
+                        };
                     }));
 
                     successCallback(eventos);
@@ -56,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 failureCallback(error);
             }
         },
+
         eventMouseEnter: function (info) {
             const eventEl = info.el;
             eventEl.style.cursor = 'pointer';
@@ -112,24 +121,54 @@ document.addEventListener('DOMContentLoaded', function () {
                     return eventDate.getMonth() === month && eventDate.getFullYear() === now.getFullYear();
                 });
             }
-            // Atualiza o HTML da lista de agendamentos com os eventos filtrados.
-            appointmentList.innerHTML = filteredAppointments.map(event => {
+
+            // Ordena os agendamentos por data e horário
+            filteredAppointments.sort((a, b) => {
+                const dateA = new Date(`${a.data}T${a.horario}`);
+                const dateB = new Date(`${b.data}T${b.horario}`);
+                return dateA - dateB; // Ordem crescente
+            });
+
+            // Resolve todas as promessas de agendamentos
+            const appointmentsHTML = await Promise.all(filteredAppointments.map(async (event) => {
                 const eventDate = new Date(event.data + 'T00:00:00');
                 const isPast = new Date(eventDate) < new Date(now);
 
-                return `
-        <li class="appointment-item" style="background-color: ${isPast ? 'red' : 'transparent'}; color: ${isPast ? 'white' : 'black'};margin-top: 20px;">
-            <div class="appointment-details">
-                <strong>${event.cliente_nome}</strong> - ${event.servico_nome} <br>
-                <span>${eventDate.toLocaleDateString()} às ${event.horario}</span>
-                <div class="bot">
-                    <button class="btn btn-danger btn-cancelar" data-id="${event.id}">Cancelar</button>
-                    <button class="btn btn-success btn-finalizar" data-id="${event.id}">Finalizar</button>
-                </div>
-            </div>
-        </li>
-    `;
-            }).join('');
+                try {
+                    // Obtenha os dados do usuário
+                    const response = await fetch('/api/usuario/logado');
+                    if (!response.ok) {
+                        throw new Error('Erro ao buscar nome do usuário');
+                    }
+                    const data = await response.json();
+                    const nomeUsuario = data.nome_usuario;
+
+                    const linkWhatsApp = `https://wa.me/+55${event.telefone}?text=Olá, ${event.cliente_nome}. Sou ${nomeUsuario} da empresa ${event.nome_empresa} e gostaria de falar com você sobre o agendamento de: ${event.servico_nome} na data: ${eventDate.toLocaleDateString()} às ${event.horario}`;
+
+                    return `
+                    <div class="appointment-details">
+                        <li class="appointment-item" style="background-color: ${isPast ? 'transparent' : 'transparent'}; color: ${isPast ? 'red' : 'black'}; margin-top: 20px;">
+                                <strong>${event.cliente_nome}</strong> - ${event.servico_nome} <br>
+                                <span>${eventDate.toLocaleDateString()} às ${event.horario}</span>
+                                <div class="button-group-2">
+                                <button class="btn btn-danger btn-cancelar" data-id="${event.id}">Cancelar</button>
+                                <button class="btn btn-success btn-finalizar" data-id="${event.id}">Finalizar</button>
+                                <a class="btn btn-success btn-sm whatsapp-button d-flex align-items-center" target="_blank" href="${linkWhatsApp}">
+                                <i class="bi bi-whatsapp me-1"></i> Whatsapp
+                                </a>
+                                </div>
+                                </li>
+                                </div>
+                    `;
+                } catch (error) {
+                    console.error('Erro ao buscar nome do usuário:', error.message);
+                    return ''; // Retorne uma string vazia caso haja erro
+                }
+            }));
+
+            // Atualiza o HTML da lista de agendamentos com os eventos filtrados.
+            appointmentList.innerHTML = appointmentsHTML.join('');
+
 
 
             document.querySelectorAll('.btn-cancelar').forEach(button => {
@@ -180,6 +219,8 @@ async function mostrarDetalhesAgendamento(event) {
             <i class="bi bi-whatsapp me-1"></i> Whatsapp
         </a>
     </div>
+
+    
 `;
 
 
@@ -191,7 +232,7 @@ async function mostrarDetalhesAgendamento(event) {
         const data = await response.json();
         if (data && data.nome_usuario) {
             const nomeUsuario = data.nome_usuario;
-            const linkWhatsApp = `https://wa.me/+55${event.extendedProps.telefone}?text=Olá, ${event.title.split(' - ')[0]}. Sou ${nomeUsuario} da empresa ${event.extendedProps.empresa} e gostaria de falar com vocé. sobre o agendamento de: ${event.title.split(' - ')[1]} na data: ${event.start.toLocaleDateString()} às ${event.start.toLocaleTimeString()} `; 
+            const linkWhatsApp = `https://wa.me/+55${event.extendedProps.telefone}?text=Olá, ${event.title.split(' - ')[0]}. Sou ${nomeUsuario} da empresa ${event.extendedProps.empresa} e gostaria de falar com vocé. sobre o agendamento de: ${event.title.split(' - ')[1]} na data: ${event.start.toLocaleDateString()} às ${event.start.toLocaleTimeString()} `;
             document.getElementById('btnEnviarMensagem').setAttribute('href', linkWhatsApp);
         }
     } catch (error) {
@@ -317,15 +358,27 @@ function carregarDados() {
         });
 
     fetch('/api/usuarios')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
             const usuarioSelect = document.getElementById('usuario-agendamento');
-            data.forEach(usuario => {
-                const option = document.createElement('option');
-                option.value = usuario.id;
-                option.textContent = usuario.nome_usuario;
-                usuarioSelect.appendChild(option);
-            });
+            if (usuarioSelect) {
+                data.forEach(usuario => {
+                    const option = document.createElement('option');
+                    option.value = usuario.id;
+                    option.textContent = usuario.nome_usuario;
+                    usuarioSelect.appendChild(option);
+                });
+            } else {
+                console.error('Elemento select com ID "usuario-agendamento" não encontrado.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar ou processar os usuários:', error.message);
         });
 
     fetch('/api/servicos')
@@ -384,7 +437,7 @@ document.getElementById('form-agendamento').addEventListener('submit', function 
 });
 
 
- 
+
 
 
 
