@@ -168,6 +168,36 @@ button:hover {
     animation: spin 0.8s linear infinite;
 }
 
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Espaço acima do grupo de botões */
+}
+
+
+.whatsapp-button-container {
+    position: relative; /* Certifica-se de que o botão esteja dentro do contexto do modal */
+}
+
+.whatsapp-button {
+    display: flex;
+    align-items: center; /* Alinha o ícone e o texto verticalmente */
+    justify-content: center; /* Garante o alinhamento horizontal */
+    height: 38px; /* Certifique-se de que a altura do botão seja igual aos outros */
+    padding: 0 15px; /* Ajuste o preenchimento interno para equilibrar o conteúdo */
+    background-color: #25d366; /* Cor do WhatsApp */
+    color: white;
+    border-radius: 5px;
+    text-decoration: none; /* Remove o sublinhado */
+}
+
+.whatsapp-button:hover {
+    background-color: #1ebe57; /* Cor no hover */
+}
+
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

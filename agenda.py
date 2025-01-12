@@ -4,7 +4,7 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+#ta em branco a linha que ta dando erro
 # Configuração do Supabase
 supabase_url = 'https://gccxbkoejigwkqwyvcav.supabase.co'
 supabase_key = os.getenv(
@@ -38,13 +38,14 @@ def obter_dados_empresa_logada():
         return jsonify({"erro": "Empresa não encontrada nos cookies"}), 401
 
     # Consulta a tabela para obter os dados da empresa logada
-    response = supabase.table("empresa").select("logo, cor_emp").eq("id", empresa_id).execute()
+    response = supabase.table("empresa").select("logo, cor_emp,nome_empresa").eq("id", empresa_id).execute()
 
     if response.data:
         empresa = response.data[0]
         return jsonify({
             "logo": empresa.get("logo", "/static/img/logo.png"),
-            "cor_emp": empresa.get("cor_emp", "#343a40")
+            "cor_emp": empresa.get("cor_emp", "#343a40"),
+            "nome_empresa": empresa.get("nome_empresa", "Empresa não identificada")  # Inclui o nome da empresa
         }), 200
     else:
         return jsonify({"erro": "Dados da empresa não encontrados"}), 404
@@ -173,11 +174,18 @@ def listar_agendamentos():
 
     if not empresa_id or not usuario_id:
         return redirect(url_for('login.login'))
+     # Obtém informações da empresa logada
+    response_empresa = supabase.table("empresa").select("nome_empresa").eq("id", empresa_id).execute()
 
-    # Filtro para buscar apenas agendamentos que não estejam finalizados e que pertencem ao usuário logado
+    if not response_empresa.data:
+        return jsonify({"erro": "Empresa não encontrada"}), 404
+
+    
+
+  # Filtro para buscar apenas agendamentos que não estejam finalizados e que pertencem ao usuário logado
     response = supabase.table("agenda").select(
         "id, data, horario, descricao, cliente_id, servico_id, "
-        "clientes!agendamentos_cliente_id_fkey(nome_cliente), "
+        "clientes!agendamentos_cliente_id_fkey(nome_cliente, telefone), "
         "servicos!agendamentos_servico_id_fkey(nome_servico)"
     ).eq("id_empresa", empresa_id).eq("usuario_id", usuario_id).neq("status", "finalizado").execute()
 
@@ -189,15 +197,15 @@ def listar_agendamentos():
             "horario": item["horario"],
             "descricao": item.get("descricao", "Sem descrição"),  # Inclui a descrição com valor padrão
             "cliente_nome": item["clientes"]["nome_cliente"],
-            "servico_nome": item["servicos"]["nome_servico"]
-         
+            'telefone': item["clientes"]["telefone"],
+            "servico_nome": item["servicos"]["nome_servico"],
+            "nome_empresa": response_empresa.data[0]["nome_empresa"]
             
         }
         for item in response.data
     ]
-
-    return jsonify(agendamentos), 200
-
+  
+    return jsonify(agendamentos), 200 
 
 # Rota para retornar os clientes
 @agenda_bp.route('/api/clientes', methods=['GET'])
@@ -207,7 +215,7 @@ def listar_clientes():
 
     empresa_id = obter_id_empresa()
 
-    response = supabase.table("clientes").select("id, nome_cliente").eq("id_empresa", empresa_id).execute()
+    response = supabase.table("clientes").select("id, nome_cliente,telefone").eq("id_empresa", empresa_id).execute()
     return jsonify(response.data), 200
 
 # Rota para retornar os profissionais (usuários)
@@ -412,3 +420,26 @@ def verificar_notificacoes():
     total_nao_vistos = len(agendamentos_nao_vistos)
    
     return render_template('agenda.html', total_nao_vistos=total_nao_vistos)
+
+
+@agenda_bp.route('/api/usuario/logado', methods=['GET'])
+def obter_dados_usuario_logado():
+    """Retorna os dados do usuário logado."""
+    if verificar_login():
+        return verificar_login()
+
+    usuario_id = obter_id_usuario()
+    if not usuario_id:
+        return jsonify({"erro": "Usuário não encontrado nos cookies"}), 401
+
+    # Consulta ao banco de dados para obter os dados do usuário
+    response = supabase.table("usuarios").select("nome_usuario, email").eq("id", usuario_id).execute()
+
+    if response.data:
+        usuario = response.data[0]
+        return jsonify({
+            "nome_usuario": usuario.get("nome_usuario"),
+            "email": usuario.get("email")
+        }), 200
+    else:
+        return jsonify({"erro": "Dados do usuário não encontrados"}), 404

@@ -41,6 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         start: `${agendamento.data}T${agendamento.horario}`,
                         allDay: false,
                         descricao: agendamento.descricao,
+                        telefone: agendamento.telefone,
+                        empresa: agendamento.nome_empresa,
                         finalizado: agendamento.finalizado || false
                     }));
 
@@ -113,7 +115,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Atualiza o HTML da lista de agendamentos com os eventos filtrados.
             appointmentList.innerHTML = filteredAppointments.map(event => {
                 const eventDate = new Date(event.data + 'T00:00:00');
-                const isPast = eventDate < now; // Verifica se a data do evento é anterior à data atual.
+                const isPast = new Date(eventDate) < new Date(now);
+
                 return `
         <li class="appointment-item" style="background-color: ${isPast ? 'red' : 'transparent'}; color: ${isPast ? 'white' : 'black'};margin-top: 20px;">
             <div class="appointment-details">
@@ -158,20 +161,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Exemplo usando localStorage (onde o nome do usuário foi salvo após o login)
 
-function mostrarDetalhesAgendamento(event) {
+async function mostrarDetalhesAgendamento(event) {
     const modalBody = document.getElementById('modal-body');
     const modalTitle = document.getElementById('modal-title');
     modalTitle.textContent = ` ${event.title}`;
 
     modalBody.innerHTML = `
-        <p><strong>Cliente:</strong> ${event.title.split(' - ')[0]}</p>
-        <p><strong>Serviço:</strong> ${event.title.split(' - ')[1]}</p>
-        <p><strong>Data:</strong> ${event.start.toLocaleDateString()}</p>
-        <p><strong>Horário:</strong> ${event.start.toLocaleTimeString()}</p>
-        <p><strong>Descrição:</strong> ${event.extendedProps.descricao || 'Sem descrição'}</p>
-        <button class="btn btn-danger btn-cancelar">Cancelar</button>
-        <button class="btn btn-success btn-finalizar">Finalizar</button>
-    `;
+    <p><strong>Cliente:</strong> ${event.title.split(' - ')[0]}</p>
+    <p><strong>Serviço:</strong> ${event.title.split(' - ')[1]}</p>
+    <p><strong>Data:</strong> ${event.start.toLocaleDateString()}</p>
+    <p><strong>Horário:</strong> ${event.start.toLocaleTimeString()}</p>
+    <p><strong>Descrição:</strong> ${event.extendedProps.descricao || 'Sem descrição'}</p>
+    <p><strong>Telefone:</strong> ${event.extendedProps.telefone}</p>
+    <div class="button-group d-flex justify-content-end align-items-center mt-3">
+        <button class="btn btn-danger btn-cancelar me-2">Cancelar</button>
+        <button class="btn btn-success btn-finalizar me-2">Finalizar</button>
+        <a class="btn btn-success btn-sm whatsapp-button d-flex align-items-center" target="_blank" id="btnEnviarMensagem">
+            <i class="bi bi-whatsapp me-1"></i> Whatsapp
+        </a>
+    </div>
+`;
+
+
+    try {
+        const response = await fetch('/api/usuario/logado');
+        if (!response.ok) {
+            throw new Error('Erro ao buscar nome do usuário');
+        }
+        const data = await response.json();
+        if (data && data.nome_usuario) {
+            const nomeUsuario = data.nome_usuario;
+            const linkWhatsApp = `https://wa.me/+55${event.extendedProps.telefone}?text=Olá, ${event.title.split(' - ')[0]}. Sou ${nomeUsuario} da empresa ${event.extendedProps.empresa} e gostaria de falar com vocé. sobre o agendamento de: ${event.title.split(' - ')[1]} na data: ${event.start.toLocaleDateString()} às ${event.start.toLocaleTimeString()} `; 
+            document.getElementById('btnEnviarMensagem').setAttribute('href', linkWhatsApp);
+        }
+    } catch (error) {
+        console.error('Erro ao buscar nome do usuário:', error.message);
+    }
+
+
 
     const btnCancelar = document.querySelector('.btn-cancelar');
     if (btnCancelar) {
@@ -355,6 +382,12 @@ document.getElementById('form-agendamento').addEventListener('submit', function 
             console.error('Erro ao enviar os dados do agendamento:', error);
         });
 });
+
+
+ 
+
+
+
 function mostrarCarregamento() {
     document.getElementById('loading-screen').style.display = 'flex';
 }
