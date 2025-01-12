@@ -9,22 +9,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="/static/styles/style.css">
-    <link rel="stylesheet" href="/static/styles/users.css">
+    <link rel="stylesheet" href="/static/styles/clientes.css">
 </head>
-
 
 <body>
     <div>
         <button id="toggle-menu" class="d-block d-md-none"
-            style="background-color: transparent; border: none; font-size: 2rem; color: black; ;">
+            style="background-color: transparent; border: none; font-size: 2rem; color: black;">
             ☰
         </button>
     </div>
     <div class="d-flex">
         <!-- Menu Lateral -->
-      <div id="menu-container"></div>
+        <div id="menu-container"></div>
 
-       
         <!-- Conteúdo Principal -->
         <div class="container mt-4">
             <div id="loading">Carregando...</div>
@@ -49,7 +47,7 @@
                         <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="Digite o telefone do cliente" required>
                     </div>
                     <button type="submit" class="btn btn-success">Cadastrar</button>
-                    <button type="button" onclick="cancelarCadastro()" class="btn btn-success" style="background-color: red;">cancelar</button>
+                    <button type="button" onclick="cancelarCadastro()" class="btn btn-danger">Cancelar</button>
                 </form>
                 <hr>
             </div>
@@ -65,7 +63,6 @@
             </form>
 
             <!-- Tabela para exibir clientes -->
-           
             <p>
                 {% if query %}
                 Resultados para: <strong>{{ query }}</strong>
@@ -77,7 +74,7 @@
                 <table class="table table-striped">
                     <thead class="table-dark">
                         <tr>
-                            <th>Codigo do cliente</th>
+                   
                             <th>Nome</th>
                             <th>E-mail</th>
                             <th>Telefone</th>
@@ -87,18 +84,31 @@
                     <tbody>
                         {% for cliente in clientes %}
                         <tr>
-                            <td>{{ cliente.id }}</td>
+                        
                             <td>{{ cliente.nome_cliente }}</td>
                             <td>{{ cliente.email }}</td>
                             <td>{{ cliente.telefone }}</td>
                             <td>
-                                <!-- Botão para abrir o modal de edição -->
-                                <button class="btn btn-warning btn-sm" onclick="abrirModalEditar({{ cliente['id'] }}, '{{ cliente['nome_cliente'] }}', '{{ cliente['email'] }}', '{{ cliente['telefone'] }}')">
-                                    Editar
-                                </button>
-                                <a href="/excluir_cliente/{{ cliente.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Deseja realmente excluir este cliente?');">
-                                    <i class="bi bi-trash"></i> Excluir
-                                </a>
+                                <div class="btn-group">
+                                    <!-- Botão completo com texto -->
+                                    <a href="https://wa.me/+55{{ cliente.telefone }}?text={{ 'Olá, ' + cliente.nome_cliente + '. Sou ' + nome_usuario + ' e gostaria de falar com você.' }}" 
+                                       class="btn btn-success btn-sm" target="_blank">
+                                        <i class="bi bi-whatsapp"></i> WhatsApp
+                                    </a>
+                                    
+                                    <!-- Botão com ícone apenas, visível em telas pequenas -->
+                                    <a id="btnEnviarMensagem-responsivo" href="https://wa.me/+55{{ cliente.telefone }}?text={{ 'Olá, ' + cliente.nome_cliente + '. Sou ' + nome_usuario + ' e gostaria de falar com você.' }}" 
+                                       class="btn btn-success btn-sm" target="_blank">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </a>
+                                
+                                    <!-- Botão Editar -->
+                                    <button class="btn btn-warning btn-sm" onclick="abrirModalEditar({{ cliente.id }}, '{{ cliente.nome_cliente }}', '{{ cliente.email }}', '{{ cliente.telefone }}')">
+                                        Editar
+                                    </button>
+                                </div>
+                                
+                               
                             </td>
                         </tr>
                         {% endfor %}
@@ -107,77 +117,96 @@
             </div> <!-- Fim da caixa de rolagem -->
         </div>
     </div>
+
     <!-- Modal de Edição -->
-    <div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-labelledby="modalEditarClienteLabel" aria-hidden="true">
+    <div class="modal fade" id="editarClienteModal" tabindex="-1" aria-labelledby="editarClienteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarClienteLabel">Editar Cliente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editarClienteModalLabel">Editar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formEditarCliente">
-                        <input type="hidden" id="editarClienteId" name="id">
+                    <form id="editarClienteForm">
+                        <input type="hidden" id="editarClienteId">
                         <div class="mb-3">
                             <label for="editarNome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="editarNome" name="nome" required>
+                            <input type="text" class="form-control" id="editarNome">
                         </div>
                         <div class="mb-3">
-                            <label for="editarEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="editarEmail" name="email" required>
+                            <label for="editarEmail" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="editarEmail">
                         </div>
                         <div class="mb-3">
                             <label for="editarTelefone" class="form-label">Telefone</label>
-                            <input type="tel" class="form-control" id="editarTelefone" name="telefone" required>
+                            <input type="tel" class="form-control" id="editarTelefone">
                         </div>
-                        <button type="submit" class="btn btn-success">Salvar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btnExcluirCliente" onclick="excluirCliente()">Excluir</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarCliente" onclick="salvarCliente()">Salvar</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="static/scripts/menu.js"></script>
     <script>
+        // Exemplo para bloquear o scroll da página
+document.body.classList.add('no-scroll');
+
+// Exemplo para liberar o scroll da página
+document.body.classList.remove('no-scroll');
         renderMenu('menu-container');
-    </script>
-    
-    <!-- Scripts -->
-    <script>
+
+        // Função para exibir o formulário de cadastro
+        function exibirFormulario() {
+            document.getElementById('formularioCadastro').style.display = 'block';
+            document.getElementById('btnCriarCliente').style.display = 'none';
+        }
+
+        // Função para esconder o formulário de cadastro
+        function cancelarCadastro() {
+            document.getElementById('formularioCadastro').style.display = 'none';
+            document.getElementById('btnCriarCliente').style.display = 'block';
+        }
+
         // Função para abrir o modal de edição com os dados do cliente
         function abrirModalEditar(id, nome, email, telefone) {
             $('#editarClienteId').val(id);
             $('#editarNome').val(nome);
             $('#editarEmail').val(email);
             $('#editarTelefone').val(telefone);
-
-            // Exibe o modal
-            const modalEditarCliente = new bootstrap.Modal(document.getElementById('modalEditarCliente'));
-            modalEditarCliente.show();
+            $('#editarClienteModal').modal('show');
         }
 
-        // Função para enviar os dados do cliente via AJAX com validação
-        $('#formEditarCliente').on('submit', function (event) {
-            event.preventDefault(); // Evita o reload da página
+        // Função para excluir o cliente
+        function excluirCliente() {
+            const id = $('#editarClienteId').val();
+            if (confirm('Deseja realmente excluir este cliente?')) {
+                $.ajax({
+                    url: `/excluir_cliente/${id}`,
+                    method: 'POST',
+                    success: function () {
+                        alert('Cliente excluído com sucesso.');
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Erro ao excluir cliente.');
+                    }
+                });
+            }
+        }
 
+        // Função para salvar as alterações no cliente
+        function salvarCliente() {
             const id = $('#editarClienteId').val();
             const nome = $('#editarNome').val();
             const email = $('#editarEmail').val();
             const telefone = $('#editarTelefone').val();
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const telefoneRegex = /^[0-9]{10,11}$/;
-
-            if (!emailRegex.test(email)) {
-                alert('Por favor, insira um e-mail válido.');
-                return;
-            }
-
-            if (!telefoneRegex.test(telefone)) {
-                alert('Por favor, insira um telefone válido (10 ou 11 dígitos).');
-                return;
-            }
 
             $.ajax({
                 url: `/editar_cliente/${id}`,
@@ -191,12 +220,6 @@
                     alert('Erro ao atualizar cliente.');
                 }
             });
-        });
-
-        // Função para exibir o formulário de cadastro
-        function exibirFormulario() {
-            document.getElementById('formularioCadastro').style.display = 'block';
-            document.getElementById('btnCriarCliente').style.display = 'none';
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

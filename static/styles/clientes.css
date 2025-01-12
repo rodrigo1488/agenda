@@ -1,0 +1,147 @@
+/* Estilos para a caixa de rolagem da lista */
+.tabela-scroll {
+    max-height: 400px;  /* Define a altura máxima da lista */
+    overflow-y: auto;   /* Adiciona a rolagem vertical */
+}
+
+/* Bloqueia o scroll da página */
+body {
+    overflow: hidden; /* Bloqueia a rolagem da página */
+}
+
+/* Estilos para fixar o cabeçalho da tabela */
+.tabela-scroll thead {
+    position: sticky;
+    top: 0;
+    background-color: #343a40; /* Cor de fundo para o cabeçalho */
+    z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
+}
+
+/* Estilos para o header */
+header {
+    display: flex;               /* Usando flexbox para alinhar os itens */
+    justify-content: space-between; /* Espaço entre os itens, posicionando-os nos extremos */
+    align-items: center;          /* Alinha verticalmente os itens ao centro */
+    padding: 10px 20px;           /* Adiciona um pouco de espaçamento ao redor */
+}
+
+/* Ajuste para o botão do menu */
+#toggle-menu {
+    font-size: 2rem;  /* Tamanho do ícone */
+    color: black;
+    background-color: transparent;
+    border: none;
+}
+
+/* Ajuste para o botão Criar Cliente */
+#btnCriarCliente {
+    margin-left: auto; /* Esse botão vai se alinhar à direita */
+    margin-top: 0;
+}
+
+/* Estilos para os botões (editar, WhatsApp) */
+.botoes {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;  /* Espaçamento entre os botões */
+    align-items: center;
+    margin-top: 10px; /* Separação das linhas */
+}
+
+/* Ajuste no tamanho dos botões no modo normal (desktop) */
+.botoes button {
+    font-size: 1rem;
+    padding: 10px 15px;
+    flex-grow: 1; /* Faz os botões ocuparem o mesmo espaço */
+    text-align: center; /* Centraliza o texto dentro dos botões */
+}
+#btnEnviarMensagem-responsivo{
+    display: none;
+}
+
+/* Estilo para dispositivos móveis */
+@media (max-width: 768px) {
+    /* Esconder as colunas específicas em dispositivos móveis */
+    .table th:nth-child(2), /* E-mail */
+    .table td:nth-child(2),
+    .table th:nth-child(3), /* Telefone */
+    .table td:nth-child(3) {
+        display: none;
+    }
+    .btnEnviarMensagem-responsivo{
+        display:block;
+    }
+    /* Estilo para o botão de voltar */
+    #btnVoltar {
+        margin-left: 2%;
+        display: block;
+    }
+
+    /* Ajuste da exibição do botão de menu */
+    #toggle-menu {
+        font-size: 1.5rem;
+    }
+
+    /* Ajuste do conteúdo principal */
+    .container {
+        padding: 0 10px;
+    }
+
+    /* Ajustar os botões em dispositivos móveis */
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+
+    /* Ajuste nos botões de editar e WhatsApp */
+    .botoes {
+        flex-direction: row; /* Alinha os botões horizontalmente */
+        gap: 20px;           /* Maior espaçamento entre os botões */
+        align-items: center; /* Centraliza os botões */
+    }
+
+    .botoes button {
+        font-size: 0.9rem;      /* Reduz o tamanho da fonte */
+        width: 45%;             /* Faz os botões ocuparem 45% da largura */
+        padding: 8px 10px;      /* Ajusta o padding para caber melhor na tela */
+    }
+
+    /* Esconde o botão de WhatsApp com texto e exibe o ícone apenas */
+    .btn.btn-success.btn-sm {
+        display: none; /* Esconde o botão completo */
+    }
+
+    /* Exibe o botão de WhatsApp com ícone apenas */
+    #btnEnviarMensagem-responsivo {
+        display: inline-block; /* Mostra o botão com ícone */
+    }
+}
+
+/* Estilo para dispositivos maiores (desktop) */
+@media (min-width: 769px) {
+
+  .btn btn-success btn-sm {
+    .btn-group {
+
+     display: flex;
+     flex-direction: row;
+     justify-content: center;
+     align-items: center;
+     gap: 10px;
+    
+    }
+    /* Esconder o botão de voltar em telas grandes */
+    #btnVoltar {
+        display: none;
+    }
+
+    /* Esconde o botão de WhatsApp com ícone em telas maiores */
+    #btnEnviarMensagem-responsivo {
+        display: none;
+    }
+
+    /* Exibe o botão de WhatsApp completo com texto em telas maiores */
+    .btn.btn-success.btn-sm {
+        display: inline-block;
+    }
+}

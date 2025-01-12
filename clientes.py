@@ -20,6 +20,17 @@ def verificar_login():
     return None
 
 # Rota para listar todos os clientes
+# Função para pegar os dados do usuário logado
+def get_user_data():
+    user_id = request.cookies.get('user_id')
+    if user_id:
+        # Supondo que você tenha uma tabela de usuários no Supabase, vamos pegar o nome do usuário logado
+        response = supabase.table('usuarios').select('nome_usuario').eq('id', user_id).execute()
+        if response.data:
+            return response.data[0]['nome_usuario']
+    return None
+
+# Rota para listar todos os clientes
 @clientes_bp.route('/clientes')
 def clientes():
     # Verifica se o usuário está logado
@@ -47,10 +58,12 @@ def clientes():
                         .execute())
 
         clientes = response.data if response.data else []
-        return render_template('clientes.html', clientes=clientes, query=query, error=error)
+        nome_usuario = get_user_data()  # Recupera o nome do usuário logado
+        return render_template('clientes.html', clientes=clientes, query=query, error=error, nome_usuario=nome_usuario)
     except Exception as e:
         print(f"Erro ao listar clientes: {e}")
         return render_template('clientes.html', clientes=[], query=query, error="Erro ao listar clientes.")
+
 
 # Rota para cadastrar um novo cliente
 @clientes_bp.route('/add_cliente', methods=['POST'])
@@ -126,7 +139,7 @@ def editar_cliente(id):
             return redirect(url_for('clientes_bp.clientes', error="Erro ao editar cliente."))
 
 # Rota para excluir cliente
-@clientes_bp.route('/excluir_cliente/<int:id>', methods=['GET'])
+@clientes_bp.route('/excluir_cliente/<int:id>', methods=['POST'])
 def excluir_cliente(id):
     # Verifica se o usuário está logado
     redirecionar = verificar_login()
