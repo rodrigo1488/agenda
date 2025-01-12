@@ -102,17 +102,18 @@ def editar_usuario():
         print(f"Erro ao editar usuário: {e}")
         return render_template('usuarios.html', error="Erro ao editar usuário.")
 
-@users_bp.route('/usuarios/excluir/<int:id_usuario>', methods=['GET'])
+@users_bp.route('/usuarios/excluir/<int:id_usuario>', methods=['POST'])
 def excluir_usuario(id_usuario):
-    # Verifica se o usuário está logado
-    if verificar_login():
-        return verificar_login()
-
+    print(f"ID do Usuário a ser excluído: {id_usuario}")  # Exibe no log
+    # Verifique se os dados estão chegando corretamente
+    print(f"Dados recebidos: {request.form}")
+    
     try:
-        # Exclui apenas se o usuário pertence à empresa logada
+        # Seu código de exclusão
         supabase.table('usuarios').delete().eq('id', id_usuario).eq('id_empresa', request.cookies.get('empresa_id')).execute()
 
-        return redirect(url_for('users.gerenciar_usuarios'))
+        return '', 204  # Retorna sucesso sem corpo
     except Exception as e:
         print(f"Erro ao excluir usuário: {e}")
-        return render_template('usuarios.html', error="Erro ao excluir usuário.")
+        return 'Erro ao excluir usuário.', 400
+

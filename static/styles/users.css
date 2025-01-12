@@ -12,6 +12,12 @@
         z-index: 1; /* Garante que o cabeçalho fique acima da tabela */
     }
 
+    .btn-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px; /* Espaçamento entre os botões */
+        margin-top: 15px; /* Espaço acima do grupo de botões */
+    }
 
     /* Estilo para dispositivos móveis */
 @media (max-width: 768px) {
