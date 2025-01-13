@@ -46,7 +46,7 @@ body {
     background: #ffffff;
     margin-bottom: 10px;
     border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 #appointment-list li:last-child {
@@ -84,7 +84,7 @@ select#filter {
 
 .appointment-item {
     display: flex;
-    flex-direction: column;
+   
     justify-content: space-between;
     align-items: flex-start;
     background: #ffffff;
@@ -95,7 +95,8 @@ select#filter {
 }
 
 .appointment-details {
-    max-width: 100%;
+    width: 100%; /* Garante que o contêiner use todo o espaço disponível */
+    box-sizing: border-box; /* Inclui padding e border no tamanho total */
     font-size: 14px;
     line-height: 1.5;
     color: #333;
@@ -124,6 +125,7 @@ select#filter {
 }
 
 button {
+  
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -132,11 +134,13 @@ button {
 }
 
 button.btn-cancelar {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
     background: #dc3545;
     color: #fff;
 }
 
 button.btn-finalizar {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
     background: #28a745;
     color: #fff;
 }
@@ -175,33 +179,42 @@ button:hover {
     gap: 30px; /* Espaçamento entre os botões */
     margin-top: 15px; /* Espaço acima do grupo de botões */
 }
-
 .button-group-2 {
     display: flex;
-    justify-content: flex-end;
-    gap: 5px; /* Espaçamento entre os botões */
-    margin-top: 15px; /* Espaço acima do grupo de botões */
+    flex-wrap: wrap; /* Permite que os botões se ajustem em múltiplas linhas se necessário */
+    justify-content: space-between; /* Distribui o espaço horizontal entre os botões */
+    gap: 8px; /* Espaçamento entre os botões */
+    padding: 8px;
+    box-sizing: border-box;
 }
 
-
-.whatsapp-button-container {
-    position: relative; /* Certifica-se de que o botão esteja dentro do contexto do modal */
+.button-group-2 .btn {
+    flex: 1 1 calc(33.33% - 8px); /* Cada botão ocupa um terço da largura disponível, com espaço para o gap */
+    min-width: 100px; /* Tamanho mínimo para evitar botões muito pequenos */
+    padding: 10px;
+    text-align: center;
 }
+
 
 .whatsapp-button {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center; /* Alinha o ícone e o texto verticalmente */
-    justify-content: center; /* Garante o alinhamento horizontal */
-    height: 38px; /* Certifique-se de que a altura do botão seja igual aos outros */
-    padding: 0 15px; /* Ajuste o preenchimento interno para equilibrar o conteúdo */
-    background-color: #25d366; /* Cor do WhatsApp */
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Limita o tamanho do botão */
+    height: 36px;
+    background-color: #25d366;
     color: white;
     border-radius: 5px;
-    text-decoration: none; /* Remove o sublinhado */
+    text-decoration: none;
+}
+
+.whatsapp-button i {
+    margin-right: 4px;
 }
 
 .whatsapp-button:hover {
-    background-color: #1ebe57; /* Cor no hover */
+    background-color: #1ebe57;
 }
 
 

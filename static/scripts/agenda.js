@@ -147,9 +147,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     return `
                     <div class="appointment-details">
-                        <li class="appointment-item" style="background-color: ${isPast ? 'transparent' : 'transparent'}; color: ${isPast ? 'red' : 'black'}; margin-top: 20px;">
-                                <strong>${event.cliente_nome}</strong> - ${event.servico_nome} <br>
-                                <span>${eventDate.toLocaleDateString()} às ${event.horario}</span>
+                        <li class="appointment-item" style="background-color: ${isPast ? 'blanchedalmond' : 'transparent'}; color: ${isPast ? 'red' : 'black'}; margin-top: 20px;">
+                        <div>
+
+                                <strong>${event.cliente_nome} - ${event.servico_nome}</strong> <br>
+                                <span><strong>Data:</strong> ${eventDate.toLocaleDateString()} às ${event.horario}</span>
+                    </div>
                                 <div class="button-group-2">
                                 <button class="btn btn-danger btn-cancelar" data-id="${event.id}">Cancelar</button>
                                 <button class="btn btn-success btn-finalizar" data-id="${event.id}">Finalizar</button>
