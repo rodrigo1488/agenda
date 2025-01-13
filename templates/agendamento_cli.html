@@ -23,7 +23,7 @@
 
 
         <!-- Campo de busca -->
-        <div class="mb-3">
+        <div class="mb-3" id="search-container">
             <strong>Selecione uma empresa para agendar um horário:</strong>
             <input id="search-bar" type="text" class="form-control" placeholder="Buscar empresa por nome">
         </div>
@@ -33,9 +33,9 @@
         <!-- Modal de Agendamento -->
         <div id="modal-agendamento" style="display: none;">
         
-            <button id="fechar-modal" class="fechar-modal-btn">
+            <button id="fechar-modal" class="fechar-modal-btn" style="display: none;">
                 <i class="bi bi-x-circle"></i>
-            </button>
+            </button >
             
             <h2>Agendar um horario</h2>
             <hr>
@@ -52,12 +52,15 @@
                 <div id="horario-selecionado"></div>
                 <label for="descricao">Descrição</label>
                 <textarea name="descricao" placeholder="Descrição (opcional)"></textarea>
-                <hr>
+                 <hr>
+                 
+                
                 <h4>Suas informações</h4>
                 <input type="text" name="nome" placeholder="Seu nome" required />
                 <input id="telefone-input" type="tel" name="telefone" placeholder="Telefone" required />
                 <input type="email" name="email" placeholder="E-mail" required />
                 <button type="submit">Agendar</button>
+
             </form>
         </div>
         <div id="loading-screen"

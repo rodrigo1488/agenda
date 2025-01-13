@@ -190,7 +190,11 @@ function abrirModalAgendamento(empresaId) {
     carregarFuncionarios(empresaId);
     carregarServicos(empresaId);
     document.getElementById('modal-agendamento').style.display = 'block';
+    document.getElementById('empresas-lista').style.display = 'none';
+    document.getElementById('search-container').style.display = 'none';
 }
+
+
 
 document.getElementById('form-agendamento').onsubmit = async function (e) {
     e.preventDefault();
