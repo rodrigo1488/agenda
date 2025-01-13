@@ -149,6 +149,8 @@ button:hover {
     }
 }
 .mb-3 {margin-top: 3%;
+
+    max-width: 80%;
 }
 
 .card {
