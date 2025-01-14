@@ -199,22 +199,17 @@ footer .footer-btn:hover {
         gap: 10px;
         padding: 10px;
     }
-
-
-    .header .header-link {
-        font-size: 16px;
-        text-transform: uppercase;
     
-        height: 40px;
-        width: 140px;
-         background-color: #007bff;
-         color: #fff;
-         text-decoration: none;
-         font-weight: bold;
-         border-radius: 8px;
-         transition: background-color 0.3s, transform 0.3s;
-     }
-     
+    header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        max-height: 60px;
+    }
+
  
 }
 
@@ -238,19 +233,16 @@ footer .footer-btn:hover {
         border-radius: 8px;
     }
     
-    .header .header-link {
-       font-size: 16px;
-       text-transform: uppercase;
-   
-       height: 40px;
-       width: 140px;
-        background-color: #007bff;
-        color: #fff;
-        text-decoration: none;
-        font-weight: bold;
-        border-radius: 8px;
-        transition: background-color 0.3s, transform 0.3s;
+    header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        max-height: 60px;
     }
+
     
 }
 

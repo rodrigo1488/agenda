@@ -16,7 +16,7 @@
 <header class="header position-fixed top-0 start-0 w-100 bg-dark p-3 d-flex justify-content-between align-items-center" style="z-index: 100;">
     <img src="/static/img/agendamento.png" alt="sua agenda" class="logo-header">
     <a href="https://wa.me/+5534997227288?text='Gostaria de ter minha agenda'"
-     class="header-link" target='blank' style="background-color: #FDC81D;">Quero a minha agenda</a>
+     class="header-link" target='blank' style="background-color: #FDC81D;">cadastre-se</a>
 </header>
 
 <!-- Modal de Login -->
@@ -25,7 +25,7 @@
     <div class="modal-content" style="background-color: #1e1e1e; color: white;">
       <div class="modal-header">
         <h5 class="modal-title" id="loginModalLabel">Login</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar" style="background-color: red;"></button>
       </div>
       <div class="modal-body">
         <!-- Exibe mensagens de erro -->
@@ -43,7 +43,7 @@
 
         <form method="POST" action="{{ url_for('login.login') }}">
             <div class="text-center mb-4">
-                <img src="/static/img/logo login.png" alt="Logo" style="border: none; height: 100px; width: auto;">
+                <img src="/static/img/logo login.png" alt="Logo" style="border: none; height: 80px; width: auto;">
             </div>
         
             <div class="mb-3">
