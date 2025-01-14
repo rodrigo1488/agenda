@@ -79,7 +79,7 @@ def verificar_agendamentos():
         except Exception as e:
             print(f"Erro ao verificar agendamentos: {e}")
 
-        time.sleep(10)
+        time.sleep(30)
         print("Verificando agendamentos...")
 
 
