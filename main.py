@@ -30,7 +30,7 @@ app.register_blueprint(lembrete_email_bp)
 scheduler = APScheduler()
 
 # Atualizando o agendador para permitir múltiplas instâncias simultâneas
-@scheduler.task('interval', id='verificar_agendamentos', seconds=30, max_instances=3)
+@scheduler.task('interval', id='verificar_agendamentos', seconds=120, max_instances=3)
 def scheduled_task():
     verificar_agendamentos()
 
