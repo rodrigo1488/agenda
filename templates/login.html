@@ -14,11 +14,9 @@
 <body class="d-flex justify-content-center align-items-center" style="height: 100vh; background-color: #121212; padding-top: 80px;">
 
 <header class="header position-fixed top-0 start-0 w-100 bg-dark p-3 d-flex justify-content-between align-items-center" style="z-index: 100;">
-    <img src="/static/img/agendamento.png" alt="Sua Agenda" class="logo-header" style="height: 60px; width: auto;">
-    <a href="https://wa.me/34997227288?text=${encodeURIComponent('Gostaria de ter minha agenda')}" class="header-link" 
-       style="color: white; font-weight: bold; text-decoration: none; padding: 10px 20px; background-color: #007bff; border-radius: 8px; transition: background-color 0.3s;">
-        cadastrar
-    </a>
+    <img src="/static/img/agendamento.png" alt="sua agenda" class="logo-header">
+    <a href="https://wa.me/+5534997227288?text='Gostaria de ter minha agenda'"
+     class="header-link" target='blank' style="background-color: #FDC81D;">Quero a minha agenda</a>
 </header>
 
 <!-- Modal de Login -->
@@ -77,8 +75,8 @@
 
     <!-- Botões -->
     <div id="buttons" class="text-center">
-        <a href="/agendamento" class="btn btn-secondary w-100 mb-2">Quero fazer um agendamento</a>
-        <button class="btn btn-outline-light w-100" data-bs-toggle="modal" data-bs-target="#loginModal">Quero acessar minha agenda</button>
+        <a href="/agendamento" class="btn btn-primary">Sou cliente</a>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginModal">Quero acessar minha agenda</button>
     </div>
 </div>
 <script src="/static/scripts/script.js"></script>
