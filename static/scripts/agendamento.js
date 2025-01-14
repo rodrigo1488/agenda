@@ -1,5 +1,5 @@
 document.getElementById('fechar-modal').addEventListener('click', function () {
-    document.getElementById('modal-agendamento').style.display = 'none';
+   window.location.reload();
 });
 
 document.addEventListener('DOMContentLoaded', function () {

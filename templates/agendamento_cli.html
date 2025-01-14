@@ -34,14 +34,11 @@
         <!-- Modal de Agendamento -->
         <div id="modal-agendamento" style="display: none;">
 
-            <button id="fechar-modal" class="fechar-modal-btn" style="display: none;">
-                <i class="bi bi-x-circle"></i>
-            </button>
             <h2>Agendar um horario</h2>
             <hr>
-
+            
             <form id="form-agendamento">
-                <h4>Selecione o servico e o profissional</h4>
+                <h4 class="titulo">Selecione o servico e o profissional</h4>
                 <select name="servico_id" required>
                 </select>
                 <select id="profissional-select" name="usuario_id" required>
@@ -53,31 +50,32 @@
                 <label for="descricao" class="form-label">Descrição</label>
                 <textarea name="descricao" placeholder="Descrição (opcional)"></textarea>
                 <hr>
-
-
+                
+                
                 <h4>Suas informações</h4>
                 <input type="text" name="nome" placeholder="Seu nome" required />
                 <input id="telefone-input" type="tel" name="telefone" placeholder="Telefone" required />
                 <input type="email" name="email" placeholder="E-mail" required />
 
                 <button type="submit" class="btn btn-success">Agendar</button>
+                <button id="fechar-modal" class="btn btn-danger">cancelar</button>
             </form>
-
+            
             <div id="loading-screen"
-                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
-                <div class="spinner"
-                    style="width: 50px; height: 50px; border: 5px solid #ccc; border-top: 5px solid #000; border-radius: 50%; animation: spin 1s linear infinite;">
-                </div>
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+            <div class="spinner"
+            style="width: 50px; height: 50px; border: 5px solid #ccc; border-top: 5px solid #000; border-radius: 50%; animation: spin 1s linear infinite;">
+        </div>
                 <p style="color: #fff; margin-top: 10px;"> Agendando...</p>
             </div>
-
+            
             <script src="/static/scripts/agendamento.js">  </script>
-</body>
-</div>
-<footer class="footer">
-    <a href="/login" class="footer-btn">inicio</a>
-    <a href="/agenda_cliente" class="footer-btn">Ver meus agendamentos</a>
-</footer>
-
-
-</html>
+        </body>
+    </div>
+    <footer class="footer">
+        <a href="/login" class="footer-btn">inicio</a>
+        <a href="/agenda_cliente" class="footer-btn">Ver meus agendamentos</a>
+    </footer>
+    
+    
+    </html>
