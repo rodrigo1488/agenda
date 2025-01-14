@@ -3,24 +3,19 @@ body {
     background-color: #121212;
     color: #f5f5f5;
     margin: 0;
-    padding: 0;
-    padding-bottom: 100px; /* Adiciona espaço para o footer fixo */
+    padding: 0 0 100px 0; /* Inclui espaço para o footer fixo */
 }
 
 .corpo {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
     align-items: center;
-    background-color: #121212;
-    color: #f5f5f5;
-    padding-bottom: 100px; /* Espaço para o footer */
 }
 
 
-header{
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -29,36 +24,21 @@ header{
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
+.form-label{
+    display: none;
+}
+
 h1 {
     text-align: center;
     margin: 20px 0;
-    color: #f5f5f5; /* Texto claro */
 }
 
-/* #modal-agendamento {
-    border: solid 1px grey;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #1e1e1e;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-    width: 90%;
-    max-width: 400px;
-    color: #f5f5f5;
-    z-index: 2000; 
-} */
-
-/* Estilo do Footer */
 .footer {
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 15px;
     background-color: #1e1e1e;
-    color: #f5f5f5;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
     position: fixed;
     bottom: 0;
@@ -67,127 +47,91 @@ h1 {
     z-index: 1000;
 }
 
-.footer-btn {
-    color: #f5f5f5;
+.mb-3{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 90%;
+}
+.footer-btn,
+.header .header-link {
+    color: #fff;
     text-decoration: none;
     font-weight: bold;
     padding: 10px 20px;
     background-color: #007bff;
     border-radius: 8px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-.footer-btn:hover {
+.footer-btn:hover,
+.header .header-link:hover {
     background-color: #0056b3;
+    transform: scale(1.05);
 }
-.footer-btn:hover {
-    background-color: #0056b3;
-}
+
 .header img {
     height: 80px;
     width: auto;
     border-radius: 8px;
 }
 
-.header .header-link {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 8px;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.header .header-link:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-input, select, textarea, button {
+input,
+select,
+textarea,
+button {
     padding: 10px;
     font-size: 12px;
-    border: 1px solid #333; /* Ajustando borda para fundo escuro */
+    border: 1px solid #333;
     border-radius: 5px;
-    background-color: #2c2c2c; /* Fundo dos inputs escuro */
-    color: #f5f5f5; /* Texto claro */
+    background-color: #2c2c2c;
+    color: #f5f5f5;
 }
 
-button {
-    background-color: #007BFF;
+button,
+.btn-agendar {
+    background-color: #007bff;
     color: #fff;
     border: none;
     cursor: pointer;
+    border-radius: 4px;
+    padding: 7px 8px;
 }
 
-button:hover {
+button:hover,
+.btn-agendar:hover {
     background-color: #0056b3;
 }
 
 #empresas-lista {
-    display: grid;
-    align-items: center;
-    justify-content: center;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    justify-content: center;
     margin-top: 10px;
 }
 
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-.mb-3 {margin-top: 3%;
-
-    max-width: 80%;
-}
 
 .card {
-    border: 1px solid #333; /* Ajustando borda para combinar com fundo escuro */
+    border: 1px solid #333;
     border-radius: 8px;
     width: 350px;
     height: 155px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     overflow: hidden;
-    background-color: #292929; /* Fundo escuro */
-    color: #f5f5f5; /* Texto claro */
+    background-color: #292929;
+    color: #f5f5f5;
 }
 
 .card-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
-   
 }
 
 .card-title {
     font-size: 18px;
     font-weight: bold;
-    color: #f5f5f5; /* Texto claro */
     margin-bottom: 8px;
-}
-
-.btn-agendar {
-    padding: 7px 8px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-agendar:hover {
-    background-color: #0056b3;
 }
 
 .tiulo {
@@ -203,17 +147,6 @@ button:hover {
     height: 100px;
 }
 
-.fechar-modal-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 30px;
-    color: #f5f5f5; /* Texto claro */
-    cursor: pointer;
-}
-
 .fechar-modal-btn i {
     pointer-events: none;
 }
@@ -221,15 +154,57 @@ button:hover {
 #horarios-disponiveis {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin: 10px 0;
 }
+
 
 @media screen and (max-width: 768px) {
     .header-link {
         font-size: 10px;
     }
+    .form-label{
+        display: block;
+    }
+
+
+    header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        max-height: 60px;
+    }
+
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .corpo {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #121212;
+    color: #f5f5f5;
+}
+
+
+    #modal-agendamento {
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        width: 90%;
+        max-width: 400px;
+        color: #f5f5f5;
+       
+    } 
+    
     #empresas-lista {
         align-items: center;
         justify-content: center;
@@ -238,5 +213,14 @@ button:hover {
         gap: 10px;
         margin-top: 10px;
         flex-direction: column;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
