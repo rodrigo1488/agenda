@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for
-
+from flask_apscheduler import APScheduler
 from services import services_bp
 from users import users_bp
 from clientes import clientes_bp
@@ -8,12 +8,11 @@ from agenda import agenda_bp
 from login import login_bp
 from agendamento import agendamento_bp
 from agenda_cliente import agenda_cliente_bp
-from lembrete_email import lembrete_email_bp, iniciar_verificacao
+from lembrete_email import lembrete_email_bp, verificar_agendamentos  # Importe a função aqui
 import os
 
+# Configuração do Flask
 app = Flask(__name__)
-
-# Definindo a chave secreta para uso de sessões
 app.secret_key = os.urandom(24)
 
 # Registrando os Blueprints
@@ -27,14 +26,20 @@ app.register_blueprint(agendamento_bp)
 app.register_blueprint(agenda_cliente_bp)
 app.register_blueprint(lembrete_email_bp)
 
+# Configuração do agendador
+scheduler = APScheduler()
+
+# Atualizando o agendador para permitir múltiplas instâncias simultâneas
+@scheduler.task('interval', id='verificar_agendamentos', seconds=30, max_instances=3)
+def scheduled_task():
+    verificar_agendamentos()
 
 @app.route("/")
 def inicio():
     return redirect(url_for('agenda_bp.renderizar_agenda'))
 
-
-
-# A função abaixo não será usada no Render, pois o Gunicorn será responsável pela execução
+# Iniciar o agendador
 if __name__ == '__main__':
-     iniciar_verificacao()
-     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)  # Remover ou comentar
+    scheduler.init_app(app)
+    scheduler.start()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

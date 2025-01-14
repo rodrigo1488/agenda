@@ -1,12 +1,15 @@
-from flask import Flask, Blueprint
-import threading
-from supabase import create_client
-import os
-import smtplib
+from flask import Blueprint
+from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import smtplib
 import time
-from datetime import datetime, timedelta
+from supabase import create_client
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
+import os
+import threading
+
 
 supabase_url = 'https://gccxbkoejigwkqwyvcav.supabase.co'
 supabase_key = os.getenv(
@@ -15,11 +18,12 @@ supabase_key = os.getenv(
 )
 supabase = create_client(supabase_url, supabase_key)
 
-supabase = create_client(supabase_url, supabase_key)
+
 
 # Criação do Blueprint
 lembrete_email_bp = Blueprint('lembrete_email_bp', __name__)
 
+# Função para enviar e-mail
 def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
     try:
         servidor_smtp = 'smtp.gmail.com'
@@ -38,7 +42,16 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
     except smtplib.SMTPException as e:
         print(f"Erro ao enviar e-mail: {e}")
 
+# Função para verificar agendamentos
+lock = threading.Lock()
+
 def verificar_agendamentos():
+    if lock.locked():
+        print("A tarefa já está sendo executada. Esperando...")
+        return
+    with lock:
+        # O código da verificação de agendamentos vai aqui
+        print("Verificando agendamentos...")
     while True:
         agora = datetime.now()
         tempo_limite = agora + timedelta(minutes=30)
@@ -79,18 +92,18 @@ def verificar_agendamentos():
         except Exception as e:
             print(f"Erro ao verificar agendamentos: {e}")
 
-        time.sleep(30)
-        print("Verificando agendamentos...")
+# Função para iniciar o scheduler
+def iniciar_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(verificar_agendamentos, 'interval', minutes=5)
+    scheduler.start()
 
+    # Registrar um evento para lidar com a execução do job
+    def job_listener(event):
+        if event.exception:
+            print(f"Ocorreu um erro no job: {event.job_id}")
+        else:
+            print(f"Job {event.job_id} executado com sucesso!")
 
-
-import threading
-
-def iniciar_verificacao():
-    """Inicia o loop de verificação em segundo plano"""
-    thread = threading.Thread(target=verificar_agendamentos, daemon=True)
-    thread.start()
-
-
-
+    scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 
