@@ -28,7 +28,6 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
     try:
         servidor_smtp = 'smtp.gmail.com'
         porta_smtp = 587
-
         msg = MIMEMultipart()
         msg['From'] = email_remetente
         msg['To'] = destinatario
@@ -39,6 +38,7 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
             servidor.starttls()
             servidor.login(email_remetente, senha_remetente)
             servidor.send_message(msg)
+            print("E-mail enviado com sucesso!")
     except smtplib.SMTPException as e:
         print(f"Erro ao enviar e-mail: {e}")
 
