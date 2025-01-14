@@ -34,8 +34,9 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
             servidor.starttls()
             servidor.login(email_remetente, senha_remetente)
             servidor.send_message(msg)
+            print(f"E-mail enviado para {destinatario} com sucesso.")
     except smtplib.SMTPException as e:
-        pass
+        print(f"Erro ao enviar e-mail: {e}")
 
 # Função para verificar e enviar lembretes
 def verificar_agendamentos():
@@ -49,6 +50,7 @@ def verificar_agendamentos():
                 for agendamento in agendamentos.data:
                     data_horario = datetime.strptime(f"{agendamento['data']} {agendamento['horario']}", "%Y-%m-%d %H:%M:%S")
                     if agora <= data_horario <= tempo_limite and not agendamento.get('notificado'):
+                        print(f"Verificação agendada para agendamento ID {agendamento['id']}.")
 
                         # Busca informações do cliente e usuário
                         cliente = supabase.table('clientes').select('nome_cliente, email').eq('id', agendamento['cliente_id']).execute().data[0]
@@ -82,10 +84,12 @@ def verificar_agendamentos():
 
                         # Atualizar status de notificação
                         supabase.table('agenda').update({'notificado': True}).eq('id', agendamento['id']).execute()
+                        print(f"Notificação enviada e status atualizado para agendamento ID {agendamento['id']}.")
         except Exception as e:
-            pass
+            print(f"Erro ao verificar agendamentos: {e}")
 
-        time.sleep(120)  # Aguarda 5 minutos antes da próxima verificação
+        time.sleep(120)  # Aguarda 3 minutos antes da próxima verificação
+        print("Proxima verificação em 5 minutos...")
 
 # Inicia a verificação em uma thread separada
 import threading
