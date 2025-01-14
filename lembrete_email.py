@@ -1,4 +1,5 @@
-from flask import Blueprint
+from flask import Flask, Blueprint
+import threading
 from supabase import create_client
 import os
 import smtplib
@@ -7,7 +8,6 @@ from email.mime.text import MIMEText
 import time
 from datetime import datetime, timedelta
 
-# Configuração do Supabase
 supabase_url = 'https://gccxbkoejigwkqwyvcav.supabase.co'
 supabase_key = os.getenv(
     'SUPABASE_KEY',
@@ -15,10 +15,11 @@ supabase_key = os.getenv(
 )
 supabase = create_client(supabase_url, supabase_key)
 
+supabase = create_client(supabase_url, supabase_key)
+
 # Criação do Blueprint
 lembrete_email_bp = Blueprint('lembrete_email_bp', __name__)
 
-# Função para enviar emails
 def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
     try:
         servidor_smtp = 'smtp.gmail.com'
@@ -34,11 +35,9 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
             servidor.starttls()
             servidor.login(email_remetente, senha_remetente)
             servidor.send_message(msg)
-            print(f"E-mail enviado para {destinatario} com sucesso.")
     except smtplib.SMTPException as e:
         print(f"Erro ao enviar e-mail: {e}")
 
-# Função para verificar e enviar lembretes
 def verificar_agendamentos():
     while True:
         agora = datetime.now()
@@ -50,18 +49,13 @@ def verificar_agendamentos():
                 for agendamento in agendamentos.data:
                     data_horario = datetime.strptime(f"{agendamento['data']} {agendamento['horario']}", "%Y-%m-%d %H:%M:%S")
                     if agora <= data_horario <= tempo_limite and not agendamento.get('notificado'):
-                        print(f"Verificação agendada para agendamento ID {agendamento['id']}.")
-
-                        # Busca informações do cliente e usuário
                         cliente = supabase.table('clientes').select('nome_cliente, email').eq('id', agendamento['cliente_id']).execute().data[0]
                         usuario = supabase.table('usuarios').select('nome_usuario, email').eq('id', agendamento['usuario_id']).execute().data[0]
                         empresa = supabase.table('empresa').select('email, senha_app').eq('id', agendamento['id_empresa']).execute().data[0]
 
-                        # Formatando data e hora
                         data_formatada = datetime.strptime(agendamento['data'], "%Y-%m-%d").strftime("%d/%m/%Y")
                         hora_formatada = datetime.strptime(agendamento['horario'], "%H:%M:%S").strftime("%H:%M")
 
-                        # Mensagens de e-mail
                         assunto_cliente = "Lembrete de Agendamento"
                         mensagem_cliente = (
                             f"Prezado(a) {cliente['nome_cliente']},\n\n"
@@ -69,6 +63,7 @@ def verificar_agendamentos():
                             f"Por favor, esteja presente no horário agendado. Caso precise reagendar, entre em contato conosco com antecedência.\n\n"
                             f"Atenciosamente,\nEquipe {empresa['email']}"
                         )
+                        
 
                         assunto_usuario = "Lembrete de Agendamento para Cliente"
                         mensagem_usuario = (
@@ -78,19 +73,24 @@ def verificar_agendamentos():
                             f"Atenciosamente,\nEquipe {empresa['email']}"
                         )
 
-                        # Enviar e-mails
                         enviar_email(cliente['email'], assunto_cliente, mensagem_cliente, empresa['email'], empresa['senha_app'])
                         enviar_email(usuario['email'], assunto_usuario, mensagem_usuario, empresa['email'], empresa['senha_app'])
-
-                        # Atualizar status de notificação
                         supabase.table('agenda').update({'notificado': True}).eq('id', agendamento['id']).execute()
-                        print(f"Notificação enviada e status atualizado para agendamento ID {agendamento['id']}.")
         except Exception as e:
             print(f"Erro ao verificar agendamentos: {e}")
 
-        time.sleep(120)  # Aguarda 3 minutos antes da próxima verificação
-        print("Proxima verificação em 5 minutos...")
+        time.sleep(10)
+        print("Verificando agendamentos...")
 
-# Inicia a verificação em uma thread separada
+
+
 import threading
-threading.Thread(target=verificar_agendamentos, daemon=True).start()
+
+def iniciar_verificacao():
+    """Inicia o loop de verificação em segundo plano"""
+    thread = threading.Thread(target=verificar_agendamentos, daemon=True)
+    thread.start()
+
+
+
+

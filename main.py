@@ -8,7 +8,7 @@ from agenda import agenda_bp
 from login import login_bp
 from agendamento import agendamento_bp
 from agenda_cliente import agenda_cliente_bp
-from lembrete_email import lembrete_email_bp
+from lembrete_email import lembrete_email_bp, iniciar_verificacao
 import os
 
 app = Flask(__name__)
@@ -36,4 +36,5 @@ def inicio():
 
 # A função abaixo não será usada no Render, pois o Gunicorn será responsável pela execução
 if __name__ == '__main__':
+     iniciar_verificacao()
      app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)  # Remover ou comentar
