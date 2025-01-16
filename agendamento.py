@@ -149,7 +149,7 @@ def listar_empresas():
         nome_empresa = request.args.get('nome_empresa', '').strip()  # Captura o termo de busca, se presente
 
         # Cria a consulta para empresas ativas
-        query = supabase.table("empresa").select("id, nome_empresa, logo, descricao").eq("status", True)
+        query = supabase.table("empresa").select("id, nome_empresa, logo, descricao,setor,horario,kids,acessibilidade,estacionamento,wifi,tel_empresa").eq("status", True)
 
         if nome_empresa:
             # Aplica o filtro se o termo de busca estiver presente
@@ -167,6 +167,23 @@ def listar_empresas():
     except Exception as e:
         print(f"Erro ao buscar empresas: {e}")
         return jsonify([]), 500  # Retorna erro em caso de exceção
+
+@agendamento_bp.route('/api/empresa/<int:empresa_id>', methods=['GET'])
+def obter_empresa(empresa_id):
+    try:
+        # Busca os detalhes da empresa com o ID especificado
+        response = supabase.table("empresa").select("id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa").eq("id", empresa_id).execute()
+
+        # Verifica se a empresa foi encontrada
+        if not response.data:
+            return jsonify({"error": "Empresa não encontrada"}), 404
+
+        return jsonify(response.data[0]), 200  # Retorna os dados da empresa como JSON
+
+    except Exception as e:
+        print(f"Erro ao buscar informações da empresa: {e}")
+        return jsonify({"error": "Erro ao buscar informações da empresa"}), 500
+
 
 
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
@@ -269,26 +286,3 @@ def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remeten
         print(f"Erro ao enviar e-mail: {e}")
 
 
-
-# Função para buscar agendamentos por e-mail
-@agendamento_bp.route('/agendamentos/<email>', methods=['GET'])
-def get_agendamentos_por_email(email):
-    try:
-        # Buscar o cliente pelo e-mail fornecido
-        cliente_result = supabase.table('clientes').select('id').eq('email', email).single().execute()
-        if not cliente_result.data:
-            return render_template('agenda_cliente.html', agendamentos=[], mensagem="Cliente não encontrado.")
-        
-        cliente_id = cliente_result.data['id']
-
-        # Buscar os agendamentos do cliente usando o ID recuperado
-        agendamentos_result = supabase.table('agenda').select('*').eq('cliente_id', cliente_id).execute()
-        
-        if not agendamentos_result.data:
-            return render_template('agenda_cliente.html', agendamentos=[], mensagem="Nenhum agendamento encontrado para este cliente.")
-
-        # Renderizar a página com os agendamentos encontrados
-        return render_template('agenda_cliente.html', agendamentos=agendamentos_result.data, mensagem="Agendamentos encontrados.")
-
-    except Exception as e:
-        return render_template('agenda_cliente.html', agendamentos=[], mensagem=f"Erro: {str(e)}")

@@ -29,10 +29,6 @@ app.register_blueprint(lembrete_email_bp)
 # Configuração do agendador
 scheduler = APScheduler()
 
-# Atualizando o agendador para permitir múltiplas instâncias simultâneas
-@scheduler.task('interval', id='verificar_agendamentos', seconds=30, max_instances=3)
-def scheduled_task():
-    verificar_agendamentos()
 
 @app.route("/")
 def inicio():
@@ -40,6 +36,5 @@ def inicio():
 
 # Iniciar o agendador
 if __name__ == '__main__':
-    scheduler.init_app(app)
-    scheduler.start()
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)

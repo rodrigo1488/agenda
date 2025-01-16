@@ -6,6 +6,66 @@ document.addEventListener('DOMContentLoaded', function () {
     esconderCarregamento(); // Garante que a tela de carregamento estará oculta ao carregar a página
 });
 
+async function carregarDetalhesEmpresa(empresaId) {
+    try {
+        // Faz a requisição para buscar os detalhes da empresa
+        const response = await axios.get(`/api/empresa/${empresaId}`);
+
+        const empresa = response.data; // Obtém os dados da empresa
+
+        // Garantir que os valores booleanos sejam tratados corretamente
+        const estacionamento = empresa.estacionamento ? 'Disponível' : null;
+        const wifi = empresa.wifi ? 'Disponível' : null;
+        const kids = empresa.kids ? 'Permitido' : null;
+        const acessibilidade = empresa.acessibilidade ? 'Disponível' : null;
+
+        // Atualiza o conteúdo da div com as informações da empresa
+        const divInfo = document.getElementById('informacoes-empresa');
+        divInfo.innerHTML = `
+        <div class="empresa-info">
+            <img src="${empresa.logo}" alt="Logo da ${empresa.nome_empresa}" class="logo-descricao">
+            <h3 class="nome-empresa">${empresa.nome_empresa}</h3>
+            <p class="descricao"> ${empresa.descricao}</p>
+            <p class="horario"><strong>Horário de funcionamento:</strong> ${empresa.horario}</p>
+    
+            <div class="comodidades-container">
+                ${wifi ? `<div class="botao-neumorphism">
+                            <i class="fas fa-wifi"></i> 
+                            <span>Wi-Fi Disponível</span>
+                          </div>` : ''}
+                
+                ${estacionamento ? `<div class="botao-neumorphism">
+                            <i class="fas fa-car"></i> 
+                            <span>Estacionamento Disponível</span>
+                          </div>` : ''}
+                
+                ${kids ? `<div class="botao-neumorphism">
+                            <i class="fas fa-child"></i> 
+                            <span>Atende Crianças</span>
+                          </div>` : ''}
+                
+                ${acessibilidade ? `<div class="botao-neumorphism">
+                            <i class="fas fa-wheelchair"></i> 
+                            <span>Acessibilidade Disponível</span>
+                          </div>` : ''}
+            </div>
+    
+            <!-- Botão do WhatsApp dentro do card -->
+            <a href="https://api.whatsapp.com/send?phone=${empresa.tel_empresa.replace(/\D/g, '')}&text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio" 
+               target="_blank" 
+               class="whatsapp-card">
+               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
+               <span></span>
+            </a>
+        </div>
+    `;
+    } catch (error) {
+        console.error("Erro ao carregar os detalhes da empresa:", error);
+    }
+}
+
+
+
 document.getElementById('search-bar').addEventListener('input', function(event) {
     const nomeEmpresa = event.target.value.trim();  // Captura o valor digitado no campo de busca
 
@@ -189,6 +249,7 @@ function selecionarHorario(horario) {
 function abrirModalAgendamento(empresaId) {
     carregarFuncionarios(empresaId);
     carregarServicos(empresaId);
+    carregarDetalhesEmpresa(empresaId); // Chama a nova função
     document.getElementById('modal-agendamento').style.display = 'block';
     document.getElementById('empresas-lista').style.display = 'none';
     document.getElementById('search-container').style.display = 'none';

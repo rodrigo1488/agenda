@@ -14,7 +14,6 @@ body {
     align-items: center;
 }
 
-
 header {
     display: flex;
     justify-content: space-between;
@@ -80,12 +79,13 @@ input,
 select,
 textarea,
 button {
-    padding: 10px;
-    font-size: 12px;
+    padding: 12px;
+    font-size: 14px;
     border: 1px solid #333;
     border-radius: 5px;
     background-color: #2c2c2c;
     color: #f5f5f5;
+    margin-bottom: 10px; /* Melhorando o espaçamento */
 }
 
 button,
@@ -95,7 +95,7 @@ button,
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    padding: 7px 8px;
+    padding: 8px 12px;
 }
 
 button:hover,
@@ -106,22 +106,21 @@ button:hover,
 #empresas-lista {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 20px;
 }
-
-
 
 .card {
     border: 1px solid #333;
     border-radius: 8px;
     width: 350px;
-    height: 155px;
+    height: 180px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     background-color: #292929;
     color: #f5f5f5;
+    padding: 15px; /* Melhorando o espaçamento interno */
 }
 
 .card-body {
@@ -148,17 +147,128 @@ button:hover,
     height: 100px;
 }
 
-
-
 #horarios-disponiveis {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 10px 0;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.container {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Detalhes da empresa */
+.empresa-info {
+
+    position: relative;
+    padding: 25px;
+    text-align: center;
+    width: 100%; /* Ajustando o tamanho */
+    max-width: 480px; /* Limitando o tamanho */
+    margin: 0 auto; /* Centralizando */
+}
+
+.logo-descricao {
+    width: 120px;
+    height: auto;
+    margin: 0 auto 20px auto;
+    display: block;
+    border-radius: 100%;
+    box-shadow: 5px 5px 10px #121212, -5px -5px 10px #292929;
+}
+
+.nome-empresa {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.descricao,
+.horario,
+.telefone {
+    font-size: 16px;
+    margin: 8px 0; /* Melhorando o espaçamento */
+}
+
+.comodidades-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+    justify-content: space-evenly;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.botao-neumorphism {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #1f1f1f;
+    border-radius: 15px;
+
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.botao-neumorphism:hover {
+    box-shadow: inset 5px 5px 15px #121212, inset -5px -5px 15px #292929;
+    background: #292929;
+}
+
+.botao-neumorphism i {
+    font-size: 28px;
+    margin-bottom: 12px; /* Aumentando o espaçamento */
+    color: #4caf50; /* Verde para ícones */
+}
+
+.botao-neumorphism span {
+    font-size: 14px;
+}
+
+.whatsapp-card {
+    position: fixed;
+    bottom: 20px; /* Distância do fundo */
+    right: 20px;  /* Distância da lateral direita */
+   
+padding:0;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 60px;
+    z-index: 999; /* Garantir que o botão fique sobre os outros elementos */
+}
+
+.whatsapp-card img {
+    width: 55px;
+    height: 55px;
+    margin-right: 12px;
+}
+
+.whatsapp-card img:hover {
+    transform: scale(1.1);
 }
 
 
 @media screen and (max-width: 768px) {
+    .comodidades-container{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    }
     .header-link {
         font-size: 10px;
     }
@@ -167,9 +277,7 @@ button:hover,
     }
 
 
-    .titulo{
-        display: none;
-    }
+    
 
 
     header{
@@ -219,6 +327,8 @@ button:hover,
         margin-top: 10px;
         flex-direction: column;
     }
+
+    
 }
 
 @keyframes spin {
