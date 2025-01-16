@@ -258,7 +258,13 @@ padding:0;
 
 
 @media screen and (max-width: 768px) {
+    .botao-neumorphism {
+        width: 100px;
+        height: 100px;
+    }
+    
     .comodidades-container{
+        max-width: 90%;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
