@@ -143,6 +143,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 appointmentList.innerHTML = `
                     <li class="no-appointments-message" style="text-align: center; margin-top: 20px; background-color: transparent; box-shadow: none;">
                         <strong>${noAppointmentsMessage}</strong>
+                     <p style="font-size: 14px; margin-top: 5px;" display="none">Clique em "Novo Agendamento" para adicionar um agendamento.</p>
+
+                     <img src="static/img/sem_agendamentos.png" alt="Sem agendamentos" style="max-width: 100%; max-height: 200px; display: block; margin: 0 auto;">
                     </li>
                 `;
                 return;
