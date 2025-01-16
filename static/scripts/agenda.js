@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await fetchData('/agenda/data');
             const now = new Date();
             let filteredAppointments;
-
+    
             if (view === 'day') {
                 const today = now.toISOString().split('T')[0];
                 filteredAppointments = data.filter(event => event.data === today);
@@ -106,10 +106,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 const weekStart = new Date(now);
                 weekStart.setDate(now.getDate() - now.getDay());
                 weekStart.setHours(0, 0, 0, 0);
-
+    
                 const weekEnd = new Date(weekStart);
                 weekEnd.setDate(weekStart.getDate() + 6);
-
+    
                 filteredAppointments = data.filter(event => {
                     const eventDate = new Date(event.data + 'T00:00:00');
                     return eventDate >= weekStart && eventDate <= weekEnd;
@@ -121,84 +121,100 @@ document.addEventListener('DOMContentLoaded', function () {
                     return eventDate.getMonth() === month && eventDate.getFullYear() === now.getFullYear();
                 });
             }
-
+    
             // Ordena os agendamentos por data e horário
             filteredAppointments.sort((a, b) => {
                 const dateA = new Date(`${a.data}T${a.horario}`);
                 const dateB = new Date(`${b.data}T${b.horario}`);
                 return dateA - dateB; // Ordem crescente
             });
-
+    
+            if (filteredAppointments.length === 0) {
+                // Exibe mensagem de ausência de agendamentos
+                let noAppointmentsMessage;
+                if (view === 'day') {
+                    noAppointmentsMessage = 'Sem agendamentos para hoje.';
+                } else if (view === 'week') {
+                    noAppointmentsMessage = 'Sem agendamentos para esta semana.';
+                } else if (view === 'month') {
+                    noAppointmentsMessage = 'Sem agendamentos para este mês.';
+                }
+    
+                appointmentList.innerHTML = `
+                    <li class="no-appointments-message" style="text-align: center; margin-top: 20px; background-color: transparent; box-shadow: none;">
+                        <strong>${noAppointmentsMessage}</strong>
+                    </li>
+                `;
+                return;
+            }
+    
             // Resolve todas as promessas de agendamentos
             const appointmentsHTML = await Promise.all(filteredAppointments.map(async (event) => {
                 const eventDate = new Date(event.data + 'T00:00:00');
                 const isPast = new Date(eventDate) < new Date(now);
-
+    
                 try {
-                    // Obtenha os dados do usuário
                     const response = await fetch('/api/usuario/logado');
                     if (!response.ok) {
                         throw new Error('Erro ao buscar nome do usuário');
                     }
                     const data = await response.json();
                     const nomeUsuario = data.nome_usuario;
-
+    
                     const linkWhatsApp = `https://wa.me/+55${event.telefone}?text=Olá, ${event.cliente_nome}. Sou ${nomeUsuario} da empresa ${event.nome_empresa} e gostaria de falar com você sobre o agendamento de: ${event.servico_nome} na data: ${eventDate.toLocaleDateString()} às ${event.horario}`;
-
+    
                     return `
                     <div class="appointment-details">
                         <li class="appointment-item" style="background-color: ${isPast ? 'blanchedalmond' : 'transparent'}; color: ${isPast ? 'red' : 'black'}; margin-top: 20px;">
-                        <div>
-
+                            <div>
                                 <strong>${event.cliente_nome} - ${event.servico_nome}</strong> <br>
                                 <span><strong>Data:</strong> ${eventDate.toLocaleDateString()} às ${event.horario}</span>
-                    </div>
-                                <div class="button-group-2">
+                            </div>
+                            <div class="button-group-2">
                                 <button class="btn btn-danger btn-cancelar" data-id="${event.id}">Cancelar</button>
                                 <button class="btn btn-success btn-finalizar" data-id="${event.id}">Finalizar</button>
                                 <a class="btn btn-success btn-sm whatsapp-button d-flex align-items-center" target="_blank" href="${linkWhatsApp}">
-                                <i class="bi bi-whatsapp me-1"></i> Whatsapp
+                                    <i class="bi bi-whatsapp me-1"></i> Whatsapp
                                 </a>
-                                </div>
-                                </li>
-                                </div>
+                            </div>
+                        </li>
+                    </div>
                     `;
                 } catch (error) {
                     console.error('Erro ao buscar nome do usuário:', error.message);
-                    return ''; // Retorne uma string vazia caso haja erro
+                    return ''; // Retorna uma string vazia em caso de erro
                 }
             }));
-
+    
             // Atualiza o HTML da lista de agendamentos com os eventos filtrados.
             appointmentList.innerHTML = appointmentsHTML.join('');
-
-
-
+    
             document.querySelectorAll('.btn-cancelar').forEach(button => {
                 button.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     cancelarAgendamento(id);
                 });
             });
-
+    
             document.querySelectorAll('.btn-finalizar').forEach(button => {
                 button.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     mostrarModalPagamento(id);
                 });
             });
-
+    
         } catch (error) {
             console.error('Erro ao renderizar os agendamentos:', error);
         }
     }
-
+    
     filter.addEventListener('change', () => {
         renderAppointments(filter.value);
     });
-
+    
     renderAppointments('day');
     calendar.render();
+    
 });
 
 // Exemplo usando localStorage (onde o nome do usuário foi salvo após o login)

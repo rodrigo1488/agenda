@@ -216,6 +216,12 @@ button:hover {
 .whatsapp-button:hover {
     background-color: #1ebe57;
 }
+.appointment-details{
+    margin-top: 20px;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
 
 
 @keyframes spin {
