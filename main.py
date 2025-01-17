@@ -1,5 +1,4 @@
 from flask import Flask, redirect, url_for
-
 from services import services_bp
 from users import users_bp
 from clientes import clientes_bp
