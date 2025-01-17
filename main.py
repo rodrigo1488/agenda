@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for
-from flask_apscheduler import APScheduler
+
 from services import services_bp
 from users import users_bp
 from clientes import clientes_bp
@@ -27,7 +27,7 @@ app.register_blueprint(agenda_cliente_bp)
 app.register_blueprint(lembrete_email_bp)
 
 # Configuração do agendador
-scheduler = APScheduler()
+
 
 
 @app.route("/")

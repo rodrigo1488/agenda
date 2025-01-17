@@ -48,6 +48,10 @@
                         <label for="tempo" class="form-label">Tempo Estimado (minutos)</label>
                         <input type="number" class="form-control" id="tempo" name="tempo" required>
                     </div>
+                    <div class="mb-3">
+                    <label for="responsavel" class="form-label"> responsavel pelo serviço</label>
+                    <select name="responsavel" id="responsavel"> selecione o responsavel</select>   
+                    </div>
                     <button type="submit" class="btn btn-success">Cadastrar</button>
                 </form>
                 <hr>
@@ -106,6 +110,34 @@
             document.getElementById('formularioCadastro').style.display = 'block';
             document.getElementById('btnCriarServico').style.display = 'none';
         }
+
+        fetch('/api/usuarios')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const usuarioSelect = document.getElementById('responsavel');
+            if (usuarioSelect) {
+                const option = document.createElement('option');
+                option.value ="null" ;
+                option.textContent = 'Sem responsavel';
+                usuarioSelect.appendChild(option);
+                data.forEach(usuario => {
+                    const option = document.createElement('option');
+                    option.value = usuario.id;
+                    option.textContent = usuario.nome_usuario;
+                    usuarioSelect.appendChild(option);
+                });
+            } else {
+                console.error('Elemento select com ID "usuario-agendamento" não encontrado.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar ou processar os usuários:', error.message);
+        });
     </script>
 </body>
 

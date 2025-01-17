@@ -1,5 +1,6 @@
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash ,jsonify
 from supabase import create_client
+
 import os
 
 # Configuração do Supabase
@@ -9,7 +10,6 @@ supabase_key = os.getenv(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjY3hia29lamlnd2txd3l2Y2F2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM2OTg5OTYsImV4cCI6MjA0OTI3NDk5Nn0.ADRY3SLagP-NjhAAvRRP8A4Ogvo7AbWvcW-J5gAbyr4'
 )
 supabase = create_client(supabase_url, supabase_key)
-
 app = Flask(__name__)
 services_bp = Blueprint('services', __name__)
 
@@ -30,6 +30,8 @@ def index():
     search_query = request.form.get('search_query') if request.method == 'POST' else None
     services = get_services(search_query)
     return render_template('servicos.html', services=services)
+def obter_id_empresa():
+    return request.cookies.get('empresa_id')
 
 # Função para buscar serviços
 def get_services(search_query=None):
@@ -62,6 +64,10 @@ def add_service():
         nome_servico = request.form['nome_servico']
         preco = float(request.form['preco'])
         tempo = int(request.form['tempo'])
+        responsavel = request.form['responsavel']
+
+        # Verifica se 'responsavel' está vazio e o define como None
+        id_usuario = None if not responsavel else int(responsavel)
 
         # Adiciona o id_empresa do cookie
         empresa_id = request.cookies.get('empresa_id')
@@ -69,8 +75,10 @@ def add_service():
             'nome_servico': nome_servico,
             'preco': preco,
             'tempo': tempo,
+            'id_usuario': id_usuario,  # Atribui None em vez de string vazia
             'id_empresa': empresa_id  # Associa o serviço à empresa logada
         }]).execute()
+        print('Serviço adicionado com sucesso!')
     except Exception as e:
         print(f"Erro ao adicionar serviço: {e}")
         flash('Erro ao adicionar serviço. Tente novamente.', 'danger')
@@ -92,9 +100,16 @@ def excluir_servico(service_id):
         flash('Erro ao excluir serviço. Tente novamente.', 'danger')
     return redirect(url_for('services.index'))
 
-# Registra o blueprint no app principal
-app.register_blueprint(services_bp)
 
-if __name__ == '__main__':
-    app.secret_key = 'sua_chave_secreta'  # Necessário para usar sessões e flash messages
-    app.run(debug=True)
+
+
+@services_bp.route('/api/usuarios', methods=['GET'])
+def listar_usuarios():
+    if verificar_login():
+        return verificar_login()
+
+    empresa_id = obter_id_empresa()
+
+    response = supabase.table("usuarios").select("id, nome_usuario").eq("id_empresa", empresa_id).execute()
+    
+    return jsonify(response.data), 200

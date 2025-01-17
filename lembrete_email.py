@@ -5,8 +5,6 @@ from email.mime.text import MIMEText
 import smtplib
 import time
 from supabase import create_client
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
 import os
 import threading
 
@@ -93,17 +91,3 @@ def verificar_agendamentos():
             print(f"Erro ao verificar agendamentos: {e}")
 
 # Função para iniciar o scheduler
-def iniciar_scheduler():
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(verificar_agendamentos, 'interval', minutes=5)
-    scheduler.start()
-
-    # Registrar um evento para lidar com a execução do job
-    def job_listener(event):
-        if event.exception:
-            print(f"Ocorreu um erro no job: {event.job_id}")
-        else:
-            print(f"Job {event.job_id} executado com sucesso!")
-
-    scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-
