@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, request, render_template
 from supabase import create_client
 import os
+from datetime import datetime
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -142,6 +143,10 @@ def agendar_cliente():
     else:
         return jsonify({"error": "Erro ao criar agendamento"}), 400
 
+
+
+
+
 #lista as empresas ativas
 @agendamento_bp.route('/api/empresas', methods=['GET'])
 def listar_empresas():
@@ -236,6 +241,16 @@ def listar_horarios_disponiveis():
     if not usuario_id or not data:
         return jsonify({"error": "Os parâmetros 'usuario_id' e 'data' são obrigatórios."}), 400
 
+    # Obtendo a data e o horário atual
+    agora = datetime.now()
+    data_atual = agora.strftime("%Y-%m-%d")
+
+    # Se a data for hoje, considere o horário atual
+    if data == data_atual:
+        horario_atual = agora.strftime("%H:%M")
+    else:
+        horario_atual = None
+
     # Definindo horários de funcionamento
     horarios_funcionamento = [
         f"{hora:02}:{minuto:02}" for hora in range(8, 18) for minuto in (0, 30)
@@ -276,12 +291,11 @@ def listar_horarios_disponiveis():
 
     # Calcular horários disponíveis
     horarios_disponiveis = [
-        horario for horario in horarios_funcionamento if horario not in horarios_ocupados
+        horario for horario in horarios_funcionamento
+        if horario not in horarios_ocupados and (not horario_atual or horario >= horario_atual)
     ]
 
     return jsonify({"horarios_disponiveis": horarios_disponiveis}), 200
-
-
 
 # Função para enviar e-mails
 def enviar_email(destinatario, assunto, mensagem, email_remetente, senha_remetente):
