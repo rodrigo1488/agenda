@@ -106,38 +106,36 @@
     
     <script>
         // Função para exibir o formulário de cadastro
-        function exibirFormulario() {
-            document.getElementById('formularioCadastro').style.display = 'block';
-            document.getElementById('btnCriarServico').style.display = 'none';
-        }
+        // Função para exibir o formulário de cadastro
+function exibirFormulario() {
+    document.getElementById('formularioCadastro').style.display = 'block';
+    document.getElementById('btnCriarServico').style.display = 'none';
+}
 
-        fetch('/api/usuarios')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const usuarioSelect = document.getElementById('responsavel');
-            if (usuarioSelect) {
+fetch('/api/usuarios')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const usuarioSelect = document.getElementById('responsavel');
+        if (usuarioSelect) {
+            data.forEach(usuario => {
                 const option = document.createElement('option');
-                option.value ="null" ;
-                option.textContent = 'Sem responsavel';
+                option.value = usuario.id;
+                option.textContent = usuario.nome_usuario;
                 usuarioSelect.appendChild(option);
-                data.forEach(usuario => {
-                    const option = document.createElement('option');
-                    option.value = usuario.id;
-                    option.textContent = usuario.nome_usuario;
-                    usuarioSelect.appendChild(option);
-                });
-            } else {
-                console.error('Elemento select com ID "usuario-agendamento" não encontrado.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao buscar ou processar os usuários:', error.message);
-        });
+            });
+        } else {
+            console.error('Elemento select com ID "responsavel" não encontrado.');
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao buscar ou processar os usuários:', error.message);
+    });
+
     </script>
 </body>
 
