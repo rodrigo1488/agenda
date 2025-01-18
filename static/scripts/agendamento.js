@@ -160,6 +160,40 @@ async function carregarFuncionarios(empresaId) {
     }
 }
 
+async function carregarUsuarioResponsavel() {
+    const servicoId = document.getElementById('servico-select').value;
+    
+    if (!servicoId) {
+        // Limpa a lista de profissionais se nenhum serviço estiver selecionado
+        document.getElementById('profissional-select').innerHTML = '<option value="">Selecione o Profissional</option>';
+        return;
+    }
+
+    try {
+        // Faz uma chamada para buscar o serviço específico pelo ID
+        const response = await axios.get(`/api/servicos/detalhes/${servicoId}`);
+        const servico = response.data;
+        
+        const selectUsuarios = document.getElementById('profissional-select');
+        selectUsuarios.innerHTML = '<option value="">Selecione o Profissional</option>';
+
+        if (!servico || !servico.id_usuario || !servico.usuarios) {
+            selectUsuarios.innerHTML = '<option value="">Nenhum Profissional encontrado</option>';
+            return;
+        }
+
+        // Adiciona o usuário responsável ao select
+        const option = document.createElement('option');
+        option.value = servico.id_usuario;
+        option.textContent = servico.usuarios.nome_usuario; // Acessa o nome do profissional corretamente
+        selectUsuarios.appendChild(option);
+    } catch (error) {
+        console.error('Erro ao carregar o usuário responsável:', error);
+        alert('Erro ao carregar o profissional responsável. Tente novamente mais tarde.');
+    }
+}
+
+
 async function carregarServicos(empresaId) {
     try {
         const response = await axios.get(`/api/servicos/${empresaId}`);

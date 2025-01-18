@@ -47,9 +47,12 @@
 
 
                         <h4 class="titulo">Selecione o servico e o profissional</h4>
-                        <select name="servico_id" required>
+                        <select name="servico_id" id="servico-select" onchange="carregarUsuarioResponsavel()">
+                            <option value="">Selecione o Serviço</option>
                         </select>
-                        <select id="profissional-select" name="usuario_id" required>
+                        
+                        <select name="usuario_id" id="profissional-select">
+                            <option value="">Selecione o Profissional</option>
                         </select>
                         <label for="data-input" class="form-label">Selecione a data</label>
                         <input id="data-input" type="date" name="data" required />

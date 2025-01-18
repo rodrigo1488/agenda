@@ -80,8 +80,8 @@ def verificar_agendamentos():
             pass
             print(f"Erro ao verificar agendamentos: {e}")
 
-        time.sleep(120)  # Aguarda 5 minutos antes da próxima verificação
-        time.sleep(120)  # Aguarda 3 minutos antes da próxima verificação
+        time.sleep(300)  # Aguarda 5 minutos antes da próxima verificação
+ 
         print("Proxima verificação em 5 minutos...")
 
 # Inicia a verificação em uma thread separada

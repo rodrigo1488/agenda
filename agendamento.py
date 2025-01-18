@@ -185,6 +185,21 @@ def obter_empresa(empresa_id):
         return jsonify({"error": "Erro ao buscar informações da empresa"}), 500
 
 
+@agendamento_bp.route('/api/servicos/detalhes/<int:servico_id>', methods=['GET'])
+def obter_servico_detalhes(servico_id):
+    try:
+        # Seleciona o serviço com o nome do profissional associado
+        response = supabase.table("servicos").select("id, nome_servico, preco, id_usuario, usuarios(nome_usuario)").eq("id", servico_id).execute()
+        print(response.data)
+        if not response.data:
+            return jsonify({"error": "Serviço não encontrado"}), 404
+
+        return jsonify(response.data[0]), 200  # Retorna os detalhes do serviço com o nome do profissional
+    except Exception as e:
+        print(f"Erro ao buscar detalhes do serviço: {e}")
+        return jsonify({"error": "Erro ao buscar detalhes do serviço"}), 500
+
+
 
 @agendamento_bp.route('/api/usuarios/<int:empresa_id>', methods=['GET'])
 def listar_usuarios(empresa_id):
@@ -196,7 +211,7 @@ def listar_usuarios(empresa_id):
 @agendamento_bp.route('/api/servicos/<int:empresa_id>', methods=['GET'])
 def listar_servicos(empresa_id):
     # Lista serviços vinculados a uma empresa específica
-    response = supabase.table("servicos").select("id, nome_servico,preco").eq("id_empresa", empresa_id).execute()
+    response = supabase.table("servicos").select("id, nome_servico,preco,id_usuario").eq("id_empresa", empresa_id).execute()
     
     return jsonify(response.data), 200
 
