@@ -18,7 +18,7 @@ function renderMenu(containerId) {
             container.innerHTML = `
                 <nav id="menu-lateral" class="text-white p-3" style="width: 250px; min-height: 100vh; background-color: ${corEmpresa};">
                     <ul class="nav flex-column mt-4">
-                        <img src="${logo}" id="logo" alt="Logo da Empresa" style="max-width: 100%; height: auto;">
+                        <img src="${logo}" id="logo" alt="Logo da Empresa" style="max-width: 100%; height: 180px;">
                         <li class="nav-item mb-3">
                             <a href="/agenda" class="nav-link text-white"><i class="bi bi-calendar3"></i> Agenda</a>
                         </li>
@@ -38,7 +38,7 @@ function renderMenu(containerId) {
                             <a href="/configuracao" class="nav-link text-white"><i class="bi bi-gear"></i> Configurações</a>
                         </li>
                         <li class="nav-item mb-3">
-                            <a href="/login" class="nav-link text-white" style="margin-top: auto;"><i class="bi bi-arrow-90deg-up"></i> sair</a>
+                            <a href="/login" class="nav-link text-white"><i class="bi bi-arrow-90deg-up"></i> sair</a>
                         </li>
                     </ul>
                 </nav>
