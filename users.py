@@ -86,6 +86,7 @@ def editar_usuario():
         nome_usuario = request.form.get('nome').strip().upper()  
         email = request.form.get('email')
         telefone = request.form.get('telefone')
+        senha = request.form.get('senha')
 
         if not id_usuario or not nome_usuario or not email or not telefone:
             return render_template('usuarios.html', error="Todos os campos são obrigatórios.")
@@ -94,7 +95,8 @@ def editar_usuario():
         supabase.table('usuarios').update({
             'nome_usuario': nome_usuario,
             'email': email,
-            'telefone': telefone
+            'telefone': telefone,
+            'senha': senha,
         }).eq('id', id_usuario).eq('id_empresa', request.cookies.get('empresa_id')).execute()
 
         return redirect(url_for('users.gerenciar_usuarios'))

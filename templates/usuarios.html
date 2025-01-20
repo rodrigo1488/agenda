@@ -105,8 +105,7 @@
         </div>
     </div>
 
-    <!-- Modal de Edição -->
-    <!-- Modal de Edição -->
+
  <!-- Modal de Edição -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -117,7 +116,7 @@
             </div>
             <form method="POST" action="/usuarios/editar">
                 <div class="modal-body">
-                    <input type="hidden" id="id_usuario" name="id"> <!-- Campo oculto para o ID do usuário -->
+                    <input type="hidden" id="id_usuario" name="id"> 
                     <div class="mb-3">
                         <label for="edit_nome" class="form-label">Nome</label>
                         <input type="text" class="form-control" id="edit_nome" name="nome" required>
@@ -129,6 +128,10 @@
                     <div class="mb-3">
                         <label for="edit_telefone" class="form-label">Telefone</label>
                         <input type="text" class="form-control" id="edit_telefone" name="telefone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_senha" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="edit_senha" name="senha" required>
                     </div>
                 </div>
                 <div class="modal-footer">
