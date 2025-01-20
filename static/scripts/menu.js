@@ -35,7 +35,10 @@ function renderMenu(containerId) {
                             <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatórios</a>
                         </li>
                         <li class="nav-item mb-3">
-                            <a href="/login" class="nav-link text-white" style="margin-top: 5%;"><i class="bi bi-arrow-90deg-up"></i> sair</a>
+                            <a href="/configuracao" class="nav-link text-white"><i class="bi bi-gear"></i> Configurações</a>
+                        </li>
+                        <li class="nav-item mb-3">
+                            <a href="/login" class="nav-link text-white" style="margin-top: auto;"><i class="bi bi-arrow-90deg-up"></i> sair</a>
                         </li>
                     </ul>
                 </nav>

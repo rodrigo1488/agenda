@@ -8,6 +8,7 @@ from login import login_bp
 from agendamento import agendamento_bp
 from agenda_cliente import agenda_cliente_bp
 from lembrete_email import lembrete_email_bp, verificar_agendamentos  # Importe a função aqui
+from config import config_bp
 import os
 
 # Configuração do Flask
@@ -15,6 +16,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # Registrando os Blueprints
+app.register_blueprint(config_bp)
 app.register_blueprint(services_bp)
 app.register_blueprint(users_bp)
 app.register_blueprint(clientes_bp)
