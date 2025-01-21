@@ -272,7 +272,7 @@ button:hover,
 @media screen and (max-width: 768px) {
     .botao-neumorphism {
         width: 100px;
-        height: 10px;
+        height: 100px;
     }
     .footer-btn-2{
         padding: auto;
