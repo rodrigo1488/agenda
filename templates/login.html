@@ -8,9 +8,14 @@
 
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/static/styles/login.css">
     <link rel="icon" href="/static/img/logo fav icon.png" type="image/png">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="manifest" href="/static/manifest.json">
+
+    
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" href="/static/img/icone-mobile.png">
 
@@ -21,8 +26,11 @@
 
 <header class="header position-fixed top-0 start-0 w-100 bg-dark p-3 d-flex justify-content-between align-items-center" style="z-index: 100;">
     <img src="/static/img/agendamento.png" alt="sua agenda" class="logo-header">
-    <a href="https://wa.me/+5534997227288?text='Gostaria de ter minha agenda'"
-     class="header-link" target='blank' style="background-color: #FDC81D;">cadastre-se</a>
+   
+    <button id="add-to-home" class="header-link btn" style="background-color:#CB9402;">
+        <i class="bi bi-download"></i> Download
+    </button>
+    
 </header>
 
 <!-- Modal de Login -->
@@ -85,6 +93,36 @@
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginModal">Quero acessar minha agenda</button>
     </div>
 </div>
+<button id="add-to-home" style="display: none;">Adicionar à Página Inicial</button>
+
+<script>
+  let deferredPrompt;
+
+  // Detecta o evento 'beforeinstallprompt'
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Previne o comportamento padrão
+    e.preventDefault();
+    deferredPrompt = e;
+    // Mostra o botão
+    document.getElementById('add-to-home').style.display = 'block';
+
+    document.getElementById('add-to-home').addEventListener('click', () => {
+      // Exibe o prompt de instalação
+      deferredPrompt.prompt();
+
+      // Verifica a escolha do usuário
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('Usuário aceitou o prompt');
+        } else {
+          console.log('Usuário rejeitou o prompt');
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
+</script>
+
 <script src="/static/scripts/script.js"></script>
 <!-- Scripts do Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
