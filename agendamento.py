@@ -251,9 +251,10 @@ def listar_horarios_disponiveis():
     else:
         horario_atual = None
 
+
     # Definindo horários de funcionamento
     horarios_funcionamento = [
-        f"{hora:02}:{minuto:02}" for hora in range(8, 18) for minuto in (0, 30)
+        f"{hora:02}:{minuto:02}" for hora in range(8, 23) for minuto in (0, 30)
     ]
 
     # Buscar agendamentos já ocupados
