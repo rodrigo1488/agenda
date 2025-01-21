@@ -4,6 +4,7 @@ from supabase import create_client
 import os
 from datetime import datetime
 import smtplib
+from zoneinfo import ZoneInfo
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -241,17 +242,15 @@ def listar_horarios_disponiveis():
     if not usuario_id or not data:
         return jsonify({"error": "Os parâmetros 'usuario_id' e 'data' são obrigatórios."}), 400
 
-    # Obtendo a data e o horário atual
-    agora = datetime.now()
+    # Obtendo a data e o horário atual com fuso horário
+    agora = datetime.now(ZoneInfo("America/Sao_Paulo"))
     data_atual = agora.strftime("%Y-%m-%d")
 
-    # Se a data for hoje, considere o horário atual
     if data == data_atual:
         horario_atual = agora.strftime("%H:%M")
-        print(f"Horário atual: {horario_atual}")    
+        print(f"Horário atual: {horario_atual}")
     else:
         horario_atual = None
-
 
     # Definindo horários de funcionamento
     horarios_funcionamento = [
