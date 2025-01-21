@@ -19,8 +19,29 @@
         margin-top: 15px; /* Espaço acima do grupo de botões */
     }
 
+
+ input{
+    box-shadow: 2px 2px 8px 0px gray;
+ }
     /* Estilo para dispositivos móveis */
 @media (max-width: 768px) {
+
+
+#btn-modal{
+    height: 40px;
+    width: 80px;
+    font-size: 12px;
+}
+
+
+
+.modal-footer {
+    
+ display: grid;
+ grid-template-columns: 1fr 1fr 1fr;
+ grid-gap: 10px;
+}
+
     #btnVoltar {
         margin-left: 2%;
         display: block;

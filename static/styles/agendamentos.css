@@ -240,7 +240,7 @@ button:hover,
     bottom: 20px; /* Distância do fundo */
     right: 20px;  /* Distância da lateral direita */
    
-padding:0;
+    padding:0;
     transition: all 0.3s ease-in-out;
     margin-bottom: 60px;
     z-index: 999; /* Garantir que o botão fique sobre os outros elementos */
@@ -255,13 +255,41 @@ padding:0;
 .whatsapp-card img:hover {
     transform: scale(1.1);
 }
+.footer-btn-2{
+    color: #f5f5f5;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: red;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+.footer-btn-2:hover {
+    background-color: #0056b3;
+}
 
 
 @media screen and (max-width: 768px) {
     .botao-neumorphism {
         width: 100px;
-        height: 100px;
+        height: 10px;
     }
+    .footer-btn-2{
+        padding: auto;
+        width:auto;
+        background-color: red;
+        height: 48px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: 600;
+        transition: all 0.3s ease-in-out;
+ 
+    }
+    
     
     .comodidades-container{
         max-width: 90%;
@@ -281,9 +309,6 @@ padding:0;
     .form-label{
         display: block;
     }
-
-
-    
 
 
     header{

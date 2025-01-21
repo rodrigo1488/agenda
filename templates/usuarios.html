@@ -106,48 +106,50 @@
     </div>
 
 
- <!-- Modal de Edição -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Editar Usuário</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/usuarios/editar">
+                    <div class="modal-body">
+                        <input type="hidden" id="id_usuario" name="id">
+                        <div class="mb-3">
+                            <label for="edit_nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="edit_nome" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_telefone" class="form-label">Telefone</label>
+                            <input type="text" class="form-control" id="edit_telefone" name="telefone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_senha" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="edit_senha" name="senha" required>
+                        </div>
+                    </div>
+                    
+                        
+                            <button type="button" id="btn-modal" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" id="btn-modal" class="btn btn-danger" id="btnExcluir"
+                                onclick="excluirUsuario()">Excluir</button> <!-- Botão de exclusão -->
+                            <button type="submit" id="btn-modal" class="btn btn-primary">Salvar</button>
+                      
+                    
+                </form>
             </div>
-            <form method="POST" action="/usuarios/editar">
-                <div class="modal-body">
-                    <input type="hidden" id="id_usuario" name="id"> 
-                    <div class="mb-3">
-                        <label for="edit_nome" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="edit_nome" name="nome" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="edit_email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_telefone" class="form-label">Telefone</label>
-                        <input type="text" class="form-control" id="edit_telefone" name="telefone" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_senha" class="form-label">Senha</label>
-                        <input type="password" class="form-control" id="edit_senha" name="senha" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-group">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="btnExcluir" onclick="excluirUsuario()">Excluir</button> <!-- Botão de exclusão -->
-                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                </div>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
-<!-- Carregar jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Carregar jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="static/scripts/menu.js"></script>
     <script>
@@ -189,23 +191,23 @@
         }
 
         function excluirUsuario() {
-    const id = $('#id_usuario').val();  // Obtém o ID do usuário a partir do campo oculto no modal
-    if (confirm('Deseja realmente excluir este usuário?')) {
-        $.ajax({
-            url: `/usuarios/excluir/${id}`,  // URL da exclusão
-            method: 'POST',  // Método POST
-            data: { id_usuario: id },  // Dados enviados, caso o backend precise
-            success: function () {
-                alert('Usuário excluído com sucesso.');
-                location.reload();  // Atualiza a página
-            },
-            error: function (xhr, status, error) {
-                alert('Erro ao excluir usuário.');
-                console.log(xhr.responseText);  // Exibe o erro completo no console para depuração
+            const id = $('#id_usuario').val();  // Obtém o ID do usuário a partir do campo oculto no modal
+            if (confirm('Deseja realmente excluir este usuário?')) {
+                $.ajax({
+                    url: `/usuarios/excluir/${id}`,  // URL da exclusão
+                    method: 'POST',  // Método POST
+                    data: { id_usuario: id },  // Dados enviados, caso o backend precise
+                    success: function () {
+                        alert('Usuário excluído com sucesso.');
+                        location.reload();  // Atualiza a página
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Erro ao excluir usuário.');
+                        console.log(xhr.responseText);  // Exibe o erro completo no console para depuração
+                    }
+                });
             }
-        });
-    }
-}
+        }
 
 
     </script>
