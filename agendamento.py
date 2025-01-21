@@ -248,6 +248,7 @@ def listar_horarios_disponiveis():
     # Se a data for hoje, considere o horário atual
     if data == data_atual:
         horario_atual = agora.strftime("%H:%M")
+        print(f"Horário atual: {horario_atual}")    
     else:
         horario_atual = None
 
