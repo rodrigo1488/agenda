@@ -260,7 +260,7 @@ button:hover,
     text-decoration: none;
     font-weight: bold;
     padding: 10px 20px;
-    background-color: red;
+    background-color:#1da840;
     border-radius: 8px;
     transition: background-color 0.3s;
 }
