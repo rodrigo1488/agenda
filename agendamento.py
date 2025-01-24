@@ -221,8 +221,10 @@ def listar_usuarios(empresa_id):
 
 @agendamento_bp.route('/api/servicos/<int:empresa_id>', methods=['GET'])
 def listar_servicos(empresa_id):
-    # Lista serviços vinculados a uma empresa específica
-    response = supabase.table("servicos").select("id, nome_servico,preco,id_usuario").eq("id_empresa", empresa_id).execute()
+    # Lista serviços vinculados a uma empresa específica e visíveis para clientes
+    response = supabase.table("servicos").select(
+        "id, nome_servico, preco, id_usuario"
+    ).eq("id_empresa", empresa_id).eq("disp_cliente", True).execute()  # Corrigido: condições encadeadas
     
     return jsonify(response.data), 200
 
