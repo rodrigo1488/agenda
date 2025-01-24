@@ -50,12 +50,13 @@
                     </div>
                     <div class="mb-3">
                     <label for="responsavel" class="form-label"> responsavel pelo serviço</label>
-                    <select name="responsavel" id="responsavel"> selecione o responsavel</select>   
+                    <select name="responsavel" id="responsavel" class="form-control"> selecione o responsavel</select>   
                     </div>
                     <div class="mb-3">
-                        <label for="visivel para clientes" class="form-label">visivel para clientes</label>
-                        <input type="checkbox" class="form-check-input" id="disp_cliente" name="disp_cliente" value="1">
-                        </div>
+                        <input type="checkbox" class="form-check-input" id="disp_cliente" name="disp_cliente" value="1" required checked >
+                        <label class="form-check-label" for="disp_cliente">Disponivel para os clientes</label>
+                       
+                        </div>                   
                     <button type="submit" class="btn btn-success">Cadastrar</button>
                 </form>
                 <hr>
@@ -64,9 +65,11 @@
             <!-- Formulário de Pesquisa -->
             <form method="POST" action="/servicos" class="mb-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" name="search_query" placeholder="Digite o nome do serviço">
-                    <button type="submit" class="btn btn-outline-secondary">Pesquisar</button>
-                </div>
+                <input type="text" class="form-control" name="search_query" placeholder="Pesquisar serviços">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="bi bi-search"></i> Pesquisar
+                    </button>
+                    </div>
             </form>
 
             <!-- Listagem de Serviços -->
