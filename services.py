@@ -65,6 +65,9 @@ def add_service():
         preco = float(request.form['preco'])
         tempo = int(request.form['tempo'])
         responsavel = request.form['responsavel']
+        disp_cliente = request.form.get('disp_cliente', '0')
+        disp_cliente = True if disp_cliente == '1' else False  # Padrão: '0' (não visível)
+
 
         # Verifica se 'responsavel' está vazio e o define como None
         id_usuario = None if not responsavel else int(responsavel)
@@ -75,8 +78,9 @@ def add_service():
             'nome_servico': nome_servico,
             'preco': preco,
             'tempo': tempo,
-            'id_usuario': id_usuario,  # Atribui None em vez de string vazia
-            'id_empresa': empresa_id  # Associa o serviço à empresa logada
+            'id_usuario': id_usuario,
+            'id_empresa': empresa_id,
+            'disp_cliente': disp_cliente  # Salva como True/False
         }]).execute()
         print('Serviço adicionado com sucesso!')
     except Exception as e:
