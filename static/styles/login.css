@@ -24,6 +24,8 @@ header img {
 }
 
 .header .header-link {
+    animation: pulsar 1.5s infinite; /* Adiciona a animação */
+    transition: transform 0.2s; /* Suaviza o hover */
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -172,6 +174,22 @@ footer .footer-btn:hover {
     grid-template-columns: 1fr 1fr;
     gap: 20%;
 }
+
+
+@keyframes pulsar {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+      transform: scale(1.1);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
 
 /* Responsividade para dispositivos menores */
 @media (max-width: 768px) {
