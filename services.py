@@ -68,7 +68,6 @@ def add_service():
         disp_cliente = request.form.get('disp_cliente', '0')
         disp_cliente = True if disp_cliente == '1' else False  # Padrão: '0' (não visível)
 
-
         # Verifica se 'responsavel' está vazio e o define como None
         id_usuario = None if not responsavel else int(responsavel)
 
@@ -82,11 +81,15 @@ def add_service():
             'id_empresa': empresa_id,
             'disp_cliente': disp_cliente  # Salva como True/False
         }]).execute()
+
         print('Serviço adicionado com sucesso!')
+
+        # Redireciona para a página anterior (mantendo o histórico)
+        return redirect(request.referrer or url_for('services_bp.servicos'))
     except Exception as e:
-        print(f"Erro ao adicionar serviço: {e}")
-        flash('Erro ao adicionar serviço. Tente novamente.', 'danger')
-    return redirect(url_for('services.index'))
+        print(f"Erro ao cadastrar serviço: {e}")
+        return "Erro ao cadastrar serviço", 500
+
 
 # Função para excluir um serviço
 @services_bp.route('/excluir_servico/<int:service_id>', methods=['GET'])

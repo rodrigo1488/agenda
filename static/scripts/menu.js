@@ -29,7 +29,7 @@ function renderMenu(containerId) {
                             <a href="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge"></i> Usuários</a>
                         </li>
                         <li class="nav-item mb-3">
-                            <a href="/servicos" class="nav-link text-white"><i class="bi bi-scissors"></i> Serviços</a>
+                            <a href="/servicos" class="nav-link text-white"><i class="bi bi-hammer"></i> Serviços</a>
                         </li>
                         <li class="nav-item mb-3">
                             <a href="/relatorios" class="nav-link text-white"><i class="bi bi-bar-chart"></i> Relatórios</a>

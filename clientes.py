@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from supabase import create_client
+from flask import request, redirect
 import os
 
 # Configuração do Supabase
@@ -78,7 +79,6 @@ def cadastrar_cliente():
     email = request.form['email']
 
     try:
-        # Insere o cliente com o id_empresa do cookie
         empresa_id = request.cookies.get('empresa_id')
         supabase.table('clientes').insert([{
             'nome_cliente': nome_cliente,
@@ -87,10 +87,12 @@ def cadastrar_cliente():
             'id_empresa': empresa_id
         }]).execute()
 
-        return redirect(url_for('clientes_bp.clientes'))
+        print("Cliente cadastrado com sucesso!")  # Apenas loga no terminal
+        return ""  # Retorna vazio
     except Exception as e:
-        print(f"Erro ao cadastrar cliente: {e}")
-        return redirect(url_for('clientes_bp.clientes', error="Erro ao cadastrar cliente."))
+        print(f"Erro ao cadastrar cliente: {e}")  # Apenas loga no terminal
+        return "", 500  # Retorna vazio com status HTTP de erro
+
 
 # Rota para editar cliente
 @clientes_bp.route('/editar_cliente/<int:id>', methods=['GET', 'POST'])
