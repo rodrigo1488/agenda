@@ -67,6 +67,13 @@ body {
     margin: 10px 0;
 }
 
+.select{
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    transition: border-color 0.3s ease-in-out;
+}
+
+
+
 select#filter {
     padding: 8px;
     font-size: 14px;
@@ -80,7 +87,7 @@ select#filter {
     display:grid;
     grid-template-columns: 1fr 1fr;
     gap: 5px;
-}
+}6
 #filter:focus {
     border-color: #007bff;
     outline: none;

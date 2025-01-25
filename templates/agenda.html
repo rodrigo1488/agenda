@@ -125,10 +125,10 @@
                             <form id="form-agendamento" class="mb-4">
                                 <!-- Cliente -->
                                 <div class="row align-items-center mb-3">
-                                    <label for="cliente-agendamento" class="form-label">Cliente</label>
+                                    <label for="cliente-agendamento" class="form-label" style="font-weight: bold;" >Cliente</label>
                                     <div class="d-flex align-items-center">
-                                        <select id="cliente-agendamento" class="form-select" required>
-                                            <option value="">Selecione um cliente</option>
+                                        <select id="cliente-agendamento" class="form-select" style="box-shadow:2px 2px 5px  rgba(0, 0, 0, 0.6);"required>
+                                            <option value="Selecione um cliente">Selecione um cliente</option>
                                         </select>
                                         <button type="button" class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal"
                                             data-bs-target="#addClienteModal">
@@ -138,9 +138,9 @@
                                 </div>
                                 <!-- Compromisso -->
                                 <div class="row align-items-center mb-3">
-                                    <label for="servico-agendamento" class="form-label">Compromisso</label>
+                                    <label for="servico-agendamento" class="form-label" style="font-weight: bold;">Compromisso</label>
                                     <div class="d-flex align-items-center">
-                                        <select id="servico-agendamento" class="form-select" required>
+                                        <select id="servico-agendamento" class="form-select" style="box-shadow:2px 2px 5px  rgba(0, 0, 0, 0.6);" required>
                                             <option value="">Selecione um compromisso</option>
                                         </select>
                                         <button type="button" class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal"
@@ -151,26 +151,26 @@
                                 </div>
                                 <!-- Profissional -->
                                 <div class="row align-items-center mb-3">
-                                    <label for="usuario-agendamento" class="form-label">Profissional</label>
-                                    <select id="usuario-agendamento" class="form-select" required>
+                                    <label for="usuario-agendamento" class="form-label" style="font-weight: bold;">Profissional</label>
+                                    <select id="usuario-agendamento" class="form-select"  style="box-shadow:2px 2px 5px  rgba(0, 0, 0, 0.6);" required>
                                         <option value="">Selecione um profissional</option>
                                     </select>
                                 </div>
                                 <!-- Descrição -->
                                 <div class="mb-3">
-                                    <label for="descricao-agendamento" class="form-label">Descrição</label>
+                                    <label for="descricao-agendamento" class="form-label" style="font-weight: bold;">Descrição</label>
                                     <textarea id="descricao-agendamento" name="descricao" class="form-control" rows="3"
-                                        placeholder="Adicione detalhes sobre o compromisso"></textarea>
+                                        placeholder="Adicione detalhes sobre o compromisso"  style="box-shadow:2px 2px 5px  rgba(0, 0, 0, 0.6);"></textarea>
                                 </div>
                                 <!-- Data e Horário -->
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="data-agendamento" class="form-label">Data</label>
-                                        <input type="date" id="data-agendamento" class="form-control" required>
+                                        <label for="data-agendamento" class="form-label bold-label" style="font-weight: bold;">Data</label>
+                                        <input type="date" id="data-agendamento" class="form-control" style="box-shadow:2px 2px 5px  rgba(0, 0, 0, 0.6);" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="hora-agendamento" class="form-label">Horário</label>
-                                        <input type="time" id="hora-agendamento" class="form-control" required>
+                                        <label for="hora-agendamento" class="form-label" style="font-weight: bold;">Horário</label>
+                                        <input type="time" id="hora-agendamento" class="form-control"  style="box-shadow:2px 2px 5px  rgba(0, 0, 0, 0.6);" required>
                                     </div>
                                 </div>
                                 <!-- Botão de Enviar -->
