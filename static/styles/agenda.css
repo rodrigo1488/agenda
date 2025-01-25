@@ -87,7 +87,7 @@ select#filter {
     display:grid;
     grid-template-columns: 1fr 1fr;
     gap: 5px;
-}6
+}
 #filter:focus {
     border-color: #007bff;
     outline: none;
