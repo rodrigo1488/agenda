@@ -45,11 +45,11 @@ def gerar_link_pagamento(plano):
             "pending": "http://www.suaagenda.fun/pagamentonaoaprovado",
         },
         "auto_return": "all",
-        "payment_methods": {
-            "excluded_payment_methods": [
-                {"id": "pix"}  # Bloquear o Pix como método de pagamento
-            ]
-        }
+        # "payment_methods": {
+        #     "excluded_payment_methods": [
+        #         {"id": "pix"}  # Bloquear o Pix como método de pagamento
+        #     ]
+        # }
     }
 
     # Criar a preferência de pagamento
