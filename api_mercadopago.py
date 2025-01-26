@@ -40,9 +40,9 @@ def gerar_link_pagamento(plano):
             }
         ],
         "back_urls": {
-            "success": "http://localhost:5000/pagamentoaprovado",
-            "failure": "http://localhost:5000/pagamentonaoaprovado",
-            "pending": "http://localhost:5000/pagamentonaoaprovado",
+            "success": "http://www.suaagenda.fun/pagamentoaprovado",
+            "failure": "http://www.suaagenda.fun/pagamentonaoaprovado",
+            "pending": "http://www.suaagenda.fun/pagamentonaoaprovado",
         },
         "auto_return": "all",
         "payment_methods": {
