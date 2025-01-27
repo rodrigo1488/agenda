@@ -72,3 +72,4 @@ wsproto==1.2.0
 yarl==1.18.3
 zope.event==5.0
 zope.interface==7.2
+mercadopago==2.2.3
