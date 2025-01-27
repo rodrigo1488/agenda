@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, redirect, flash
 from api_mercadopago import gerar_link_pagamento
 
+
+
 payment_bp = Blueprint('payment', __name__)
 
 @payment_bp.route('/adquirir', methods=['GET'])
@@ -18,6 +20,8 @@ def process_payment(plano):
         flash("Plano inválido!", "error")
         return redirect('/adquirir')
 
+
+    
 @payment_bp.route('/pagamentoaprovado', methods=['GET'])
 def pagamentoaprovado():
     return render_template('pagamentoaprovado.html')    
