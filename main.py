@@ -11,6 +11,7 @@ from lembrete_email import lembrete_email_bp, verificar_agendamentos  # Importe 
 from config import config_bp
 from payment import payment_bp
 from sucesso import sucesso_bp
+from tasks import tasks_bp
 import os
 
 # Configuração do Flask
@@ -18,6 +19,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # Registrando os Blueprints
+app.register_blueprint(tasks_bp)
 app.register_blueprint(sucesso_bp)
 app.register_blueprint(payment_bp)
 app.register_blueprint(config_bp)

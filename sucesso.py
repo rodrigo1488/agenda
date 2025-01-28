@@ -32,7 +32,7 @@ def sucesso():
             tel_empresa = request.form.get('tel_empresa').strip()
             plano = request.form.get('plano')  # "1 mês", "3 meses", "1 ano"
 
-            dias_restantes = {"1 mês": 30, "3 meses": 90, "1 ano": 365}.get(plano, 0)
+            # dias_restantes = {"1 mês": 30, "3 meses": 90, "1 ano": 365}.get(plano, 0)
 
             # Dados da empresa
             data = {
@@ -41,7 +41,8 @@ def sucesso():
                 "email": email,
                 "descricao": descricao,
                 "tel_empresa": tel_empresa,
-                "dias_restantes": dias_restantes
+                "dias_restantes": 30,
+                "teste_de_app": True
             }
 
             try:

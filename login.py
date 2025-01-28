@@ -25,12 +25,18 @@ def login():
 
         try:
             # Verifica se a empresa existe
-            empresa_data = supabase.table('empresa').select('id').eq('nome_empresa', empresa).single().execute()
+            empresa_data = supabase.table('empresa').select('id, acesso').eq('nome_empresa', empresa).single().execute()
             if not empresa_data.data:
                 flash('Empresa não encontrada.', 'danger')
                 return redirect(url_for('login.login'))
 
             id_empresa = empresa_data.data['id']
+            acesso_empresa = empresa_data.data['acesso']
+
+            # Verifica se a empresa tem acesso permitido
+            if not acesso_empresa:
+                flash('Acesso negado à empresa.', 'danger')
+                return redirect(url_for('login.login'))
 
             # Verifica se o usuário e a senha são válidos
             usuario_data = supabase.table('usuarios').select('id, nome_usuario').eq('nome_usuario', usuario).eq(
@@ -53,6 +59,7 @@ def login():
             return redirect(url_for('login.login'))
 
     return render_template('login.html')
+
 
 @login_bp.route('/logout')
 def logout():
@@ -77,46 +84,3 @@ def verificar_cookies():
     else:
         return 'Cookies não encontrados.'
 
-
-# # Configurações de e-mail
-# EMAIL_REMETENTE = 'sgrdital01@gmail.com'
-# SENHA_APP = 'dsbufjiwxttereis'
-
-# def enviar_email(destinatario):
-#     try:
-#         # Configura a mensagem de e-mail
-#         mensagem = MIMEMultipart()
-#         mensagem['From'] = EMAIL_REMETENTE
-#         mensagem['To'] = destinatario
-#         mensagem['Subject'] = 'Hello World'
-
-#         corpo = 'Hello World'
-#         mensagem.attach(MIMEText(corpo, 'plain'))
-
-#         # Conecta ao servidor SMTP do Gmail
-#         servidor = smtplib.SMTP('smtp.gmail.com', 587)
-#         servidor.starttls()
-#         servidor.login(EMAIL_REMETENTE, SENHA_APP)
-
-#         # Envia o e-mail
-#         servidor.sendmail(EMAIL_REMETENTE, destinatario, mensagem.as_string())
-#         servidor.quit()
-
-#         return True
-#     except Exception as e:
-#         print(f"Erro ao enviar e-mail: {e}")
-#         return False
-    
-
-# @login_bp.route('/enviar-email', methods=['POST'])
-# def enviar_email_formulario():
-#     dados = request.json
-#     email_destinatario = dados.get('email')
-#     if not email_destinatario:
-#         return jsonify({"erro": "Email não fornecido"}), 400
-
-#     sucesso = enviar_email(email_destinatario)
-#     if sucesso:
-#         return jsonify({"mensagem": "Email enviado com sucesso!"}), 200
-#     else:
-#         return jsonify({"erro": "Falha ao enviar email"}), 500
