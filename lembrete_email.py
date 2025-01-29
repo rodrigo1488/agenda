@@ -87,7 +87,6 @@ def verificar_agendamentos():
 
         time.sleep(300)  # Aguarda 5 minutos antes da próxima verificação
 
-        print("Próxima verificação em 5 minutos...")
 
 # Inicia a verificação em uma thread separada
 import threading
