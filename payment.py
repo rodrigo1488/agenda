@@ -19,13 +19,3 @@ def process_payment(plano):
     except ValueError:
         flash("Plano inválido!", "error")
         return redirect('/adquirir')
-
-
-    
-@payment_bp.route('/pagamentoaprovado', methods=['GET'])
-def pagamentoaprovado():
-    return render_template('pagamentoaprovado.html')    
-
-@payment_bp.route('/pagamentonaoaprovado', methods=['GET'])
-def pagamentonaoaprovado():
-    return render_template('pagamentonaoaprovado.html')

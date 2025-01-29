@@ -66,7 +66,9 @@
 
 <body>
     <div class="container">
-        <h1>Cadastro</h1>
+<h1>Parabens pagamento aprovado!</h1>
+<p>preecha as suas informacoes abaixo para começar a usar a sua agenda!</p>
+        <h3>Cadastro</h3>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -91,6 +93,12 @@
             <label for="descricao">Descrição:</label>
             <textarea id="descricao" name="descricao" rows="4" required></textarea>
 
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" name="endereco" required>
+            
+            <label for="cep">CEP</label>
+            <input type="number" id="cep" name="cep" required>
+
             <label for="tel_empresa">Telefone:</label>
             <input type="tel" id="tel_empresa" name="tel_empresa" required>
 
@@ -100,7 +108,7 @@
             <button type="submit">Cadastrar Empresa</button>
         </form>
         {% else %}
-        <!-- Formulário de Cadastro do Primeiro Usuário -->
+
         <!-- Formulário de Cadastro do Primeiro Usuário -->
         <form method="POST" action="/sucesso">
             <input type="hidden" name="empresa_id" value="{{ empresa_id }}">

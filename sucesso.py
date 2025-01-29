@@ -30,6 +30,8 @@ def sucesso():
             email = request.form.get('email').strip()
             descricao = request.form.get('descricao').strip()
             tel_empresa = request.form.get('tel_empresa').strip()
+            endereco = request.form.get('endereco').strip()
+            cep = request.form.get('cep').strip()
             plano = request.form.get('plano')  # "1 mês", "3 meses", "1 ano"
 
             # dias_restantes = {"1 mês": 30, "3 meses": 90, "1 ano": 365}.get(plano, 0)
@@ -38,9 +40,11 @@ def sucesso():
             data = {
                 "nome_empresa": nome_empresa,
                 "cnpj": cnpj,
-                "email": email,
+                "email_empresa": email,
                 "descricao": descricao,
                 "tel_empresa": tel_empresa,
+                "endereco": endereco,
+                "cep": cep,
                 "dias_restantes": 30,
                 "teste_de_app": True
             }

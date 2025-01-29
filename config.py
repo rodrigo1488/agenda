@@ -51,7 +51,7 @@ def atualizar_configuracao():
         "tel_empresa": request.form.get("tel_empresa"),
         "status": request.form.get("status"),
         "descricao": request.form.get("descricao"),
-        "cor": request.form.get("cor")
+        "cor_emp": request.form.get("cor")
     }
 
     try:
