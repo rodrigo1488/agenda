@@ -52,7 +52,8 @@ def loop_update_dias_restantes():
             print(f"Erro ao executar a atualização: {e}")
 
         # Aguarda 1 hora antes de rodar novamente
-        print("Aguardando 1 hora para próxima atualização...")
+       
+
         time.sleep(86400)  #86400 segundos = 1 dia
 
 # Inicia a execução do loop em uma thread separada para não bloquear o Flask

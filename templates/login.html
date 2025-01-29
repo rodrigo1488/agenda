@@ -42,24 +42,14 @@
             style="background-color: red;"></button>
         </div>
         <div class="modal-body">
-          <!-- Exibe mensagens de erro -->
-          {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-          <div>
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }}" role="alert">
-              {{ message }}
-            </div>
-            {% endfor %}
-          </div>
-          {% endif %}
-          {% endwith %}
-
+          <div id="error-messages"></div>
+      
+        
           <form method="POST" action="{{ url_for('login.login') }}">
             <div class="text-center mb-4">
               <img src="/static/img/logo login.png" alt="Logo" style="border: none; height: 80px; width: auto;">
             </div>
-
+          
             <div class="mb-3">
               <label for="empresa" class="form-label">Nome da Empresa</label>
               <input type="text" id="empresa" name="empresa" class="form-control" required
@@ -77,12 +67,12 @@
             <div class="mb-4">
               <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#ModalEmail"
                 style="color: white;">Esqueci minha senha</button>
-
-              <a
-                href="/adquirir">cadastre-se</a>
+          
+              <a href="/adquirir">cadastre-se</a>
               <button type="submit" class="btn btn-primary w-100">Entrar</button>
             </div>
           </form>
+          
         </div>
       </div>
     </div>
@@ -119,7 +109,46 @@
     </div>
   </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Previne o recarregamento da página
 
+        const formData = new FormData(form);
+        const errorMessages = document.getElementById("error-messages");
+        errorMessages.style.display = "none"; // Oculta os erros anteriores
+
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: formData,
+            });
+
+            const contentType = response.headers.get("content-type");
+
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Resposta do servidor não é JSON.");
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                errorMessages.innerHTML = data.message || "Erro desconhecido."; // ⬅️ Alterado para innerHTML
+                errorMessages.style.display = "block";
+            }
+        } catch (error) {
+            console.error("Erro ao enviar o formulário:", error);
+            errorMessages.textContent = "Erro de conexão com o servidor.";
+            errorMessages.style.display = "block";
+        }
+    });
+});
+
+
+</script>
 
 
   <script>

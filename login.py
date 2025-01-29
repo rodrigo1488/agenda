@@ -1,5 +1,9 @@
+
 from datetime import timedelta
 from flask import Blueprint, render_template, request, redirect, url_for, flash, make_response, jsonify
+from flask import jsonify, request, make_response, url_for
+from datetime import timedelta
+
 from supabase import create_client
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -16,49 +20,61 @@ supabase = create_client(supabase_url, supabase_key)
 
 login_bp = Blueprint('login', __name__)
 
+
+
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        empresa = request.form.get('empresa').strip().upper()
-        usuario = request.form.get('usuario').strip().upper()
-        senha = request.form.get('senha').strip()
+    if request.method == 'GET':
+        return render_template('login.html')
 
-        try:
-            # Verifica se a empresa existe
-            empresa_data = supabase.table('empresa').select('id, acesso').eq('nome_empresa', empresa).single().execute()
-            if not empresa_data.data:
-                flash('Empresa não encontrada.', 'danger')
-                return redirect(url_for('login.login'))
+    # Obtém os valores do formulário e faz validação inicial
+    empresa = request.form.get('empresa', '').strip().upper()
+    usuario = request.form.get('usuario', '').strip().upper()
+    senha = request.form.get('senha', '').strip()
 
-            id_empresa = empresa_data.data['id']
-            acesso_empresa = empresa_data.data['acesso']
+    if not empresa:
+        return jsonify(success=False, message='O campo "Nome da Empresa" é obrigatório.'), 400
+    if not usuario:
+        return jsonify(success=False, message='O campo "Usuário" é obrigatório.'), 400
+    if not senha:
+        return jsonify(success=False, message='O campo "Senha" é obrigatório.'), 400
 
-            # Verifica se a empresa tem acesso permitido
-            if not acesso_empresa:
-                flash('Acesso negado à empresa.', 'danger')
-                return redirect(url_for('login.login'))
+    try:
+        # Busca a empresa no banco
+        empresa_data = supabase.table('empresa').select('id, acesso').eq('nome_empresa', empresa).single().execute()
+        if not empresa_data.data:
+            return jsonify(success=False, message='Empresa não encontrada. Verifique o nome e tente novamente.'), 404
 
-            # Verifica se o usuário e a senha são válidos
-            usuario_data = supabase.table('usuarios').select('id, nome_usuario').eq('nome_usuario', usuario).eq(
-                'senha', senha).eq('id_empresa', id_empresa).single().execute()
-            if not usuario_data.data:
-                flash('Usuário ou senha inválidos.', 'danger')
-                return redirect(url_for('login.login'))
+        id_empresa = empresa_data.data['id']
+        acesso_empresa = empresa_data.data['acesso']
 
-            # Armazena os dados no cookie, validando para expirar em um certo tempo (ex: 30 dias)
-            resp = make_response(redirect(url_for('agenda_bp.renderizar_agenda')))
-            resp.set_cookie('user_id', str(usuario_data.data['id']), max_age=timedelta(days=30))
-            resp.set_cookie('user_name', usuario_data.data['nome_usuario'], max_age=timedelta(days=30))
-            resp.set_cookie('empresa_id', str(id_empresa), max_age=timedelta(days=30))
+        if not acesso_empresa:
+            mensagem = (
+                'Atenção! Sua licença está expirada. '
+                'Entre em contato com o suporte ou '
+                '<a href="/renovacao" class="btn btn-warning btn-sm">Renovar Licença</a>'
+            )
+            return jsonify(success=False, message=mensagem), 403
 
-            # Login bem-sucedido
-            return resp
+        # Busca o usuário
+        usuario_data = supabase.table('usuarios').select('id, nome_usuario, senha').eq('nome_usuario', usuario).eq('id_empresa', id_empresa).single().execute()
+        if not usuario_data.data:
+            return jsonify(success=False, message='Usuário não encontrado. Verifique o nome e tente novamente.'), 404
 
-        except Exception as e:
-            flash(f'Usuário ou senha incorretos.', 'danger')
-            return redirect(url_for('login.login'))
+        # Verifica a senha
+        if usuario_data.data['senha'] != senha:
+            return jsonify(success=False, message='Senha incorreta. Tente novamente.'), 401
 
-    return render_template('login.html')
+        # Login bem-sucedido, cria cookies
+        resp = make_response(jsonify(success=True, redirect_url=url_for('agenda_bp.renderizar_agenda')))
+        resp.set_cookie('user_id', str(usuario_data.data['id']), max_age=timedelta(days=30))
+        resp.set_cookie('user_name', usuario_data.data['nome_usuario'], max_age=timedelta(days=30))
+        resp.set_cookie('empresa_id', str(id_empresa), max_age=timedelta(days=30))
+        return resp
+
+    except Exception as e:
+        print("Erro no login:", e)
+        return jsonify(success=False, message='Erro interno no servidor. Tente novamente mais tarde.'), 500
 
 
 @login_bp.route('/logout')
