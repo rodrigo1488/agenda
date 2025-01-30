@@ -5,68 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Empresa e Usuário</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .container h1 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            font-weight: bold;
-            margin-top: 1rem;
-            display: block;
-        }
-
-        input,
-        textarea,
-        select,
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        button {
-            background-color: #007bff;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .alert {
-            color: red;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/styles/telascadastro.css"> <!-- Referência para o CSS externo -->
 </head>
 
 <body>
     <div class="container">
-<p>preecha as suas informacoes abaixo para começar a usar a sua agenda!</p>
+        <div class="title">
+        <p>Preencha as suas informações abaixo para começar a usar a sua agenda!</p>
         <h3>Cadastro</h3>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -78,6 +23,9 @@
         {% endwith %}
 
         {% if not empresa_cadastrada %}
+
+
+    </div>
         <!-- Formulário de Cadastro da Empresa -->
         <form method="POST" action="/sucesso">
             <label for="nome_empresa">Nome da Empresa:</label>
@@ -90,38 +38,37 @@
             <input type="email" id="email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="sua@empresa">
 
             <label for="descricao">Descrição:</label>
-            <textarea id="descricao" name="descricao" rows="3" required  maxlength="30" placeholder="A melhor clinica da cidade"></textarea>
+            <textarea id="descricao" name="descricao" rows="3" required maxlength="30" placeholder="A melhor clínica da cidade"></textarea>
 
             <label for="setor">Setor</label>
             <select id="setor" name="setor" required>
                 <option value="Tecnologia">Tecnologia</option>
                 <option value="Beleza">Beleza</option>
                 <option value="Barbearia">Barbearia</option>
-                <option value="Saude">Saude</option>
+                <option value="Saude">Saúde</option>
                 <option value="Outro">Outro</option>
             </select>
 
-            
-            
-            
             <label for="tel_empresa">Telefone:</label>
-            <input type="tel" id="tel_empresa" name="tel_empresa" required  placeholder="(00) 0000-0000">
-            
-            
-            <label for="cidade">Cidade:</label>
-            <input type="text" id="cidade" name="cidade" required placeholder="SUA CIDADE">
+            <input type="tel" id="tel_empresa" name="tel_empresa" required placeholder="(00) 0000-0000">
+
+            <div class="endereco-container">
+                <div class="campo-cidade">
+                    <label for="cidade">Cidade:</label>
+                    <input type="text" id="cidade" name="cidade" required placeholder="SUA CIDADE">
+                </div>
+                <div class="campo-cep">
+                    <label for="cep">.</label>
+                    <input type="number" id="cep" name="cep" required placeholder="CEP (codigo postal)" maxlength="8">
+                </div>
+            </div>
+
             <label for="endereco">Endereço:</label>
             <input type="text" id="endereco" name="endereco" required placeholder="Rua São Paulo, 123">
-            <label for="cep">CEP</label>
-            <input type="number" id="cep" name="cep" required  placeholder="00000-000" maxlength="8">
-
- 
-            
 
             <button type="submit">Cadastrar Empresa</button>
         </form>
         {% else %}
-
         <!-- Formulário de Cadastro do Primeiro Usuário -->
         <form method="POST" action="/sucesso">
             <input type="hidden" name="empresa_id" value="{{ empresa_id }}">
@@ -132,14 +79,13 @@
             <input type="email" id="email_usuario" name="email_usuario" required placeholder="seu@email.com">
 
             <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefone" name="telefone" required  placeholder="(00) 0000-0000">
+            <input type="tel" id="telefone" name="telefone" required placeholder="(00) 0000-0000">
 
             <label for="senha">Senha:</label>
             <input type="password" id="senha" name="senha" required>
 
             <button type="submit">Cadastrar Usuário</button>
         </form>
-
         {% endif %}
     </div>
 </body>
