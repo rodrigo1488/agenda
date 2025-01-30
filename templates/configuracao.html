@@ -79,6 +79,16 @@
                             value="{{ empresa.horario }}" placeholder="Ex: 08:00 - 18:00">
                     </div>
                     <div class="mb-3">
+                        <label for="endereco" class="form-label">Endereço:</label>
+                        <input type="text" id="endereco" name="endereco" class="form-control"
+                            value="{{ empresa.endereco }}" placeholder="Ex: Rua das Flores, 123">
+                    </div>
+                    <div class="mb-3">
+                        <label for="cep" class="form-label">CEP:</label>
+                        <input type="number" id="cep" name="cep" class="form-control" value="{{ empresa.cep }}"
+                            placeholder="Ex: 12345-678">
+                    </div>
+                    <div class="mb-3">
                         <label for="tel_empresa" class="form-label">Telefone:</label>
                         <input type="number" id="tel_empresa" name="tel_empresa" class="form-control"
                             value="{{ empresa.tel_empresa }}" placeholder="Ex: (11) 99999-9999">
