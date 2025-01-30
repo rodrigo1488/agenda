@@ -17,6 +17,11 @@
 
 }
 
+/* Esconde a barra de rolagem mas mantém a rolagem funcional */
+#menu-lateral::-webkit-scrollbar {
+  display: none; /* Remove a barra de rolagem */
+}
+
 /* Logo */
 #logo {
   width: 200px;
