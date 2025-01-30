@@ -17,6 +17,9 @@ supabase = create_client(supabase_url, supabase_key)
 
 tasks_bp = Blueprint('tasks', __name__)
 
+# Variável de controle para garantir que o loop só seja executado uma vez
+loop_started = False
+
 def update_dias_restantes():
     try:
         # Busca todas as linhas da tabela "empresa"
@@ -45,16 +48,21 @@ def update_dias_restantes():
 
 # Função que roda o loop de verificação periódica
 def loop_update_dias_restantes():
+    global loop_started  # Referência à variável global
+    if loop_started:
+        return  # Evita que o loop seja iniciado novamente
+
+    loop_started = True
+
     while True:
         try:
             update_dias_restantes()  # Chama a função para atualizar os dias restantes
         except Exception as e:
             print(f"Erro ao executar a atualização: {e}")
 
-        # Aguarda 1 hora antes de rodar novamente
-       
-
+        # Aguarda 1 dia antes de rodar novamente
         time.sleep(86400)  #86400 segundos = 1 dia
+
 
 # Inicia a execução do loop em uma thread separada para não bloquear o Flask
 def start_update_thread():
