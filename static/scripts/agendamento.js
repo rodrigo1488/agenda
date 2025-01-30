@@ -1,5 +1,5 @@
 document.getElementById('fechar-modal').addEventListener('click', function () {
-   window.location.reload();
+    window.location.reload();
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -66,33 +66,38 @@ async function carregarDetalhesEmpresa(empresaId) {
 
 
 
-document.getElementById('search-bar').addEventListener('input', function(event) {
-    const nomeEmpresa = event.target.value.trim();  // Captura o valor digitado no campo de busca
-
-    // Modifica a URL para refletir o termo de busca sem recarregar a página
+document.getElementById('search-bar').addEventListener('input', function (event) {
+    const nomeEmpresa = event.target.value.trim();
     const urlParams = new URLSearchParams(window.location.search);
+
     if (nomeEmpresa) {
-        urlParams.set('nome_empresa', nomeEmpresa);  // Adiciona o parâmetro nome_empresa à URL
+        urlParams.set('nome_empresa', nomeEmpresa);
     } else {
-        urlParams.delete('nome_empresa');  // Se o campo de busca estiver vazio, remove o parâmetro
+        urlParams.delete('nome_empresa');
     }
 
-    // Atualiza a URL da barra de endereços sem recarregar a página
-    window.history.pushState({}, '', `${window.location.pathname}?${urlParams}`);
+    // Mantém a cidade na URL caso já esteja definida
+    const cidadeAtual = urlParams.get('cidade') || '';
+    if (cidadeAtual) {
+        urlParams.set('cidade', cidadeAtual);
+    }
 
-    // Chama a função para carregar as empresas com o novo parâmetro
-    carregarEmpresas(nomeEmpresa);
+    window.history.pushState({}, '', `${window.location.pathname}?${urlParams}`);
+    carregarEmpresas();
 });
 
-async function carregarEmpresas(nomeEmpresa = '') {
-    try {
-        // Captura o parâmetro "nome_empresa" da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const nomeEmpresaURL = urlParams.get('nome_empresa') || nomeEmpresa;
 
-        // Faz a requisição à API, incluindo o filtro (se houver)
+async function carregarEmpresas() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const nomeEmpresa = urlParams.get('nome_empresa') || '';
+        const cidade = urlParams.get('cidade') || '';  // Adicionando cidade
+
         const response = await axios.get('/api/empresas', {
-            params: { nome_empresa: nomeEmpresaURL }
+            params: {
+                nome_empresa: nomeEmpresa,
+                cidade: cidade  // Inclui a cidade na requisição
+            }
         });
 
         const empresas = response.data;
@@ -130,7 +135,7 @@ async function carregarEmpresas(nomeEmpresa = '') {
 }
 
 // Chama a função para carregar as empresas ao carregar a página (isso vai considerar a URL também)
-window.onload = function() {
+window.onload = function () {
     carregarEmpresas();
 };
 
@@ -162,7 +167,7 @@ async function carregarFuncionarios(empresaId) {
 
 async function carregarUsuarioResponsavel() {
     const servicoId = document.getElementById('servico-select').value;
-    
+
     if (!servicoId) {
         // Limpa a lista de profissionais se nenhum serviço estiver selecionado
         document.getElementById('profissional-select').innerHTML = '<option value="">Selecione o Profissional</option>';
@@ -173,7 +178,7 @@ async function carregarUsuarioResponsavel() {
         // Faz uma chamada para buscar o serviço específico pelo ID
         const response = await axios.get(`/api/servicos/detalhes/${servicoId}`);
         const servico = response.data;
-        
+
         const selectUsuarios = document.getElementById('profissional-select');
         selectUsuarios.innerHTML = '<option value="">Selecione o Profissional</option>';
 
@@ -336,87 +341,89 @@ function esconderCarregamento() {
 
 
 const form = document.getElementById('form-agendamento');
-    const telefoneInput = document.getElementById('telefone-input');
+const telefoneInput = document.getElementById('telefone-input');
 
-    // Remove caracteres inválidos do telefone
-    telefoneInput.addEventListener('input', (event) => {
-        const apenasNumeros = telefoneInput.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
-        telefoneInput.value = apenasNumeros; // Atualiza o valor no campo
-    });
+// Remove caracteres inválidos do telefone
+telefoneInput.addEventListener('input', (event) => {
+    const apenasNumeros = telefoneInput.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+    telefoneInput.value = apenasNumeros; // Atualiza o valor no campo
+});
 
-    // Validação ao enviar o formulário
-    form.addEventListener('submit', (event) => {
-        const telefone = telefoneInput.value;
+// Validação ao enviar o formulário
+form.addEventListener('submit', (event) => {
+    const telefone = telefoneInput.value;
 
-        // Verifica se o telefone tem um tamanho válido (ex: 10 ou 11 dígitos para o Brasil)
-        if (telefone.length < 10 || telefone.length > 11) {
-            alert('Por favor, insira um número de telefone válido com 10 ou 11 dígitos.');
-            event.preventDefault(); // Impede o envio do formulário
-            return;
-        }
+    // Verifica se o telefone tem um tamanho válido (ex: 10 ou 11 dígitos para o Brasil)
+    if (telefone.length < 10 || telefone.length > 11) {
+        alert('Por favor, insira um número de telefone válido com 10 ou 11 dígitos.');
+        event.preventDefault(); // Impede o envio do formulário
+        return;
+    }
 
-        // (Opcional) Aqui, o campo de telefone já está limpo e validado antes de ser enviado ao banco
-        console.log('Telefone validado e pronto para envio:', telefone);
-    });
-
-
+    // (Opcional) Aqui, o campo de telefone já está limpo e validado antes de ser enviado ao banco
+    console.log('Telefone validado e pronto para envio:', telefone);
+});
 
 
-    /// codigo para listar empresa pela localização
+
+document.getElementById('btn-definir-cidade').addEventListener('click', () => {
+    obterCidade();
+});
+
+
 
 
 
 // Verifica se a geolocalização está disponível no navegador
-// Verifica se a geolocalização está disponível no navegador
-if (navigator.geolocation) {
+async function obterCidade() {
+    if (!navigator.geolocation) {
+        console.error("[ERRO] Geolocalização não suportada pelo navegador.");
+        return;
+    }
+
     navigator.geolocation.getCurrentPosition(async (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
         try {
-            // URL da API de geolocalização
             const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
             console.log(`[INFO] Enviando requisição para: ${url}`);
 
-            // Faz a requisição para a API de geolocalização
             const response = await fetch(url);
-
-            if (!response.ok) {
-                console.error(`[ERRO] Falha ao buscar cidade. Status HTTP: ${response.status}`);
-                throw new Error(`Erro na requisição: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`Erro na requisição: ${response.status}`);
 
             const data = await response.json();
-            console.log("[INFO] Resposta completa da API:", data);
+            if (!data.address) throw new Error("A resposta da API não contém informações de endereço.");
 
-            // Verifica se a resposta contém o endereço
-            if (!data.address) {
-                console.error("[ERRO] Resposta não contém o campo 'address'.", data);
-                throw new Error("A resposta da API não contém informações de endereço.");
-            }
-
-            // Tenta obter a cidade da resposta da API
-            const cidade = data.address.city || 
-                           data.address.town || 
-                           data.address.village || 
-                           data.address.municipality || 
-                           data.address.county;
+            const cidade = data.address.city || data.address.town || data.address.village ||
+                data.address.municipality || data.address.county;
 
             if (cidade) {
                 console.log(`[INFO] Cidade detectada: ${cidade}`);
-                buscarEmpresas(cidade);  // Chama a função para buscar empresas para a cidade detectada
-            } else {
+
+                const cidadeParam = encodeURIComponent(cidade);
+                const urlParams = new URLSearchParams(window.location.search);
+
+                // Verifica se a URL já contém a cidade correta
+                if (urlParams.get('cidade') !== cidadeParam) {
+                    urlParams.set('cidade', cidadeParam);
+                    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+                    window.location.reload();  // 🔄 Recarrega só se a cidade mudou
+                }
+
+                buscarEmpresas(cidade);
+            }
+            else {
                 console.error("[ERRO] Nenhum nome de cidade foi encontrado na resposta.", data.address);
             }
         } catch (error) {
-            console.error("[ERRO] Exceção capturada ao buscar a cidade:", error);
+            console.error("[ERRO] Exceção ao buscar a cidade:", error);
         }
     }, (error) => {
         console.error("[ERRO] Falha ao obter a localização do usuário:", error.message);
     });
-} else {
-    console.error("[ERRO] Geolocalização não suportada pelo navegador.");
 }
+
 
 // Função para buscar empresas com base na cidade
 async function buscarEmpresas(cidade) {
@@ -436,8 +443,7 @@ async function buscarEmpresas(cidade) {
         }
 
         const data = await response.json();
-        console.log("[INFO] Resposta da API de empresas:", data);
-
+      
         // Exibe as empresas no console ou na interface
         if (data.length === 0) {
             console.warn("[AVISO] Nenhuma empresa encontrada para esta cidade.");

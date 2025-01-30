@@ -33,7 +33,9 @@ def sucesso():
             tel_empresa = request.form.get('tel_empresa').strip()
             endereco = request.form.get('endereco').strip()
             cep = request.form.get('cep').strip()
-            plano = request.form.get('plano')  # "1 mês", "3 meses", "1 ano"
+            endereco = request.form.get('endereco').strip()
+            cidade = request.form.get('cidade').strip().upper()
+
 
             # dias_restantes = {"1 mês": 30, "3 meses": 90, "1 ano": 365}.get(plano, 0)
 
@@ -48,7 +50,9 @@ def sucesso():
                 "setor": setor,
                 "cep": cep,
                 "dias_restantes": 30,
-                "teste_de_app": True
+                "teste_de_app": True,
+                "cidade": cidade,
+                "endereco": endereco ,
             }
 
             try:

@@ -51,7 +51,6 @@ def login():
         if not acesso_empresa:
             mensagem = (
                 'Atenção! Sua licença está expirada. '
-                'Entre em contato com o suporte ou '
                 '<a href="/renovacao" class="btn btn-warning btn-sm">Renovar Licença</a>'
             )
             return jsonify(success=False, message=mensagem), 403

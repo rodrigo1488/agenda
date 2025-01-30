@@ -152,29 +152,26 @@ def agendar_cliente():
 def listar_empresas():
     try:
         nome_empresa = request.args.get('nome_empresa', '').strip()
-        cidade = request.args.get('cidade', '').strip().lower()  # Captura a cidade da URL
+        cidade = request.args.get('cidade', '').strip().lower()
 
-        # Debug: Verificando se a cidade foi passada corretamente
-        print(f"[INFO] Cidade recebida: {cidade}")
+        
 
-        # Cria a consulta para empresas ativas
         query = supabase.table("empresa").select(
             "id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa, cidade"
         ).eq("status", True)
 
-        # Aplica o filtro de nome da empresa, se fornecido
+        # Adicionar filtro de cidade apenas se ela não for vazia
+      
+
         if nome_empresa:
             query = query.ilike("nome_empresa", f"%{nome_empresa}%")
 
-        # Aplica o filtro de cidade
         if cidade:
             query = query.ilike("cidade", cidade)  # Filtro de cidade
 
-        # Executa a consulta
         response = query.execute()
 
-        # Debug: Mostrando as empresas encontradas
-        print(f"[DEBUG] Empresas encontradas: {response.data}")
+     
 
         return jsonify(response.data), 200  
 

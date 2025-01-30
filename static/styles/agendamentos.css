@@ -32,6 +32,53 @@ h1 {
     margin: 20px 0;
 }
 
+
+.btn-quadrado {
+    width: 50px;  /* Define a largura */
+    height: 50px; /* Define a altura para ser um quadrado */
+    border-radius: 12px; /* Arredonda as bordas */
+    border: none; /* Remove a borda padrão */
+    background-color: #6c63ff; /* Cor de fundo (ajuste conforme o design) */
+    color: white; /* Cor do ícone */
+    font-size: 24px; /* Tamanho do ícone */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.search-container {
+    display: flex; /* Organiza os elementos lado a lado */
+    align-items: center; /* Alinha verticalmente */
+    gap: 10px; /* Espaço entre o input e o botão */
+    justify-content: center; /* Centraliza no contêiner */
+    width: 100%; /* Ocupa toda a largura disponível */
+}
+
+/* Ajuste opcional para o input */
+#search-bar {
+    max-width: 60%;
+    padding: 10px;
+}
+
+/* Ajuste opcional para o botão */
+.btn-quadrado {
+    width: 50px;
+    height: 50px;
+}
+
+
+/* Efeito de hover */
+.btn-quadrado:hover {
+    background-color: #5a54e1;
+}
+
+/* Efeito de clique */
+.btn-quadrado:active {
+    background-color: #4b46c4;
+}
+
+
 .footer {
     display: flex;
     justify-content: space-around;
