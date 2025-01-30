@@ -43,15 +43,9 @@ function renderMenu(containerId) {
                     </ul>
                 </nav>
             `;
-            const toggleMenu = document.getElementById('toggle-menu');
-            const menuLateral = document.getElementById('menu-lateral');
-            if (toggleMenu && menuLateral) {
-                toggleMenu.addEventListener('click', () => {
-                    menuLateral.classList.toggle('open');
-                });
-            } else {
-                console.error('Toggle button ou menu lateral não encontrado.');
-            }
+            
+            // Garantir que o código de manipulação do menu seja chamado depois de renderizar o menu
+            setupMenu();
         })
         .catch(error => {
             console.error('Erro ao carregar dados da empresa:', error);
@@ -59,4 +53,29 @@ function renderMenu(containerId) {
         .finally(() => {
             loading.style.display = 'none'; // Oculta a tela de carregamento após o carregamento
         });
+}
+
+// Função para configurar o menu
+function setupMenu() {
+    const menuLateral = document.getElementById("menu-lateral");
+    const toggleMenu = document.getElementById("toggle-menu");
+    const menuContainer = document.getElementById("menu-container");
+
+    // Função para fechar o menu
+    function closeMenu() {
+        menuLateral.classList.remove("open");
+    }
+
+    // Evento para abrir o menu
+    toggleMenu.addEventListener("click", function() {
+        menuLateral.classList.toggle("open");
+    });
+
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener("click", function(event) {
+        // Verifica se o clique foi fora do menu lateral e do botão de alternância
+        if (!menuLateral.contains(event.target) && !toggleMenu.contains(event.target) && !menuContainer.contains(event.target)) {
+            closeMenu();
+        }
+    });
 }
