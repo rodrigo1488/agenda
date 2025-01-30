@@ -52,6 +52,7 @@ def atualizar_configuracao():
         "endereco": request.form.get("endereco"),
         "cep": request.form.get("cep"),
         "tel_empresa": request.form.get("tel_empresa"),
+        
         "status": request.form.get("status"),
         "descricao": request.form.get("descricao"),
         "cor_emp": request.form.get("cor")
