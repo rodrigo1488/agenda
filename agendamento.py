@@ -148,31 +148,40 @@ def agendar_cliente():
 
 
 
-#lista as empresas ativas
 @agendamento_bp.route('/api/empresas', methods=['GET'])
 def listar_empresas():
     try:
-        nome_empresa = request.args.get('nome_empresa', '').strip()  # Captura o termo de busca, se presente
+        nome_empresa = request.args.get('nome_empresa', '').strip()
+        cidade = request.args.get('cidade', '').strip().lower()  # Captura a cidade da URL
+
+        # Debug: Verificando se a cidade foi passada corretamente
+        print(f"[INFO] Cidade recebida: {cidade}")
 
         # Cria a consulta para empresas ativas
-        query = supabase.table("empresa").select("id, nome_empresa, logo, descricao,setor,horario,kids,acessibilidade,estacionamento,wifi,tel_empresa").eq("status", True)
+        query = supabase.table("empresa").select(
+            "id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa, cidade"
+        ).eq("status", True)
 
+        # Aplica o filtro de nome da empresa, se fornecido
         if nome_empresa:
-            # Aplica o filtro se o termo de busca estiver presente
             query = query.ilike("nome_empresa", f"%{nome_empresa}%")
+
+        # Aplica o filtro de cidade
+        if cidade:
+            query = query.ilike("cidade", cidade)  # Filtro de cidade
 
         # Executa a consulta
         response = query.execute()
 
-        # Verifica se a consulta retornou dados
-        if not response.data:
-            return jsonify([]), 200  # Retorna um array vazio se nenhuma empresa for encontrada
+        # Debug: Mostrando as empresas encontradas
+        print(f"[DEBUG] Empresas encontradas: {response.data}")
 
-        return jsonify(response.data), 200  # Retorna os dados das empresas encontradas
+        return jsonify(response.data), 200  
 
     except Exception as e:
-        print(f"Erro ao buscar empresas: {e}")
-        return jsonify([]), 500  # Retorna erro em caso de exceção
+        print(f"[ERRO] Falha ao buscar empresas: {e}")
+        return jsonify([]), 500  
+
 
 @agendamento_bp.route('/api/empresa/<int:empresa_id>', methods=['GET'])
 def obter_empresa(empresa_id):

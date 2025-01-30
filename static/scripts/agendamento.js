@@ -358,3 +358,113 @@ const form = document.getElementById('form-agendamento');
         // (Opcional) Aqui, o campo de telefone já está limpo e validado antes de ser enviado ao banco
         console.log('Telefone validado e pronto para envio:', telefone);
     });
+
+
+
+
+    /// codigo para listar empresa pela localização
+
+
+
+// Verifica se a geolocalização está disponível no navegador
+// Verifica se a geolocalização está disponível no navegador
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        try {
+            // URL da API de geolocalização
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+            console.log(`[INFO] Enviando requisição para: ${url}`);
+
+            // Faz a requisição para a API de geolocalização
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                console.error(`[ERRO] Falha ao buscar cidade. Status HTTP: ${response.status}`);
+                throw new Error(`Erro na requisição: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("[INFO] Resposta completa da API:", data);
+
+            // Verifica se a resposta contém o endereço
+            if (!data.address) {
+                console.error("[ERRO] Resposta não contém o campo 'address'.", data);
+                throw new Error("A resposta da API não contém informações de endereço.");
+            }
+
+            // Tenta obter a cidade da resposta da API
+            const cidade = data.address.city || 
+                           data.address.town || 
+                           data.address.village || 
+                           data.address.municipality || 
+                           data.address.county;
+
+            if (cidade) {
+                console.log(`[INFO] Cidade detectada: ${cidade}`);
+                buscarEmpresas(cidade);  // Chama a função para buscar empresas para a cidade detectada
+            } else {
+                console.error("[ERRO] Nenhum nome de cidade foi encontrado na resposta.", data.address);
+            }
+        } catch (error) {
+            console.error("[ERRO] Exceção capturada ao buscar a cidade:", error);
+        }
+    }, (error) => {
+        console.error("[ERRO] Falha ao obter a localização do usuário:", error.message);
+    });
+} else {
+    console.error("[ERRO] Geolocalização não suportada pelo navegador.");
+}
+
+// Função para buscar empresas com base na cidade
+async function buscarEmpresas(cidade) {
+    console.log(`[INFO] Buscando empresas para a cidade: ${cidade}`);
+
+    try {
+        // Monta a URL corretamente para o endpoint da API
+        const url = `/api/empresas?cidade=${encodeURIComponent(cidade)}`;
+        console.log(`[INFO] Enviando requisição para: ${url}`);
+
+        // Realiza a requisição para buscar as empresas
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            console.error(`[ERRO] Falha ao buscar empresas. Status HTTP: ${response.status}`);
+            throw new Error(`Erro na requisição: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("[INFO] Resposta da API de empresas:", data);
+
+        // Exibe as empresas no console ou na interface
+        if (data.length === 0) {
+            console.warn("[AVISO] Nenhuma empresa encontrada para esta cidade.");
+        } else {
+            // Exemplo de como exibir as empresas no console
+            data.forEach(empresa => {
+                console.log(`Empresa: ${empresa.nome_empresa}, Cidade: ${empresa.cidade}`);
+                // Você pode processar os dados aqui para atualizar a UI com as empresas
+            });
+        }
+    } catch (error) {
+        console.error("[ERRO] Exceção ao buscar empresas:", error);
+    }
+}
+
+function filtrarEmpresas() {
+    const input = document.getElementById("filtro-cidade").value.toLowerCase();
+    const empresas = document.querySelectorAll(".empresa-card");
+
+    empresas.forEach(empresa => {
+        const cidade = empresa.querySelector(".empresa-info p:nth-child(5)").textContent.toLowerCase();
+        if (cidade.includes(input)) {
+            empresa.style.display = "flex";
+        } else {
+            empresa.style.display = "none";
+        }
+    });
+}
+
+
