@@ -25,10 +25,11 @@ def sucesso():
         # Verificar se é cadastro de empresa ou de usuário
         if 'nome_empresa' in request.form:
             # Cadastro da empresa
-            nome_empresa = request.form.get('nome_empresa').strip()
+            nome_empresa = request.form.get('nome_empresa').strip().upper()
             cnpj = request.form.get('cnpj').strip()
             email = request.form.get('email').strip()
             descricao = request.form.get('descricao').strip()
+            setor = request.form.get('setor').strip().upper()
             tel_empresa = request.form.get('tel_empresa').strip()
             endereco = request.form.get('endereco').strip()
             cep = request.form.get('cep').strip()
@@ -44,6 +45,7 @@ def sucesso():
                 "descricao": descricao,
                 "tel_empresa": tel_empresa,
                 "endereco": endereco,
+                "setor": setor,
                 "cep": cep,
                 "dias_restantes": 30,
                 "teste_de_app": True
@@ -62,7 +64,7 @@ def sucesso():
 
         elif 'nome_usuario' in request.form:
             # Cadastro do primeiro usuário
-            nome_usuario = request.form.get('nome_usuario').strip()
+            nome_usuario = request.form.get('nome_usuario').strip().upper()
             email_usuario = request.form.get('email_usuario').strip()
             telefone = request.form.get('telefone').strip()
             senha = request.form.get('senha').strip()

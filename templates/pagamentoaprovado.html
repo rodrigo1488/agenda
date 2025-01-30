@@ -91,7 +91,16 @@
             <input type="email" id="email" name="email" required>
 
             <label for="descricao">Descrição:</label>
-            <textarea id="descricao" name="descricao" rows="4" required></textarea>
+            <textarea id="descricao" name="descricao" rows="3" required  maxlength="30"></textarea>
+
+            <label for="setor">Setor</label>
+            <select id="setor" name="setor" required>
+                <option value="Tecnologia">Tecnologia</option>
+                <option value="Beleza">Beleza</option>
+                <option value="Barbearia">Barbearia</option>
+                <option value="Saude">Saude</option>
+                <option value="Outro">Outro</option>
+            </select>
 
             <label for="endereco">Endereço:</label>
             <input type="text" id="endereco" name="endereco" required>
