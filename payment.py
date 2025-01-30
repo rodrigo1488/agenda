@@ -19,3 +19,16 @@ def process_payment(plano):
     except ValueError:
         flash("Plano inválido!", "error")
         return redirect('/adquirir')
+
+@payment_bp.route('/renovar/<plano>', methods=['GET'])
+def renovar_pagamento(plano):
+    try:
+        link_pagamento = gerar_link_pagamento(plano, tipo="renovacao")
+        return redirect(link_pagamento)
+    except ValueError:
+        flash("Plano inválido!", "error")
+        return redirect('/renovacao')
+
+@payment_bp.route('/renovacao', methods=['GET'])
+def renovacao():
+    return render_template('planos_renovacao.html')

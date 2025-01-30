@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import jsonify
 from supabase import create_client
 import os
 
@@ -66,3 +67,27 @@ def atualizar_configuracao():
         flash('Erro ao atualizar configurações.', 'danger')
 
     return redirect(url_for('config.configuracao_empresa')) 
+
+
+# Função que busca os dias restantes da empresa baseada no ID salvo nos cookies
+def dias_restantes():
+    try:
+        empresa_id = request.cookies.get('empresa_id')  # Pega o empresa_id dos cookies
+        if not empresa_id:
+            return 0  # Se não houver empresa_id nos cookies, retorna 0 (ou outro valor default)
+
+        response = supabase.table("empresa").select("dias_restantes").eq("id", empresa_id).execute()
+        if response.data:
+            empresa = response.data[0]
+            return empresa['dias_restantes']
+        return 0  # Caso não encontre a empresa
+    except Exception as e:
+        print(f"Erro ao buscar dias restantes: {e}")
+        return 0  # Caso ocorra um erro, retorna 0
+
+# Rota para retornar os dias restantes da empresa com base no cookie
+@config_bp.route('/api/dias_restantes', methods=['GET'])
+def get_dias_restantes():
+    dias = dias_restantes()  # Agora não precisa passar o empresa_id
+    return jsonify({"dias_restantes": dias})
+
