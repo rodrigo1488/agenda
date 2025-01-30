@@ -88,7 +88,7 @@ def cadastrar_cliente():
         }]).execute()
 
         print("Cliente cadastrado com sucesso!")  # Apenas loga no terminal
-        return ""  # Retorna vazio
+        return redirect(url_for('clientes_bp.clientes'))
     except Exception as e:
         print(f"Erro ao cadastrar cliente: {e}")  # Apenas loga no terminal
         return "", 500  # Retorna vazio com status HTTP de erro
