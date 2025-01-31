@@ -157,7 +157,7 @@ def listar_empresas():
         
 
         query = supabase.table("empresa").select(
-            "id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa, cidade"
+            "id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa, cidade,endereco"
         ).eq("status", True)
 
         # Adicionar filtro de cidade apenas se ela não for vazia
@@ -184,7 +184,7 @@ def listar_empresas():
 def obter_empresa(empresa_id):
     try:
         # Busca os detalhes da empresa com o ID especificado
-        response = supabase.table("empresa").select("id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa").eq("id", empresa_id).execute()
+        response = supabase.table("empresa").select("id, nome_empresa, logo, descricao, setor, horario, kids, acessibilidade, estacionamento, wifi, tel_empresa,endereco").eq("id", empresa_id).execute()
 
         # Verifica se a empresa foi encontrada
         if not response.data:

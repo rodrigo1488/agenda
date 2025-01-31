@@ -18,6 +18,8 @@ async function carregarDetalhesEmpresa(empresaId) {
         const wifi = empresa.wifi ? 'Disponível' : null;
         const kids = empresa.kids ? 'Permitido' : null;
         const acessibilidade = empresa.acessibilidade ? 'Disponível' : null;
+        const endereco = empresa.endereco && empresa.endereco.trim() ? empresa.endereco : 'Endereço não informado';
+
 
         // Atualiza o conteúdo da div com as informações da empresa
         const divInfo = document.getElementById('informacoes-empresa');
@@ -48,7 +50,8 @@ async function carregarDetalhesEmpresa(empresaId) {
                             <i class="fas fa-wheelchair"></i> 
                             <span>Acessibilidade Disponível</span>
                           </div>` : ''}
-            </div>
+                          </div>
+                 ${endereco ? '<div class="endereco-container"><i class="fas fa-map-marker-alt"></i> ' + empresa.endereco +' </div>' : ''}
     
             <!-- Botão do WhatsApp dentro do card -->
             <a href="https://api.whatsapp.com/send?phone=${empresa.tel_empresa.replace(/\D/g, '')}&text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio" 
@@ -443,7 +446,7 @@ async function buscarEmpresas(cidade) {
         }
 
         const data = await response.json();
-      
+
         // Exibe as empresas no console ou na interface
         if (data.length === 0) {
             console.warn("[AVISO] Nenhuma empresa encontrada para esta cidade.");
