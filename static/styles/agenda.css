@@ -7,6 +7,15 @@ body {
     overflow: hidden;
 }
 
+
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+#agendamentoModal {
+    z-index: 1050 !important;
+}
+
 #calendar-container {
     display: block;
     padding: 20px;

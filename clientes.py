@@ -66,13 +66,12 @@ def clientes():
         return render_template('clientes.html', clientes=[], query=query, error="Erro ao listar clientes.")
 
 
-# Rota para cadastrar um novo cliente
 @clientes_bp.route('/add_cliente', methods=['POST'])
 def cadastrar_cliente():
     # Verifica se o usuário está logado
     redirecionar = verificar_login()
     if redirecionar:
-        return redirecionar
+        return jsonify({"error": "Usuário não autenticado"}), 403
 
     nome_cliente = request.form['nome']
     telefone = request.form['telefone']
@@ -87,12 +86,10 @@ def cadastrar_cliente():
             'id_empresa': empresa_id
         }]).execute()
 
-        print("Cliente cadastrado com sucesso!")  # Apenas loga no terminal
-        return redirect(url_for('clientes_bp.clientes'))
+        return jsonify({"message": "Cliente cadastrado com sucesso!"}), 200  # Retorno JSON
     except Exception as e:
-        print(f"Erro ao cadastrar cliente: {e}")  # Apenas loga no terminal
-        return "", 500  # Retorna vazio com status HTTP de erro
-
+        print(f"Erro ao cadastrar cliente: {e}")  # Log no terminal
+        return jsonify({"error": "Erro ao cadastrar cliente"}), 500  # Retorno JSON de erro
 
 # Rota para editar cliente
 @clientes_bp.route('/editar_cliente/<int:id>', methods=['GET', 'POST'])

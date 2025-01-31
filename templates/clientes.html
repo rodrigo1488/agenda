@@ -155,6 +155,7 @@
 
     <!-- Scripts -->
     <script src="static/scripts/menu.js"></script>
+
     <script>
         // Exemplo para bloquear o scroll da página
 document.body.classList.add('no-scroll');
@@ -163,18 +164,57 @@ document.body.classList.add('no-scroll');
 document.body.classList.remove('no-scroll');
         renderMenu('menu-container');
 
+    </script>
+    <script>
         // Função para exibir o formulário de cadastro
         function exibirFormulario() {
             document.getElementById('formularioCadastro').style.display = 'block';
             document.getElementById('btnCriarCliente').style.display = 'none';
         }
-
+    
         // Função para esconder o formulário de cadastro
         function cancelarCadastro() {
             document.getElementById('formularioCadastro').style.display = 'none';
             document.getElementById('btnCriarCliente').style.display = 'block';
         }
-
+    
+        // Função para capturar o envio do formulário e fazer a requisição AJAX
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector("#formularioCadastro form").addEventListener("submit", function (event) {
+                event.preventDefault();  // Evita o comportamento padrão de envio do formulário
+    
+                let formData = new FormData(this);
+    
+                fetch("/add_cliente", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())  // Espera o JSON de resposta
+                .then(data => {
+                    if (data.message) {
+                        console.log("Sucesso:", data.message);
+    
+                        // Fecha o formulário de cadastro
+                        cancelarCadastro();
+    
+                        // Limpa os campos do formulário
+                        document.querySelector("#formularioCadastro form").reset();
+                        //atuliza lista
+                        location.reload();
+    
+        
+                    } else {
+                        console.error("Erro:", data.error);
+                        alert("Erro ao cadastrar cliente: " + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro na requisição:", error);
+                    alert("Erro na requisição. Tente novamente.");
+                });
+            });
+        });
+    
         // Função para abrir o modal de edição com os dados do cliente
         function abrirModalEditar(id, nome, email, telefone) {
             $('#editarClienteId').val(id);
@@ -183,7 +223,7 @@ document.body.classList.remove('no-scroll');
             $('#editarTelefone').val(telefone);
             $('#editarClienteModal').modal('show');
         }
-
+    
         // Função para excluir o cliente
         function excluirCliente() {
             const id = $('#editarClienteId').val();
@@ -201,14 +241,14 @@ document.body.classList.remove('no-scroll');
                 });
             }
         }
-
+    
         // Função para salvar as alterações no cliente
         function salvarCliente() {
             const id = $('#editarClienteId').val();
             const nome = $('#editarNome').val();
             const email = $('#editarEmail').val();
             const telefone = $('#editarTelefone').val();
-
+    
             $.ajax({
                 url: `/editar_cliente/${id}`,
                 method: 'POST',
@@ -223,6 +263,7 @@ document.body.classList.remove('no-scroll');
             });
         }
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/script.js"></script>
 </body>

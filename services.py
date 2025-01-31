@@ -84,11 +84,13 @@ def add_service():
 
         print('Serviço adicionado com sucesso!')
 
-        # Redireciona para a página anterior (mantendo o histórico)
-        return redirect(request.referrer or url_for('services_bp.servicos'))
+        # Retorna um JSON com a mensagem de sucesso
+        return jsonify({"message": "Serviço cadastrado com sucesso!"}), 200
     except Exception as e:
         print(f"Erro ao cadastrar serviço: {e}")
-        return "Erro ao cadastrar serviço", 500
+        # Retorna um JSON com a mensagem de erro
+        return jsonify({"error": "Erro ao cadastrar serviço"}), 500
+
 
 
 # Função para excluir um serviço

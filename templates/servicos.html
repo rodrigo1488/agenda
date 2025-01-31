@@ -110,40 +110,75 @@
     <script>
         renderMenu('menu-container');
     </script>
-    
     <script>
         // Função para exibir o formulário de cadastro
-        // Função para exibir o formulário de cadastro
-function exibirFormulario() {
-    document.getElementById('formularioCadastro').style.display = 'block';
-    document.getElementById('btnCriarServico').style.display = 'none';
-}
-
-fetch('/api/usuarios')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+        function exibirFormulario() {
+            document.getElementById('formularioCadastro').style.display = 'block';
+            document.getElementById('btnCriarServico').style.display = 'none';
         }
-        return response.json();
-    })
-    .then(data => {
-        const usuarioSelect = document.getElementById('responsavel');
-        if (usuarioSelect) {
-            data.forEach(usuario => {
-                const option = document.createElement('option');
-                option.value = usuario.id;
-                option.textContent = usuario.nome_usuario;
-                usuarioSelect.appendChild(option);
+    
+        // Função para lidar com o envio do formulário de cadastro
+        document.querySelector("#formularioCadastro form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita o recarregamento da página ao submeter o formulário
+    
+            const formData = new FormData(this); // Coleta os dados do formulário
+    
+            // Envia os dados via AJAX (fetch)
+            fetch("/add_service", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json()) // Espera a resposta como JSON
+            .then(data => {
+                // Se a resposta contiver uma mensagem de sucesso
+                if (data.message) {
+                    alert(data.message); // Exibe a mensagem de sucesso
+                    // Fecha o formulário de cadastro e exibe o botão novamente
+                    document.getElementById('formularioCadastro').style.display = 'none';
+                    document.getElementById('btnCriarServico').style.display = 'block';
+                    // Limpa o formulário após sucesso
+                    document.querySelector("#formularioCadastro form").reset();
+                    // Atualiza a listagem de serviços
+                    location.reload();
+                } 
+                // Se a resposta contiver uma mensagem de erro
+                else if (data.error) {
+                    alert(data.error); // Exibe a mensagem de erro
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao cadastrar serviço:", error);
+                alert("Erro ao cadastrar serviço. Tente novamente.");
             });
-        } else {
-            console.error('Elemento select com ID "responsavel" não encontrado.');
-        }
-    })
-    .catch(error => {
-        console.error('Erro ao buscar ou processar os usuários:', error.message);
-    });
-
+        });
+    
+        // Função para preencher o select de responsáveis com os dados da API
+        fetch('/api/usuarios')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const usuarioSelect = document.getElementById('responsavel');
+                if (usuarioSelect) {
+                    data.forEach(usuario => {
+                        const option = document.createElement('option');
+                        option.value = usuario.id;
+                        option.textContent = usuario.nome_usuario;
+                        usuarioSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Elemento select com ID "responsavel" não encontrado.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar ou processar os usuários:', error.message);
+            });
     </script>
+    
+
 </body>
 
 </html>

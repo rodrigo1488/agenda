@@ -111,7 +111,7 @@
                 <p>Carregando...</p>
             </div>
 
-            <!-- Modal de Agendamento -->
+
             <!-- Modal de Agendamento -->
             <div class="modal fade" id="agendamentoModal" tabindex="-1" aria-labelledby="agendamentoModalLabel"
                 aria-hidden="true">
@@ -119,7 +119,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="agendamentoModalLabel">Novo Agendamento</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" onclick="window.location.reload();" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="form-agendamento" class="mb-4">
@@ -175,6 +175,7 @@
                                 </div>
                                 <!-- Botão de Enviar -->
                                 <button type="submit" class="btn btn-success">Agendar</button>
+                                <button type="button" class="btn btn-danger" onclick="window.location.reload();">Cancelar</button>
                             </form>
                         </div>
                     </div>
@@ -222,12 +223,15 @@
 
     <!-- Modal -->
     <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel"
-        aria-hidden="true">
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addServiceModalLabel">Cadastrar Serviço</h5>
+                   
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
                 </div>
                 <div class="modal-body">
                     <form method="POST" action="/add_service">
@@ -265,7 +269,8 @@
 
     <!-- Modal -->
     <div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel"
-        aria-hidden="true">
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -302,6 +307,125 @@
     <!-- Bootstrap CSS and JS (necessário para o modal funcionar) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Listener para o formulário de cadastro de clientes
+    document.querySelector("#addClienteModal form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evita o recarregamento da página
+
+        let formData = new FormData(this);
+
+        fetch("/add_cliente", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json()) // Espera o JSON de resposta
+        .then(data => {
+            if (data.message) {
+                console.log("Sucesso:", data.message);
+
+                // Fecha o modal de cliente
+                let modal = bootstrap.Modal.getInstance(document.getElementById("addClienteModal"));
+                modal.hide();
+
+                // Limpa os campos do formulário
+                event.target.reset();
+
+                // Exibe uma mensagem de sucesso
+                alert(data.message);
+            } else {
+                console.error("Erro:", data.error);
+                alert("Erro ao cadastrar cliente: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao cadastrar cliente");
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    // Listener para o formulário de cadastro de serviços
+    document.querySelector("#addServiceModal form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evita o recarregamento da página
+
+        let formData = new FormData(this);
+
+        fetch("/add_service", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json()) // Espera o JSON de resposta
+        .then(data => {
+            if (data.message) {
+                console.log("Sucesso:", data.message);
+
+                // Fecha o modal de serviço
+                let modal = bootstrap.Modal.getInstance(document.getElementById("addServiceModal"));
+                modal.hide();
+
+                // Limpa os campos do formulário
+                event.target.reset();
+
+                // Exibe uma mensagem de sucesso
+                alert(data.message);  // Exibe a mensagem de sucesso
+            } else if (data.error) {
+                console.error("Erro:", data.error);
+                alert(data.error);  // Exibe a mensagem de erro
+            }
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao cadastrar serviço");
+        });
+    });
+});
+
+   
+
+    </script>
+    
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const agendamentoModal = document.getElementById("agendamentoModal");
+    
+            // Impede que o modal principal seja fechado
+            agendamentoModal.addEventListener("hide.bs.modal", function (event) {
+                event.preventDefault(); // Evita o fechamento
+            });
+    
+            document.querySelectorAll(".modal").forEach((modal) => {
+                modal.addEventListener("shown.bs.modal", function () {
+                    let modaisAbertos = document.querySelectorAll(".modal.show").length;
+                    this.style.zIndex = 1050 + (modaisAbertos * 10);
+                    
+                    // Mantém o backdrop abaixo do modal principal
+                    let backdrops = document.querySelectorAll(".modal-backdrop");
+                    backdrops.forEach((backdrop) => {
+                        backdrop.style.zIndex = 1040;
+                    });
+                });
+    
+                modal.addEventListener("hidden.bs.modal", function () {
+                    // Se ainda houver modais abertos, mantém a classe modal-open no body
+                    if (document.querySelectorAll(".modal.show").length > 0) {
+                        document.body.classList.add("modal-open");
+                    } else {
+                        // Se o agendamentoModal ainda está visível, forçamos a reabertura
+                        if (agendamentoModal.classList.contains("show")) {
+                            document.body.classList.add("modal-open");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
+    
+    
 
 
     <script>
