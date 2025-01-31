@@ -25,10 +25,11 @@ async function carregarDetalhesEmpresa(empresaId) {
         const divInfo = document.getElementById('informacoes-empresa');
         divInfo.innerHTML = `
         <div class="empresa-info">
-            <img src="${empresa.logo}" alt="Logo da ${empresa.nome_empresa}" class="logo-descricao">
-            <h3 class="nome-empresa">${empresa.nome_empresa}</h3>
-            <p class="descricao"> ${empresa.descricao}</p>
-            <p class="horario"><strong>Horário de funcionamento:</strong> ${empresa.horario}</p>
+        <img src="${empresa.logo}" alt="Logo da ${empresa.nome_empresa}" class="logo-descricao">
+        <h3 class="nome-empresa">${empresa.nome_empresa}</h3>
+        <p class="descricao"> ${empresa.descricao}</p>
+        <p class="horario"><strong>Horário de funcionamento:</strong> ${empresa.horario}</p>
+        ${endereco ? '<div class="endereco-container"><i class="fas fa-map-marker-alt"></i> ' + empresa.endereco +' </div>' : ''}
     
             <div class="comodidades-container">
                 ${wifi ? `<div class="botao-neumorphism">
@@ -51,7 +52,6 @@ async function carregarDetalhesEmpresa(empresaId) {
                             <span>Acessibilidade Disponível</span>
                           </div>` : ''}
                           </div>
-                 ${endereco ? '<div class="endereco-container"><i class="fas fa-map-marker-alt"></i> ' + empresa.endereco +' </div>' : ''}
     
             <!-- Botão do WhatsApp dentro do card -->
             <a href="https://api.whatsapp.com/send?phone=${empresa.tel_empresa.replace(/\D/g, '')}&text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio" 
