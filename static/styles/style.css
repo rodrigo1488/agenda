@@ -168,6 +168,14 @@ h3 {
 
 /* Menu lateral responsivo para smartphones */
 @media screen and (max-width: 768px) {
+
+
+  .header-link {
+   display: none;
+  }
+  #download-link {
+    display: block;
+  }
   /* Ajustes no botão de agendamento */
   #btn-agendar {
     font-size: small;
